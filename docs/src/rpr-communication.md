@@ -4,7 +4,7 @@ Interoperability Requirements for the RPR FOM Communication Module.
 
 ![RPR-DER-2.0.png](images/RPR-DER-2.0.png)
 
-| Short&nbsp;Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Description |
+| Short&nbsp;Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Description |
 | ---------- | ----------- |
 | IR-RPR-COM-0001 | Each SuT updating instance attributes of the RadioTransmitter class or its subclasses shall provide the state/identification fields RadioIndex, RadioSystemType, and TransmitterOperationalStatus. |
 | IR-RPR-COM-0002 | Each SuT updating instance attributes of the RadioTransmitter class or its subclasses shall guarantee that a unique RadioIndex / HostObjectIdentifier combination is provided for each radio instance. The one remaining state/identification field, RadioInputSource, shall be treated as an optional field. |

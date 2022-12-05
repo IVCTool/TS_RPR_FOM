@@ -1,0 +1,42 @@
+// Define Java conventions for this organization.
+// Projects need to use the Java, Checkstyle and Spotbugs plugins.
+
+plugins {
+    id 'java'
+}
+
+// JDK Version Compatibility
+compileJava {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+}
+
+// Projects should use Maven Central for external dependencies
+// Maven Local may be used for internal testing
+// snpashots are required for IVCT development testing
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots'
+    }
+}
+
+dependencies {
+    // IVCT AbstractTestCase interface
+    // implementation 'io.github.msg134:TC.lib:4.1.0-SNAPSHOT'
+    // Use Simple Logging Facade API for reporting
+    implementation 'org.slf4j:slf4j-api:1.7.10'
+    // implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+	implementation files("$System.env.LRC_CLASSPATH")
+
+    // For testing include the libraries which are added by TestEngine in operation
+    // testImplementation 'ch.qos.logback:logback-classic:1.2.11'
+    // Use JUnit Jupiter for testing.
+	// testImplementation(platform('org.junit:junit-bom:5.8.2'))
+	testImplementation('org.junit.jupiter:junit-jupiter:5.8.2')
+}
+
+test {
+    useJUnitPlatform()
+}

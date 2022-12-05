@@ -1,0 +1,36 @@
+// Define Java Library conventions for this organization.
+// Projects need to use the organization's Java conventions and publish using Maven Publish
+
+plugins {
+    id 'java-library'
+    id 'java-library-distribution'
+    id 'rpr.java-conventions'
+}
+
+java {
+	withSourcesJar()
+}
+
+group = 'org.nato.rpr'
+version = '1.0-SNAPSHOT'
+
+// dependencies {
+// 	testImplementation files("$System.env.LRC_CLASSPATH")
+// }
+
+// Write the  IVCT-Version as set to variable in libraries.gradle
+// in a  property-file
+task writeVersion {
+	group = "Build"
+	description = "Creates a properties file with version information"
+
+	doLast {
+		def prop = new Properties()
+		prop.ivctVersion = '4.1.0-SNAPSHOT'
+		prop.build = "git describe --tags".execute().text.trim()
+		mkdir "src/main/resources"
+		File propFile = file('src/main/resources/testCaseBuild.properties')
+		prop.store(propFile.newWriter(), null)
+	}
+}
+processResources.dependsOn writeVersion
