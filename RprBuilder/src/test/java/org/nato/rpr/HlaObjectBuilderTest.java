@@ -1,17 +1,17 @@
 package org.nato.rpr;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.nato.rpr.HlaObjectBuilder.HLAobject;
+import org.nato.rpr.PhysicalEntityBuilder.PhysicalEntity;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.URL;
 import java.util.ArrayList;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import hla.rti1516e.CallbackModel;
 import hla.rti1516e.FederateAmbassador;
@@ -21,6 +21,7 @@ import hla.rti1516e.ResignAction;
 import hla.rti1516e.RtiFactory;
 import hla.rti1516e.RtiFactoryFactory;
 import hla.rti1516e.exceptions.AlreadyConnected;
+import hla.rti1516e.exceptions.AttributeNotDefined;
 import hla.rti1516e.exceptions.CallNotAllowedFromWithinCallback;
 import hla.rti1516e.exceptions.ConnectionFailed;
 import hla.rti1516e.exceptions.CouldNotCreateLogicalTimeFactory;
@@ -35,8 +36,12 @@ import hla.rti1516e.exceptions.FederationExecutionAlreadyExists;
 import hla.rti1516e.exceptions.FederationExecutionDoesNotExist;
 import hla.rti1516e.exceptions.InconsistentFDD;
 import hla.rti1516e.exceptions.InvalidLocalSettingsDesignator;
+import hla.rti1516e.exceptions.InvalidObjectClassHandle;
 import hla.rti1516e.exceptions.InvalidResignAction;
+import hla.rti1516e.exceptions.NameNotFound;
 import hla.rti1516e.exceptions.NotConnected;
+import hla.rti1516e.exceptions.ObjectClassNotDefined;
+import hla.rti1516e.exceptions.ObjectClassNotPublished;
 import hla.rti1516e.exceptions.OwnershipAcquisitionPending;
 import hla.rti1516e.exceptions.RTIinternalError;
 import hla.rti1516e.exceptions.RestoreInProgress;
@@ -44,14 +49,9 @@ import hla.rti1516e.exceptions.SaveInProgress;
 import hla.rti1516e.exceptions.UnsupportedCallbackModel;
 
 
+public class HlaObjectBuilderTest {
 
-/**
- *
- * @author hzg
- */
-public class AggregateInteractionTest {
-
-    public static final Logger log = LoggerFactory.getLogger(AggregateInteractionTest.class);
+    public static final Logger log = LoggerFactory.getLogger(PhysicalEntityBuilder.class);
     RTIambassador rtiAmbassador = null;
 
     @BeforeEach
@@ -60,17 +60,16 @@ public class AggregateInteractionTest {
         rtiAmbassador = rtiFactory.getRtiAmbassador();
         FederateAmbassador nullAmbassador = new NullFederateAmbassador();
         ArrayList<URL> fomList = new ArrayList<>();
-        fomList.add(AggregateInteractionTest.class.getResource("/RPR-FOM-v2.0/RPR-Base_v2.0.xml"));
-        fomList.add(AggregateInteractionTest.class.getResource("/RPR-FOM-v2.0/RPR-Enumerations_v2.0.xml"));
-        fomList.add(AggregateInteractionTest.class.getResource("/RPR-FOM-v2.0/RPR-Switches_v2.0.xml"));
-        fomList.add(AggregateInteractionTest.class.getResource("/RPR-FOM-v2.0/RPR-Foundation_v2.0.xml"));
-        fomList.add(AggregateInteractionTest.class.getResource("/RPR-FOM-v2.0/RPR-Aggregate_v2.0.xml"));
+        fomList.add(PhysicalEntityBuilder.class.getResource("/RPR-FOM-v2.0/RPR-Base_v2.0.xml"));
+        fomList.add(PhysicalEntityBuilder.class.getResource("/RPR-FOM-v2.0/RPR-Enumerations_v2.0.xml"));
+        fomList.add(PhysicalEntityBuilder.class.getResource("/RPR-FOM-v2.0/RPR-Switches_v2.0.xml"));
+        fomList.add(PhysicalEntityBuilder.class.getResource("/RPR-FOM-v2.0/RPR-Foundation_v2.0.xml"));
+        fomList.add(PhysicalEntityBuilder.class.getResource("/RPR-FOM-v2.0/RPR-Physical_v2.0.xml"));
         rtiAmbassador.connect(nullAmbassador, CallbackModel.HLA_IMMEDIATE);
         try {
             rtiAmbassador.createFederationExecution("TestFederation", fomList.toArray(new URL[fomList.size()]));
         } catch (FederationExecutionAlreadyExists ignored) { }
         rtiAmbassador.joinFederationExecution("InteractionTest", "TestFederation", fomList.toArray(new URL[fomList.size()]));
-
     }
 
     @AfterEach
@@ -85,24 +84,15 @@ public class AggregateInteractionTest {
     }
 
     @Test
-    void setParameterTest () throws Exception {
-        Collision aggregateInteration = new CollisionBuilder(rtiAmbassador)
-            .addEventId()
-            .addFederate()
-            .addRemoveSubunits()
-            .addAggregateUnit()
-            .build();
-        aggregateInteration.publish(rtiAmbassador);
-
-        aggregateInteration.clear();
-        aggregateInteration.setValueEventId((byte) 0x01);
-        aggregateInteration.setValueFederate((short) 1);
-        aggregateInteration.send(rtiAmbassador);
-        assertTrue(true);
-    }
-
-    @Test
-    void simpleTest2 () {
-        assertTrue (1 + 1 == 3);
+    void testBuild() {
+        try {
+            PhysicalEntity obj = new PhysicalEntityBuilder(rtiAmbassador)
+                .addAcousticSignatureIndex()
+                .build();
+            short i = 42;
+            obj.setAcousticSignatureIndex(i);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
     }
 }

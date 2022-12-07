@@ -24,7 +24,7 @@ repositories {
 
 dependencies {
     // IVCT AbstractTestCase interface
-    // implementation 'io.github.msg134:TC.lib:4.1.0-SNAPSHOT'
+    implementation 'io.github.msg134:TC.lib:4.1.0-SNAPSHOT'
     // Use Simple Logging Facade API for reporting
     implementation 'org.slf4j:slf4j-api:1.7.10'
     // implementation 'com.googlecode.json-simple:json-simple:1.1.1'

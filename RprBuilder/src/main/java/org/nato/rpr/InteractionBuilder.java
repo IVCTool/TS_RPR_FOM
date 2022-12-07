@@ -24,30 +24,30 @@ public class InteractionBuilder {
     public static Map<InteractionClassHandle, InteractionBuilder> knownBuilder = new HashMap<>();
 
     protected RTIambassador rtiAmbassador;
-    protected InteractionClassHandle messageId;
+    protected InteractionClassHandle classHandle;
     protected ParameterHandleValueMap parameters;
     protected EncoderFactory encoderFactory;
     protected HashMap<String,ParameterHandle> parameterHandles;
 
-    public InteractionBuilder (RTIambassador rtiAmbassador, String messageName) throws NameNotFound, FederateNotExecutionMember, NotConnected, RTIinternalError {
+    public InteractionBuilder (RTIambassador rtiAmbassador, String className) throws NameNotFound, FederateNotExecutionMember, NotConnected, RTIinternalError {
         this.rtiAmbassador = rtiAmbassador;
-        this.messageId = rtiAmbassador.getInteractionClassHandle(messageName);
+        this.classHandle = rtiAmbassador.getInteractionClassHandle(className);
         this.parameters = rtiAmbassador.getParameterHandleValueMapFactory().create(1);
         this.encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory();
         this.parameterHandles = new HashMap<>();
-        knownBuilder.put(this.messageId, this);
+        knownBuilder.put(this.classHandle, this);
     }
     
     public InteractionBuilder addParameter (String parameterName, byte[] value) throws NameNotFound, InvalidInteractionClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
-        ParameterHandle handle = this.rtiAmbassador.getParameterHandle(this.messageId, parameterName);
+        ParameterHandle handle = this.rtiAmbassador.getParameterHandle(this.classHandle, parameterName);
         parameterHandles.put(parameterName, handle);
         parameters.put(handle, value);
         return this;
     }
 
     public Interaction build() {
-        Interaction aggregate = new Interaction(messageId, parameters, parameterHandles);
-        return aggregate;
+        Interaction interaction = new Interaction(classHandle, parameters, parameterHandles);
+        return interaction;
     }
 
     public static Interaction parse (InteractionClassHandle interactionClass, ParameterHandleValueMap theParameters) {

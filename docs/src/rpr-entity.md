@@ -6,7 +6,7 @@ Interoperability Requirements for the RPR FOM Base Module.
 
 | Short&nbsp;Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Description |
 | ---------- | ----------- |
-| IR-RPR2-0008 | SuT shall define at least one leaf object class of BaseEntity.PhysicalEntity as published and/or subscribed in CS/SOM. |
+| IR-RPR2-0008 | SuT shall define at least one leaf object class of `BaseEntity.PhysicalEntity` as published and/or subscribed in CS/SOM. |
 | IR-RPR2-0009 | SuT shall in CS specify the use of Articulated Parts for all published and subscribedBaseEntity.PhysicalEntity and subclasses. |
 | IR-RPR2-0010 | SuT shall in CS specify the use of Dead-Reckoning algorithms for all published and subscribed BaseEntity.PhysicalEntity and subclasses. |
 | IR-RPR2-0011 | SuT shall update the following required attributes for PhysicalEntity subclass object instances registered by SuT: EntityIdentifier, EntityType, Spatial. |

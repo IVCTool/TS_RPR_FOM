@@ -9,9 +9,8 @@ import hla.rti1516e.InteractionClassHandle;
 import hla.rti1516e.ParameterHandle;
 import hla.rti1516e.ParameterHandleValueMap;
 
-public class AggregateInteraction extends Interaction {
+public class Collision extends Interaction {
 
-    public static String MessageId      = "MRM_Interaction.Request.Aggregate";
     public static String EventId        = "EventId";        // HLAbyte
     public static String Federate       = "Federate";       // HLAunicodeChar
     public static String AggregateUnit  = "AggregateUnit";  // HLAoctet
@@ -22,7 +21,7 @@ public class AggregateInteraction extends Interaction {
     HLAoctet aggregateUnit;
     HLAinteger32BE removeSubunits;
 
-    protected AggregateInteraction(InteractionClassHandle messageId, ParameterHandleValueMap parameters, HashMap<String,ParameterHandle> handles) {
+    protected Collision(InteractionClassHandle messageId, ParameterHandleValueMap parameters, HashMap<String,ParameterHandle> handles) {
         super(messageId, parameters, handles);
     }
 

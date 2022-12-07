@@ -31,7 +31,7 @@ public class Interaction {
     private final InteractionClassHandle classHandle;   public InteractionClassHandle getClassHandle() { return classHandle; }
     private final ParameterHandleValueMap parameters;   public ParameterHandleValueMap getParameters() { return parameters; }
     protected final HashMap<String,ParameterHandle> parameterHandles;
-    
+
     public Interaction(InteractionClassHandle messageId, ParameterHandleValueMap parameters, HashMap<String,ParameterHandle> handles) {
         this.classHandle = messageId;
         this.parameters = parameters;
