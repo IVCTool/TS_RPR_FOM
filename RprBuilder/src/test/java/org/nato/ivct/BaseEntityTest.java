@@ -94,11 +94,11 @@ public class BaseEntityTest {
             base1.publishSpatial();
             base1.publishRelativeSpatial();
             base1.register();
-            base1.update();            
             HLAfixedRecord aEntityType = base1.getEntityType();
             HLAoctet entityKind = (HLAoctet) aEntityType.get(0);
             entityKind.setValue((byte) 0xa);
             base1.setEntityType(aEntityType);
+            base1.update();            
 
             BaseEntity base2 = new BaseEntity();
             base2.addSubscribe(BaseEntity.Attributes.EntityType);
@@ -107,6 +107,9 @@ public class BaseEntityTest {
 
             Aircraft aircraft = new Aircraft();
             aircraft.publishAfterburnerOn();
+            aircraft.addSubscribe(Platform.Attributes.AfterburnerOn);
+            aircraft.addSubscribe(PhysicalEntity.Attributes.AcousticSignatureIndex);
+            aircraft.addSubscribe(BaseEntity.Attributes.EntityIdentifier);
             aircraft.register();
 
         } catch (Exception e) {

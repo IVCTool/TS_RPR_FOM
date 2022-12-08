@@ -26,14 +26,14 @@ dependencies {
     // IVCT AbstractTestCase interface
     implementation 'io.github.msg134:TC.lib:4.1.0-SNAPSHOT'
     // Use Simple Logging Facade API for reporting
-    implementation 'org.slf4j:slf4j-api:1.7.10'
+    implementation 'org.slf4j:slf4j-api:2.0.5'
     // implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 	implementation files("$System.env.LRC_CLASSPATH")
 
     // For testing include the libraries which are added by TestEngine in operation
-    // testImplementation 'ch.qos.logback:logback-classic:1.2.11'
+    testImplementation 'ch.qos.logback:logback-classic:1.3.5'
+    // testImplementation('org.slf4j:slf4j-simple:2.0.5')
     // Use JUnit Jupiter for testing.
-	// testImplementation(platform('org.junit:junit-bom:5.8.2'))
 	testImplementation('org.junit.jupiter:junit-jupiter:5.8.2')
 }
 

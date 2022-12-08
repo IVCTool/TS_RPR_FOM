@@ -1,6 +1,25 @@
+/**
+ * Copyright 2022, Reinhard Herzog (Fraunhofer IOSB)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http: //www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License. 
+ */
+
 package org.nato.ivct;
 
 import java.util.HashMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import hla.rti1516e.AttributeHandle;
 import hla.rti1516e.AttributeHandleSet;
@@ -27,14 +46,16 @@ import hla.rti1516e.exceptions.SaveInProgress;
 
 public class HLAobjectRoot {
 
+    public static final Logger log = LoggerFactory.getLogger(HLAobjectRoot.class);
+
     private static RTIambassador rtiAmbassador;
     private ObjectClassHandle thisClassHandle = null;
     private static HashMap<String,AttributeHandle> knownAttributeHandles = null;  // known attribute handles
-    private static AttributeHandleSet attributeHandles4Pub;                    // handles set for publish 
-    private static AttributeHandleSet attributeHandles4Sub;                    // handles set for publish 
+    private static AttributeHandleSet attributeHandles4Pub;  // handles set for publish 
+    private static AttributeHandleSet attributeHandles4Sub;  // handles set for publish 
     
     private ObjectInstanceHandle thisObjectHandle;
-    private AttributeHandleValueMap attributeValues;                // handle, value map for updates
+    private AttributeHandleValueMap attributeValues;  // (handle,value) map for updates
     private Boolean isPublished = false;
     private Boolean isSubscribed = false;
     private Boolean isRegistered = false;
@@ -47,7 +68,6 @@ public class HLAobjectRoot {
 
     public String getClassName() { return "HLAobjectRoot"; }
 
-
     public HLAobjectRoot() throws Exception {
         if (rtiAmbassador == null) { throw new Exception("HLAobjectRoot not initialized"); } 
         if (thisClassHandle == null) { thisClassHandle = rtiAmbassador.getObjectClassHandle(getClassName()); }
@@ -57,50 +77,73 @@ public class HLAobjectRoot {
         thisObjectHandle = null; // unknown until object is registered
         this.attributeValues = rtiAmbassador.getAttributeHandleValueMapFactory().create(0);
         encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory();
+        log.trace("created {} object created", this);
     }
 
     public void clear() {
         attributeValues.clear();
     }
     
-    public void addPubAttribute (String attributeName) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
+    protected void addPubAttribute (String attributeName) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
         attributeHandles4Pub.add(getAttributeHandle(attributeName));
+        isPublished = false;
+        log.trace("added publish {}.{}", this, attributeName);
     }
 
-    public void addSubAttribute (String attributeName) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
+    protected void addSubAttribute (String attributeName) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
         attributeHandles4Sub.add(getAttributeHandle(attributeName));
+        isSubscribed = false;
+        log.trace("added subscribe {}.{}", this, attributeName);
     }
     
-    public void setAttributeValue(String attributeName, DataElement value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+    protected void setAttributeValue(String attributeName, DataElement value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         attributeValues.put(getAttributeHandle(attributeName), value.toByteArray());
+        log.trace("set value {}.{} = {}", this, attributeName, value);
     }
 
     public void update() throws AttributeNotOwned, AttributeNotDefined, ObjectInstanceNotKnown, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError {
-
         rtiAmbassador.updateAttributeValues(thisObjectHandle, attributeValues, null);
+        log.trace("update {}({}) to RTI", this, thisObjectHandle);
     }
 
     public void register() throws ObjectClassNotPublished, ObjectClassNotDefined, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError, AttributeNotDefined {
-        if (!isPublished) {
-            publish();
-        }
+        publish();
         if (!isRegistered) {
 
             thisObjectHandle = rtiAmbassador.registerObjectInstance(thisClassHandle);
+            log.trace("register {}({}) as {}", this, thisClassHandle, thisObjectHandle);
             isRegistered = true;
         }
     }
 
     public void publish() throws AttributeNotDefined, ObjectClassNotDefined, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError {
-        rtiAmbassador.publishObjectClassAttributes(thisClassHandle, attributeHandles4Pub);
-        isPublished = true;  
+        if (!isPublished) {
+            rtiAmbassador.publishObjectClassAttributes(thisClassHandle, attributeHandles4Pub);
+            log.trace("publish {}({}) -> {} object class", getClassName(), thisClassHandle, attributeHandles4Pub);
+            isPublished = true;  
+        }
     }
     
     public void subscribe() throws AttributeNotDefined, ObjectClassNotDefined, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError {
-        rtiAmbassador.subscribeObjectClassAttributes(thisClassHandle, attributeHandles4Sub);        
+        if (!isSubscribed) {
+            rtiAmbassador.subscribeObjectClassAttributes(thisClassHandle, attributeHandles4Sub);
+            log.trace("subscribe {}({}) -> {} object class", getClassName(), thisClassHandle, attributeHandles4Pub);
+            isSubscribed = true;
+        }
     }
 
-    
+    /**
+     * Helper function for cached attribute handles. 
+     * 
+     * @param attributeName The name of the requested attribute handle as defined in the OMT 
+     * @return The handle as given by the rti ambassador. 
+     * 
+     * @throws NameNotFound
+     * @throws InvalidObjectClassHandle
+     * @throws FederateNotExecutionMember
+     * @throws NotConnected
+     * @throws RTIinternalError
+     */
     private AttributeHandle getAttributeHandle(String attributeName) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
         AttributeHandle handle = knownAttributeHandles.get(attributeName);
         if (handle == null) {

@@ -1,4 +1,20 @@
-package org.nato.ivct;
+/**
+ * Copyright 2022, Reinhard Herzog (Fraunhofer IOSB)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http: //www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License. 
+ */
+
+ package org.nato.ivct;
 
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
 import hla.rti1516e.exceptions.InvalidObjectClassHandle;
@@ -29,6 +45,13 @@ public class Platform extends PhysicalEntity{
 
     public Platform() throws Exception {
         super();
+    }
+
+    public void addSubscribe(Attributes attribute) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
+        addSubAttribute(attribute.name());
+    }
+    public void addPublish(Attributes attribute) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError { 
+        addPubAttribute(attribute.name()); 
     }
 
     public void subscribeAfterburnerOn() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
