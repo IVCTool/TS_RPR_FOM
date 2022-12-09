@@ -11,11 +11,7 @@ java {
 	withSourcesJar()
 }
 
-group = 'org.nato.rpr'
-version = '1.0-SNAPSHOT'
-
 // dependencies {
-// 	testImplementation files("$System.env.LRC_CLASSPATH")
 // }
 
 // Write the  IVCT-Version as set to variable in libraries.gradle
