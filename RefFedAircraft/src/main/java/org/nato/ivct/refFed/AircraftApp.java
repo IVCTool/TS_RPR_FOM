@@ -14,26 +14,18 @@ limitations under the License. */
 
 package org.nato.ivct.refFed;
 
-import hla.rti1516e.AttributeHandleSet;
 import hla.rti1516e.CallbackModel;
 import hla.rti1516e.FederateAmbassador;
 import hla.rti1516e.NullFederateAmbassador;
-import hla.rti1516e.ObjectInstanceHandle;
 import hla.rti1516e.RTIambassador;
-import hla.rti1516e.ResignAction;
 import hla.rti1516e.RtiFactory;
 import hla.rti1516e.RtiFactoryFactory;
-import hla.rti1516e.encoding.EncoderFactory;
-import hla.rti1516e.exceptions.FederatesCurrentlyJoined;
+import hla.rti1516e.encoding.HLAfixedRecord;
+import hla.rti1516e.encoding.HLAoctet;
 import hla.rti1516e.exceptions.FederationExecutionAlreadyExists;
-import hla.rti1516e.exceptions.IllegalName;
-import hla.rti1516e.exceptions.RTIexception;
-import hla.rti1516e.exceptions.RTIinternalError;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -167,24 +159,28 @@ public class AircraftApp extends NullFederateAmbassador {
 
             HLAobjectRoot.initialize(rtiAmbassador);
             Aircraft aircraft = new Aircraft();
-            aircraft.publishAfterburnerOn();
-            aircraft.addSubscribe(Platform.Attributes.AfterburnerOn);
-            aircraft.addSubscribe(PhysicalEntity.Attributes.AcousticSignatureIndex);
-            aircraft.addSubscribe(BaseEntity.Attributes.EntityIdentifier);
+            aircraft.addPublish(BaseEntity.Attributes.EntityIdentifier);
             aircraft.register();
 
+            HLAfixedRecord aEntityIdentifier = aircraft.getEntityIdentifier();
+            HLAoctet entityKind = (HLAoctet) aEntityIdentifier.get(1);
+			
 			for (int i=0; i<nrOfCycles; i++) {
+				// byte b = (byte) i;
+				entityKind.setValue((byte) 0xa);
+				aircraft.setEntityIdentifier(aEntityIdentifier);
+				aircraft.update();  
 				Thread.sleep(100);
 			}
 
 		} catch (final Exception e) {
 			logger.error("Exception: {}", e.toString());
-			try {
-				logger.info("Press <ENTER> to shutdown");
-				final BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-				in.readLine();
-			} catch (final IOException ioe) {
-			}
+			// try {
+			// 	logger.info("Press <ENTER> to shutdown");
+			// 	final BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+			// 	in.readLine();
+			// } catch (final IOException ioe) {
+			// }
 		}
 
 	}

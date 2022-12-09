@@ -83,7 +83,7 @@ public class HLAobjectRoot {
     public void clear() {
         attributeValues.clear();
     }
-    
+
     protected void addPubAttribute (String attributeName) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
         attributeHandles4Pub.add(getAttributeHandle(attributeName));
         isPublished = false;

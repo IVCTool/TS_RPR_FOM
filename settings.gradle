@@ -9,4 +9,5 @@
 
 rootProject.name = 'TS_RPR_FOM'
 include('RprBuilder')
+include('RPR_Entity')
 include('RefFedAircraft')

@@ -3,5 +3,5 @@ plugins {
     id 'rpr.library-conventions'
 }
 
-group = 'org.nato.ivct.rpr'
+group = 'org.nato.ivct.rpr.rprBuilder'
 version = '0.1-SNAPSHOT'
