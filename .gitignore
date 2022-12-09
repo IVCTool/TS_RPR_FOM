@@ -4,6 +4,7 @@
 !src/**/build/
 
 #  Visual Studio Code
+**/bin
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
