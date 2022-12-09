@@ -14,7 +14,7 @@
     limitations under the License. 
  */
 
-package org.nato.ivct;
+package org.nato.ivct.rpr;
 
 import java.util.HashMap;
 
@@ -62,7 +62,7 @@ public class HLAobjectRoot {
 
     protected EncoderFactory encoderFactory;
     
-    static void initialize(RTIambassador rtiAmbassador2Use) {
+    public static void initialize(RTIambassador rtiAmbassador2Use) {
         rtiAmbassador = rtiAmbassador2Use;
     }
 
@@ -87,13 +87,13 @@ public class HLAobjectRoot {
     protected void addPubAttribute (String attributeName) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
         attributeHandles4Pub.add(getAttributeHandle(attributeName));
         isPublished = false;
-        log.trace("added publish {}.{}", this, attributeName);
+        log.trace("added publish for {}.{}", this, attributeName);
     }
 
     protected void addSubAttribute (String attributeName) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
         attributeHandles4Sub.add(getAttributeHandle(attributeName));
         isSubscribed = false;
-        log.trace("added subscribe {}.{}", this, attributeName);
+        log.trace("added subscribe for {}.{}", this, attributeName);
     }
     
     protected void setAttributeValue(String attributeName, DataElement value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {

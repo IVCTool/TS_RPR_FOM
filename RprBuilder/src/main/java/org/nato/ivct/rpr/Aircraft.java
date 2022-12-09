@@ -14,7 +14,7 @@
     limitations under the License. 
  */
 
- package org.nato.ivct;
+package org.nato.ivct.rpr;
 
 public class Aircraft extends Platform {
 

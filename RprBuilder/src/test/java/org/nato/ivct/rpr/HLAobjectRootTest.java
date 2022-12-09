@@ -1,10 +1,11 @@
-package org.nato.ivct;
+package org.nato.ivct.rpr;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.nato.ivct.rpr.HLAobjectRoot;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -18,8 +19,6 @@ import hla.rti1516e.RTIambassador;
 import hla.rti1516e.ResignAction;
 import hla.rti1516e.RtiFactory;
 import hla.rti1516e.RtiFactoryFactory;
-import hla.rti1516e.encoding.HLAfixedRecord;
-import hla.rti1516e.encoding.HLAoctet;
 import hla.rti1516e.exceptions.AlreadyConnected;
 import hla.rti1516e.exceptions.CallNotAllowedFromWithinCallback;
 import hla.rti1516e.exceptions.ConnectionFailed;
@@ -44,8 +43,9 @@ import hla.rti1516e.exceptions.SaveInProgress;
 import hla.rti1516e.exceptions.UnsupportedCallbackModel;
 
 
-public class BaseEntityTest {
-    public static final Logger log = LoggerFactory.getLogger(BaseEntityTest.class);
+public class HLAobjectRootTest {
+  
+    public static final Logger log = LoggerFactory.getLogger(HLAobjectRootTest.class);
     RTIambassador rtiAmbassador = null;
 
     @BeforeEach
@@ -54,11 +54,11 @@ public class BaseEntityTest {
         rtiAmbassador = rtiFactory.getRtiAmbassador();
         FederateAmbassador nullAmbassador = new NullFederateAmbassador();
         ArrayList<URL> fomList = new ArrayList<>();
-        fomList.add(BaseEntityTest.class.getResource("/RPR-FOM-v2.0/RPR-Base_v2.0.xml"));
-        fomList.add(BaseEntityTest.class.getResource("/RPR-FOM-v2.0/RPR-Enumerations_v2.0.xml"));
-        fomList.add(BaseEntityTest.class.getResource("/RPR-FOM-v2.0/RPR-Switches_v2.0.xml"));
-        fomList.add(BaseEntityTest.class.getResource("/RPR-FOM-v2.0/RPR-Foundation_v2.0.xml"));
-        fomList.add(BaseEntityTest.class.getResource("/RPR-FOM-v2.0/RPR-Physical_v2.0.xml"));
+        fomList.add(HLAobjectRootTest.class.getResource("/RPR-FOM-v2.0/RPR-Base_v2.0.xml"));
+        fomList.add(HLAobjectRootTest.class.getResource("/RPR-FOM-v2.0/RPR-Enumerations_v2.0.xml"));
+        fomList.add(HLAobjectRootTest.class.getResource("/RPR-FOM-v2.0/RPR-Switches_v2.0.xml"));
+        fomList.add(HLAobjectRootTest.class.getResource("/RPR-FOM-v2.0/RPR-Foundation_v2.0.xml"));
+        fomList.add(HLAobjectRootTest.class.getResource("/RPR-FOM-v2.0/RPR-Physical_v2.0.xml"));
         rtiAmbassador.connect(nullAmbassador, CallbackModel.HLA_IMMEDIATE);
         try {
             rtiAmbassador.createFederationExecution("TestFederation", fomList.toArray(new URL[fomList.size()]));
@@ -78,44 +78,14 @@ public class BaseEntityTest {
     }
 
     @Test
-    void testRegister() {
+    void createHLAobjectRoot() {
         try {
-            BaseEntity.initialize(rtiAmbassador);
-
-            BaseEntity base1 = new BaseEntity();
-            base1.subscribeEntityType();
-            base1.subscribeEntityIdentifier();
-            base1.subscribeIsPartOf();
-            base1.subscribeSpatial();
-            base1.subscribeRelativeSpatial();
-            base1.publishEntityType();
-            base1.publishEntityIdentifier();
-            base1.publishIsPartOf();
-            base1.publishSpatial();
-            base1.publishRelativeSpatial();
-            base1.register();
-            HLAfixedRecord aEntityType = base1.getEntityType();
-            HLAoctet entityKind = (HLAoctet) aEntityType.get(0);
-            entityKind.setValue((byte) 0xa);
-            base1.setEntityType(aEntityType);
-            base1.update();            
-
-            BaseEntity base2 = new BaseEntity();
-            base2.addSubscribe(BaseEntity.Attributes.EntityType);
-            base2.addPublish(BaseEntity.Attributes.EntityType);
-            base2.register();            
-
-            Aircraft aircraft = new Aircraft();
-            aircraft.publishAfterburnerOn();
-            aircraft.addSubscribe(Platform.Attributes.AfterburnerOn);
-            aircraft.addSubscribe(PhysicalEntity.Attributes.AcousticSignatureIndex);
-            aircraft.addSubscribe(BaseEntity.Attributes.EntityIdentifier);
-            aircraft.register();
+            HLAobjectRoot.initialize(rtiAmbassador);
+            HLAobjectRoot obj = new HLAobjectRoot();
 
         } catch (Exception e) {
             fail(e.getMessage());
         }
 
     }
-
 }
