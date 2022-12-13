@@ -65,8 +65,6 @@ public class TC_IR_RPR2_0008 extends AbstractTestCaseIf {
 	RTIambassador rtiAmbassador = null;
 	FederateAmbassador tcAmbassador = null;
 	Semaphore semaphore = new Semaphore(0);
-	String federationName = "TestFederation";
-	String federateName = "TestFederation";
 
     class TestCaseAmbassador extends NullFederateAmbassador {
 		@Override
@@ -110,7 +108,7 @@ public class TC_IR_RPR2_0008 extends AbstractTestCaseIf {
 			try {
 				rtiAmbassador.createFederationExecution(federationName, fomList.toArray(new URL[fomList.size()]));
 			} catch (FederationExecutionAlreadyExists ignored) { }
-			rtiAmbassador.joinFederationExecution(federateName, federationName, fomList.toArray(new URL[fomList.size()]));
+			rtiAmbassador.joinFederationExecution(sutFederateName, federationName, fomList.toArray(new URL[fomList.size()]));
 		} catch (RTIinternalError | ConnectionFailed | InvalidLocalSettingsDesignator | UnsupportedCallbackModel 
 				| AlreadyConnected | CallNotAllowedFromWithinCallback | CouldNotCreateLogicalTimeFactory 
 				| FederationExecutionDoesNotExist | InconsistentFDD | ErrorReadingFDD | CouldNotOpenFDD 

@@ -23,9 +23,6 @@ import hla.rti1516e.RtiFactoryFactory;
 import hla.rti1516e.encoding.HLAfixedRecord;
 import hla.rti1516e.encoding.HLAoctet;
 import hla.rti1516e.exceptions.FederationExecutionAlreadyExists;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -68,8 +65,9 @@ public class AircraftApp extends NullFederateAmbassador {
 
 	public static void main(final String[] args) {
 		AircraftApp aircraft = new AircraftApp(args);
+		logger.info("AircraftApp running");
 		aircraft.run();
-		logger.debug("Aircraft terminated");
+		logger.info("AircraftApp terminated");
 	}
 
 	private static void logErrorAndExit(String errorMsg, Object... args) {
@@ -139,7 +137,6 @@ public class AircraftApp extends NullFederateAmbassador {
 
 	private void run() {
 		try {
-
 			RtiFactory rtiFactory = RtiFactoryFactory.getRtiFactory();
 			rtiAmbassador = rtiFactory.getRtiAmbassador();
 			FederateAmbassador nullAmbassador = new NullFederateAmbassador();
