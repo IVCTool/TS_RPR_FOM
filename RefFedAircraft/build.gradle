@@ -1,11 +1,16 @@
 
 plugins {
     id 'rpr.java-conventions'
+    id 'application'
 }
 
 dependencies {
     implementation project(':RprBuilder')
     implementation 'ch.qos.logback:logback-classic:1.3.5'
+}
+
+application {
+    mainClassName = "org.nato.ivct.refFed.AircraftApp"
 }
 
 group = 'org.nato.ivct.refFed'
