@@ -74,7 +74,7 @@ public class HLAobjectRoot {
         if (knownAttributeHandles == null) { knownAttributeHandles = new HashMap<>(); }
         if (attributeHandles4Pub == null) { attributeHandles4Pub = rtiAmbassador.getAttributeHandleSetFactory().create(); }
         if (attributeHandles4Sub == null) { attributeHandles4Sub = rtiAmbassador.getAttributeHandleSetFactory().create(); }
-        thisObjectHandle = null; // unknown until object is registered
+        thisObjectHandle = null; // undefined until object is registered
         this.attributeValues = rtiAmbassador.getAttributeHandleValueMapFactory().create(0);
         encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory();
         log.trace("created {} object created", this);
@@ -144,7 +144,7 @@ public class HLAobjectRoot {
      * @throws NotConnected
      * @throws RTIinternalError
      */
-    private AttributeHandle getAttributeHandle(String attributeName) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
+    protected AttributeHandle getAttributeHandle(String attributeName) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
         AttributeHandle handle = knownAttributeHandles.get(attributeName);
         if (handle == null) {
             handle = rtiAmbassador.getAttributeHandle(thisClassHandle, attributeName);

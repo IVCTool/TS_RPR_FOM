@@ -47,6 +47,9 @@ public class Platform extends PhysicalEntity{
         super();
     }
 
+    /**
+     * TODO: Discuss if the pub/sub methods shall be made type safe. In that case the following two methods shall be private.
+     */
     public void addSubscribe(Attributes attribute) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
         addSubAttribute(attribute.name());
     }
@@ -54,6 +57,9 @@ public class Platform extends PhysicalEntity{
         addPubAttribute(attribute.name()); 
     }
 
+    /*
+     * Type Safe pub/sub Methods
+     */
     public void subscribeAfterburnerOn() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
         addSubAttribute(Attributes.AfterburnerOn.name());
     }

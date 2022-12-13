@@ -8,7 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.nato.ivct.rpr.BaseEntity;
 import org.nato.ivct.rpr.HLAobjectRoot;
 import org.nato.ivct.rpr.PhysicalEntity;
+import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.URL;
@@ -99,16 +101,35 @@ public class BaseEntityTest {
             base1.publishSpatial();
             base1.publishRelativeSpatial();
             base1.register();
-            HLAfixedRecord aEntityType = base1.getEntityType();
-            HLAoctet entityKind = (HLAoctet) aEntityType.get(0);
-            entityKind.setValue((byte) 0xa);
+            EntityTypeStruct aEntityType = base1.getEntityType();
+            aEntityType.setEntityKind((byte) 0x1);
+            
+            aEntityType.setEntityKind((byte) 0xa);
+            aEntityType.setDomain((byte) 0xb);
+            aEntityType.setCountryCode((short) 3);
+            aEntityType.setCategory((byte) 0xc);
+            aEntityType.setSubcategory((byte) 0xd);
+            aEntityType.setSpecific((byte) 0xe);
+            aEntityType.setExtra((byte) 0xf);
+            
+            byte k = aEntityType.getEntityKind();
+            byte t = aEntityType.getDomain();
+            short cc = aEntityType.getCountryCode();
+            byte c = aEntityType.getCategory();
+            byte sc = aEntityType.getSubcategory();
+            byte sp = aEntityType.getSpecific();
+            byte ex = aEntityType.getExtra();
+
+            assertTrue(k == 0xa);
+            assertTrue(t == 0xb);
+            assertTrue(cc == (short)3);
+            assertTrue(c == 0xc);
+            assertTrue(sc == 0xd);
+            assertTrue(sp == 0xe);
+            assertTrue(ex == 0xf);
+            
             base1.setEntityType(aEntityType);
             base1.update();            
-
-            BaseEntity base2 = new BaseEntity();
-            base2.addSubscribe(BaseEntity.Attributes.EntityType);
-            base2.addPublish(BaseEntity.Attributes.EntityType);
-            base2.register();            
 
             Aircraft aircraft = new Aircraft();
             aircraft.publishAfterburnerOn();

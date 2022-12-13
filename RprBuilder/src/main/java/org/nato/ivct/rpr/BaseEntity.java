@@ -16,6 +16,8 @@
 
 package org.nato.ivct.rpr;
 
+import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
+
 import hla.rti1516e.encoding.EncoderException;
 import hla.rti1516e.encoding.HLAfixedRecord;
 import hla.rti1516e.encoding.HLAvariantRecord;
@@ -44,6 +46,7 @@ public class BaseEntity extends HLAobjectRoot {
     private HLAvariantRecord aSpatial = null;
     private HLAvariantRecord aRelativeSpatical = null;
 
+    
 
     public BaseEntity() throws Exception {
         super();
@@ -91,21 +94,19 @@ public class BaseEntity extends HLAobjectRoot {
         addPubAttribute(Attributes.RelativeSpatial.name()); 
     }
 
-    public void setEntityType (HLAfixedRecord value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
-        setAttributeValue (Attributes.EntityType.name(), value);
+    /*
+     * setter and getter for BaseEntity attributes
+     */
+    private EntityTypeStruct aEntityTypeAttribute = null;
+    public void setEntityType (EntityTypeStruct value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        aEntityTypeAttribute = value;
+        setAttributeValue(Attributes.EntityType.name(), aEntityTypeAttribute.encode());
     }
-    public HLAfixedRecord getEntityType() {
-        if (aEntityType == null) {
-            aEntityType = encoderFactory.createHLAfixedRecord();
-            aEntityType.add(encoderFactory.createHLAoctet());       // EntityKind
-            aEntityType.add(encoderFactory.createHLAoctet());       // Domain
-            aEntityType.add(encoderFactory.createHLAinteger16BE()); // CountryCode
-            aEntityType.add(encoderFactory.createHLAoctet());       // Category
-            aEntityType.add(encoderFactory.createHLAoctet());       // Subcategory
-            aEntityType.add(encoderFactory.createHLAoctet());       // Specific
-            aEntityType.add(encoderFactory.createHLAoctet());       // Extra
+    public EntityTypeStruct getEntityType() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
+        if (aEntityTypeAttribute == null) {
+            aEntityTypeAttribute = new EntityTypeStruct(encoderFactory);
         }
-        return aEntityType;
+        return aEntityTypeAttribute;
     }
 
     public void setEntityIdentifier(HLAfixedRecord value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
@@ -119,4 +120,37 @@ public class BaseEntity extends HLAobjectRoot {
         }
         return aEntityIdentifier;
     }
+
+    public void setIsPartOf (HLAfixedRecord value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        setAttributeValue (Attributes.IsPartOf.name(), value);
+    }
+    public HLAfixedRecord getIsPartOf() {
+        if (aIsPartOf == null) {
+            aIsPartOf = encoderFactory.createHLAfixedRecord();
+            aIsPartOf.add(encoderFactory.createHLAoctet());       // EntityKind
+            aIsPartOf.add(encoderFactory.createHLAoctet());       // Domain
+            aIsPartOf.add(encoderFactory.createHLAinteger16BE()); // CountryCode
+            aIsPartOf.add(encoderFactory.createHLAoctet());       // Category
+            aIsPartOf.add(encoderFactory.createHLAoctet());       // Subcategory
+            aIsPartOf.add(encoderFactory.createHLAoctet());       // Specific
+            aIsPartOf.add(encoderFactory.createHLAoctet());       // Extra
+        }
+        return aIsPartOf;
+    }
+
+    public void setSpatial (HLAvariantRecord value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        setAttributeValue (Attributes.Spatial.name(), value);
+    }
+    public HLAvariantRecord getSpatial() {
+        return aSpatial;
+    }
+
+    public void setRelativeSpatical (HLAvariantRecord value) {
+        aRelativeSpatical = value;
+    }
+    public HLAvariantRecord getaRelativeSpatical () {
+        return aRelativeSpatical;
+    }
+
+
 }
