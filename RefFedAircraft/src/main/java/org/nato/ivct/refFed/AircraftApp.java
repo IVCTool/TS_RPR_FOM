@@ -180,7 +180,7 @@ public class AircraftApp extends NullFederateAmbassador {
 				entityKind.setValue((byte) 0xa);
 				aircraft.setEntityIdentifier(aEntityIdentifier);
 				aircraft.update();  
-				Thread.sleep(100);
+				Thread.sleep(1000);
 			}
 
 		} catch (final Exception e) {

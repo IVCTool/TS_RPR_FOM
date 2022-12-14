@@ -23,8 +23,6 @@ import org.nato.ivct.rpr.BaseEntity;
 import org.nato.ivct.rpr.Aircraft;
 import org.nato.ivct.rpr.FomFiles;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.fraunhofer.iosb.tc_lib_if.AbstractTestCaseIf;
 import de.fraunhofer.iosb.tc_lib_if.TcFailedIf;
 import de.fraunhofer.iosb.tc_lib_if.TcInconclusiveIf;
@@ -43,6 +41,7 @@ import hla.rti1516e.ResignAction;
 import hla.rti1516e.RtiFactory;
 import hla.rti1516e.RtiFactoryFactory;
 import hla.rti1516e.TransportationTypeHandle;
+import hla.rti1516e.encoding.DecoderException;
 import hla.rti1516e.exceptions.AlreadyConnected;
 import hla.rti1516e.exceptions.CallNotAllowedFromWithinCallback;
 import hla.rti1516e.exceptions.ConnectionFailed;
@@ -59,6 +58,7 @@ import hla.rti1516e.exceptions.InconsistentFDD;
 import hla.rti1516e.exceptions.InvalidLocalSettingsDesignator;
 import hla.rti1516e.exceptions.InvalidObjectClassHandle;
 import hla.rti1516e.exceptions.InvalidResignAction;
+import hla.rti1516e.exceptions.NameNotFound;
 import hla.rti1516e.exceptions.NotConnected;
 import hla.rti1516e.exceptions.OwnershipAcquisitionPending;
 import hla.rti1516e.exceptions.RTIinternalError;
@@ -143,11 +143,26 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
             Aircraft aircraft = knownAircrafts.get(theObject);
             if (aircraft != null) {
                 aircraft.clear();
-                aircraft.decode(theAttributes);
+                try {
+                    aircraft.decode(theAttributes);
+                } catch (NameNotFound | InvalidObjectClassHandle | FederateNotExecutionMember | NotConnected
+                        | RTIinternalError e) {
+                    throw new FederateInternalError(e.getLocalizedMessage());
+                } catch (DecoderException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                if (aircraft.isSetEntityType()) {
+                    receivedEntityIdentifier.release(1);
+                }
+                if (aircraft.isSetEntityType()) {
+                    receivedEntityType.release(1);
+                }
+                // if (aircraft.isSetSpatial()) {
+                //     receivedSpatial.release(1);
+                // }
             }
-            receivedEntityIdentifier.release(1);
-            receivedEntityType.release(1);
-            receivedSpatial.release(1);
+            
         }
     }
     
@@ -200,7 +215,7 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
 
             receivedEntityIdentifier.acquire();
             receivedEntityType.acquire();
-            receivedSpatial.acquire();
+            // receivedSpatial.acquire();
 
         } catch (Exception e) {
             throw new TcInconclusiveIf(e.getMessage());

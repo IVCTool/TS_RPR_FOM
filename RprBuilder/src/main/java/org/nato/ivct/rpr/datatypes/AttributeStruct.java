@@ -22,9 +22,8 @@ import hla.rti1516e.AttributeHandleValueMap;
 import hla.rti1516e.RTIambassador;
 import hla.rti1516e.RtiFactoryFactory;
 import hla.rti1516e.encoding.DataElement;
+import hla.rti1516e.encoding.DecoderException;
 import hla.rti1516e.encoding.HLAfixedRecord;
-import hla.rti1516e.exceptions.FederateNotExecutionMember;
-import hla.rti1516e.exceptions.NotConnected;
 import hla.rti1516e.exceptions.RTIinternalError;
 
 public class AttributeStruct {
@@ -58,14 +57,6 @@ public class AttributeStruct {
         return null;
     }
 
-    // public AttributeHandleValueMap encode() throws FederateNotExecutionMember, NotConnected {
-    //     AttributeHandleValueMap valueMap = rtiAmbassador.getAttributeHandleValueMapFactory().create(data.size());
-    //     for (NamedDataElement d: data) {
-    //         valueMap.put(d.handle, d.element.toByteArray());
-    //     }
-    //     return valueMap;
-    // }
-
     public HLAfixedRecord encode() throws RTIinternalError {
         HLAfixedRecord valueMap = RtiFactoryFactory.getRtiFactory().getEncoderFactory().createHLAfixedRecord();
         for (NamedDataElement d: data) {
@@ -74,7 +65,12 @@ public class AttributeStruct {
         return valueMap;
     }
 
-    public void decode(AttributeHandleValueMap valueMap) throws Exception {
+    public void decode (byte[] data) throws DecoderException, RTIinternalError {
+        HLAfixedRecord record = RtiFactoryFactory.getRtiFactory().getEncoderFactory().createHLAfixedRecord();
+        record.decode(data);
+    }
+
+    public void decodeHandleValueMap(AttributeHandleValueMap valueMap) throws Exception {
         data.clear();
         for (Iterator<AttributeHandle> i = valueMap.keySet().iterator(); i.hasNext();) {
             AttributeHandle recvHandle = i.next();

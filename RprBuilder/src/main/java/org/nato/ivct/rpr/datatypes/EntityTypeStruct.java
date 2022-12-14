@@ -14,9 +14,14 @@ limitations under the License. */
 
 package org.nato.ivct.rpr.datatypes;
 
+import hla.rti1516e.RtiFactoryFactory;
+import hla.rti1516e.encoding.ByteWrapper;
+import hla.rti1516e.encoding.DecoderException;
 import hla.rti1516e.encoding.EncoderFactory;
+import hla.rti1516e.encoding.HLAfixedRecord;
 import hla.rti1516e.encoding.HLAinteger16BE;
 import hla.rti1516e.encoding.HLAoctet;
+import hla.rti1516e.exceptions.RTIinternalError;
 
 public class EntityTypeStruct extends AttributeStruct{
 
@@ -40,6 +45,34 @@ public class EntityTypeStruct extends AttributeStruct{
         add(AttributeName.Extra.name(), encoderFactory.createHLAoctet());
 
     }
+
+      
+    public void decode (byte[] data) throws DecoderException, RTIinternalError {
+        HLAfixedRecord record = RtiFactoryFactory.getRtiFactory().getEncoderFactory().createHLAfixedRecord();
+        // record.decode(data);
+        // byte[] _b = record.get(0).toByteArray();
+        // DataElement _e = get(AttributeName.EntityKind.name());
+        // _e.decode(_b);
+
+        ByteWrapper bw = new ByteWrapper(data);
+
+        (get(AttributeName.EntityKind.name())).decode(bw);
+        (get(AttributeName.Domain.name())).decode(bw);
+        (get(AttributeName.CountryCode.name())).decode(bw);
+        (get(AttributeName.Category.name())).decode(bw);
+        (get(AttributeName.Subcategory.name())).decode(bw);
+        (get(AttributeName.Specific.name())).decode(bw);
+        (get(AttributeName.Extra.name())).decode(bw);
+
+        // (get(AttributeName.EntityKind.name())).decode(record.get(0).toByteArray());
+        // (get(AttributeName.Domain.name())).decode(record.get(1).toByteArray());
+        // (get(AttributeName.CountryCode.name())).decode(record.get(2).toByteArray());
+        // (get(AttributeName.Category.name())).decode(record.get(3).toByteArray());
+        // (get(AttributeName.Subcategory.name())).decode(record.get(4).toByteArray());
+        // (get(AttributeName.Specific.name())).decode(record.get(5).toByteArray());
+        // (get(AttributeName.Extra.name())).decode(record.get(6).toByteArray());
+    }
+
 
     public byte getEntityKind() {
         return ((HLAoctet) get(AttributeName.EntityKind.name())).getValue();

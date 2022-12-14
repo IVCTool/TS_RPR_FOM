@@ -17,6 +17,7 @@
 package org.nato.ivct.rpr;
 
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,7 @@ import hla.rti1516e.ObjectInstanceHandle;
 import hla.rti1516e.RTIambassador;
 import hla.rti1516e.RtiFactoryFactory;
 import hla.rti1516e.encoding.DataElement;
+import hla.rti1516e.encoding.DecoderException;
 import hla.rti1516e.encoding.EncoderException;
 import hla.rti1516e.encoding.EncoderFactory;
 import hla.rti1516e.exceptions.AttributeNotDefined;
@@ -84,7 +86,7 @@ public class HLAobjectRoot {
         attributeValues.clear();
     }
 
-    public void decode(AttributeHandleValueMap theAttributes) {
+    public void decode(AttributeHandleValueMap theAttributes) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, DecoderException {
         log.error("HLAobjectRoot has no attributes to decode");
     }
 
@@ -159,5 +161,14 @@ public class HLAobjectRoot {
             knownAttributeHandles.put(attributeName, handle);
         }
         return handle;
+    }
+
+    protected String getHandleString(AttributeHandle handle) {
+        for (Entry<String, AttributeHandle> entry : knownAttributeHandles.entrySet()) {
+            if (handle.equals(entry.getValue())) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 }
