@@ -30,6 +30,7 @@ import java.util.Map;
 import org.slf4j.LoggerFactory;
 
 import org.nato.ivct.rpr.*;
+import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
 
 public class AircraftApp extends NullFederateAmbassador {
     
@@ -157,10 +158,22 @@ public class AircraftApp extends NullFederateAmbassador {
             HLAobjectRoot.initialize(rtiAmbassador);
             Aircraft aircraft = new Aircraft();
             aircraft.addPublish(BaseEntity.Attributes.EntityIdentifier);
+            aircraft.addPublish(BaseEntity.Attributes.EntityType);
+            aircraft.addPublish(BaseEntity.Attributes.Spatial);
             aircraft.register();
 
             HLAfixedRecord aEntityIdentifier = aircraft.getEntityIdentifier();
             HLAoctet entityKind = (HLAoctet) aEntityIdentifier.get(1);
+			EntityTypeStruct entityType = aircraft.getEntityType();
+            entityType.setEntityKind((byte) 0xa);
+            entityType.setDomain((byte) 0xb);
+            entityType.setCountryCode((short) 3);
+            entityType.setCategory((byte) 0xc);
+            entityType.setSubcategory((byte) 0xd);
+            entityType.setSpecific((byte) 0xe);
+            entityType.setExtra((byte) 0xf);
+			aircraft.setEntityType(entityType);
+			aircraft.update();
 			
 			for (int i=0; i<nrOfCycles; i++) {
 				// byte b = (byte) i;
