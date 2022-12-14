@@ -81,6 +81,7 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
     Semaphore receivedEntityType = new Semaphore(0);
     Semaphore receivedSpatial = new Semaphore(0);
     HashMap<ObjectInstanceHandle, Aircraft> knownAircrafts = new HashMap<>();
+    Aircraft aircraft;
 
     class TestCaseAmbassador extends NullFederateAmbassador {
         @Override
@@ -91,8 +92,9 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
             // create the helper object
             try {
                 String receivedClass = rtiAmbassador.getObjectClassName(theObjectClass);
-                if (receivedClass.equals(Aircraft.getHlaClassName())) {
+                if (receivedClass.equals(aircraft.getHlaClassName())) {
                     Aircraft obj = new Aircraft();
+                    obj.register(theObject);
                     knownAircrafts.put(theObject, obj);
                 }
 
@@ -103,9 +105,6 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            receivedEntityIdentifier.release(1);
-            receivedEntityType.release(1);
-            receivedSpatial.release(1);
         }
 
         @Override
@@ -122,8 +121,8 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
                 byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport,
                 LogicalTime theTime, OrderType receivedOrdering, MessageRetractionHandle retractionHandle,
                 SupplementalReflectInfo reflectInfo) throws FederateInternalError {
-            // TODO Auto-generated method stub
             logger.info("reflectAttributeValues with retractionHandle");
+            reflectAttributeValues(theObject, theAttributes, userSuppliedTag, sentOrdering, theTransport, reflectInfo);
         }
 
         @Override
@@ -131,8 +130,8 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
                 byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport,
                 LogicalTime theTime, OrderType receivedOrdering, SupplementalReflectInfo reflectInfo)
                 throws FederateInternalError {
-            // TODO Auto-generated method stub
             logger.info("reflectAttributeValues with reflectInfo");
+            reflectAttributeValues(theObject, theAttributes, userSuppliedTag, sentOrdering, theTransport, reflectInfo);
         }
 
         @Override
@@ -141,6 +140,14 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
                 SupplementalReflectInfo reflectInfo) throws FederateInternalError {
             // TODO Auto-generated method stub
             logger.info("reflectAttributeValues without time");
+            Aircraft aircraft = knownAircrafts.get(theObject);
+            if (aircraft != null) {
+                aircraft.clear();
+                aircraft.decode(theAttributes);
+            }
+            receivedEntityIdentifier.release(1);
+            receivedEntityType.release(1);
+            receivedSpatial.release(1);
         }
     }
     
@@ -185,8 +192,10 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
     protected void performTest(Logger logger) throws TcInconclusiveIf, TcFailedIf {
         try {
             Aircraft.initialize(rtiAmbassador);
-            Aircraft aircraft = new Aircraft();
+            aircraft = new Aircraft();
             aircraft.addSubscribe(BaseEntity.Attributes.EntityIdentifier);
+            aircraft.addSubscribe(BaseEntity.Attributes.EntityType);
+            aircraft.addSubscribe(BaseEntity.Attributes.Spatial);
             aircraft.subscribe();
 
             receivedEntityIdentifier.acquire();

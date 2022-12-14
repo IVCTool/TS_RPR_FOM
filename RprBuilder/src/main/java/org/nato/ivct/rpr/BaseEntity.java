@@ -18,6 +18,7 @@ package org.nato.ivct.rpr;
 
 import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
 
+import hla.rti1516e.AttributeHandleValueMap;
 import hla.rti1516e.encoding.EncoderException;
 import hla.rti1516e.encoding.HLAfixedRecord;
 import hla.rti1516e.encoding.HLAvariantRecord;
@@ -30,7 +31,7 @@ import hla.rti1516e.exceptions.RTIinternalError;
 public class BaseEntity extends HLAobjectRoot {
 
     @Override
-    public String getClassName() { return "HLAobjectRoot.BaseEntity"; }
+    public String getHlaClassName() { return "HLAobjectRoot.BaseEntity"; }
 
     public enum Attributes {
         EntityType,
@@ -52,6 +53,12 @@ public class BaseEntity extends HLAobjectRoot {
         super();
     }
     
+    public void decode(AttributeHandleValueMap theAttributes) {
+        for (DataElement attribute : theAttributes) {
+            
+        }
+    }
+
     public void addSubscribe(Attributes attribute) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
         addSubAttribute(attribute.name());
     }

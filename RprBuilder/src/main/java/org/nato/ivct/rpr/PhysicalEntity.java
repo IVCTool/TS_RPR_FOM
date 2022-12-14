@@ -54,7 +54,7 @@ public class PhysicalEntity extends BaseEntity {
 
     // TODO: create fields
     
-    public String getClassName() { return "HLAobjectRoot.BaseEntity.PhysicalEntity"; }
+    public String getHlaClassName() { return "HLAobjectRoot.BaseEntity.PhysicalEntity"; }
 
     public PhysicalEntity() throws Exception {
         super();

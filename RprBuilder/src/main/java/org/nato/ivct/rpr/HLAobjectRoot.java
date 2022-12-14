@@ -66,11 +66,11 @@ public class HLAobjectRoot {
         rtiAmbassador = rtiAmbassador2Use;
     }
 
-    public String getClassName() { return "HLAobjectRoot"; }
+    public String getHlaClassName() { return "HLAobjectRoot"; }
 
     public HLAobjectRoot() throws Exception {
         if (rtiAmbassador == null) { throw new Exception("HLAobjectRoot not initialized"); } 
-        if (thisClassHandle == null) { thisClassHandle = rtiAmbassador.getObjectClassHandle(getClassName()); }
+        if (thisClassHandle == null) { thisClassHandle = rtiAmbassador.getObjectClassHandle(getHlaClassName()); }
         if (knownAttributeHandles == null) { knownAttributeHandles = new HashMap<>(); }
         if (attributeHandles4Pub == null) { attributeHandles4Pub = rtiAmbassador.getAttributeHandleSetFactory().create(); }
         if (attributeHandles4Sub == null) { attributeHandles4Sub = rtiAmbassador.getAttributeHandleSetFactory().create(); }
@@ -82,6 +82,10 @@ public class HLAobjectRoot {
 
     public void clear() {
         attributeValues.clear();
+    }
+
+    public void decode(AttributeHandleValueMap theAttributes) {
+        log.error("HLAobjectRoot has no attributes to decode");
     }
 
     protected void addPubAttribute (String attributeName) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
@@ -116,10 +120,14 @@ public class HLAobjectRoot {
         }
     }
 
+    public void register(ObjectInstanceHandle newHandle) {
+        thisObjectHandle = newHandle;
+    }
+
     public void publish() throws AttributeNotDefined, ObjectClassNotDefined, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError {
         if (!isPublished) {
             rtiAmbassador.publishObjectClassAttributes(thisClassHandle, attributeHandles4Pub);
-            log.trace("publish {}({}) -> {} object class", getClassName(), thisClassHandle, attributeHandles4Pub);
+            log.trace("publish {}({}) -> {} object class", getHlaClassName(), thisClassHandle, attributeHandles4Pub);
             isPublished = true;  
         }
     }
@@ -127,7 +135,7 @@ public class HLAobjectRoot {
     public void subscribe() throws AttributeNotDefined, ObjectClassNotDefined, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError {
         if (!isSubscribed) {
             rtiAmbassador.subscribeObjectClassAttributes(thisClassHandle, attributeHandles4Sub);
-            log.trace("subscribe {}({}) -> {} object class", getClassName(), thisClassHandle, attributeHandles4Pub);
+            log.trace("subscribe {}({}) -> {} object class", getHlaClassName(), thisClassHandle, attributeHandles4Pub);
             isSubscribed = true;
         }
     }
