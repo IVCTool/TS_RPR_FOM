@@ -16,7 +16,7 @@ public class TC_IR_RPR2_0008Test {
     @Test
     void testPerformTest() {
         TC_IR_RPR2_0008 tc = new TC_IR_RPR2_0008();
-        tc.setSutFederateName("Flyer1");
+        tc.setSutFederateName("TC_IR_RPR2_0008");
         tc.setFederationName("TestFederation");
         tc.setSkipOperatorMsg(true);
         tc.execute(log);
