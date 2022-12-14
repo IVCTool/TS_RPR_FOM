@@ -23,8 +23,6 @@ import org.nato.ivct.rpr.BaseEntity;
 import org.nato.ivct.rpr.Aircraft;
 import org.nato.ivct.rpr.FomFiles;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.fraunhofer.iosb.tc_lib_if.AbstractTestCaseIf;
 import de.fraunhofer.iosb.tc_lib_if.TcFailedIf;
 import de.fraunhofer.iosb.tc_lib_if.TcInconclusiveIf;
@@ -35,6 +33,7 @@ import hla.rti1516e.NullFederateAmbassador;
 import hla.rti1516e.ObjectClassHandle;
 import hla.rti1516e.ObjectInstanceHandle;
 import hla.rti1516e.RTIambassador;
+import hla.rti1516e.ResignAction;
 import hla.rti1516e.RtiFactory;
 import hla.rti1516e.RtiFactoryFactory;
 import hla.rti1516e.exceptions.AlreadyConnected;
@@ -45,11 +44,15 @@ import hla.rti1516e.exceptions.CouldNotOpenFDD;
 import hla.rti1516e.exceptions.ErrorReadingFDD;
 import hla.rti1516e.exceptions.FederateAlreadyExecutionMember;
 import hla.rti1516e.exceptions.FederateInternalError;
+import hla.rti1516e.exceptions.FederateNotExecutionMember;
+import hla.rti1516e.exceptions.FederateOwnsAttributes;
 import hla.rti1516e.exceptions.FederationExecutionAlreadyExists;
 import hla.rti1516e.exceptions.FederationExecutionDoesNotExist;
 import hla.rti1516e.exceptions.InconsistentFDD;
 import hla.rti1516e.exceptions.InvalidLocalSettingsDesignator;
+import hla.rti1516e.exceptions.InvalidResignAction;
 import hla.rti1516e.exceptions.NotConnected;
+import hla.rti1516e.exceptions.OwnershipAcquisitionPending;
 import hla.rti1516e.exceptions.RTIinternalError;
 import hla.rti1516e.exceptions.RestoreInProgress;
 import hla.rti1516e.exceptions.SaveInProgress;
@@ -61,7 +64,7 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
  * as published and/or subscribed in CS/SOM.
  */
 public class TC_IR_RPR2_0008 extends AbstractTestCaseIf {
-	public static final Logger log = LoggerFactory.getLogger(TC_IR_RPR2_0008.class);
+
 	RTIambassador rtiAmbassador = null;
 	FederateAmbassador tcAmbassador = null;
 	Semaphore semaphore = new Semaphore(0);
@@ -87,6 +90,9 @@ public class TC_IR_RPR2_0008 extends AbstractTestCaseIf {
     
 	@Override
 	protected void logTestPurpose(Logger logger) {
+		logger.info("Test Case Purpose: The test case verifies that the SuT "
+			+ "defines at least one leaf object class of `BaseEntity.PhysicalEntity` " 
+			+ "as published and/or subscribed in CS/SOM.");
 	}
 
 	@Override
@@ -133,8 +139,12 @@ public class TC_IR_RPR2_0008 extends AbstractTestCaseIf {
 
 	@Override
 	protected void postambleAction(Logger logger) throws TcInconclusiveIf {
-		// TODO Auto-generated method stub
-		
+        try {
+            rtiAmbassador.resignFederationExecution(ResignAction.NO_ACTION);
+        } catch (InvalidResignAction | OwnershipAcquisitionPending | FederateOwnsAttributes | FederateNotExecutionMember
+                | NotConnected | CallNotAllowedFromWithinCallback | RTIinternalError e) {
+            throw new TcInconclusiveIf(e.getMessage());
+        }		
 	}
 
 }
