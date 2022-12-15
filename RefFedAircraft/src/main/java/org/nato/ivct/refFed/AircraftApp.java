@@ -53,15 +53,13 @@ public class AircraftApp extends NullFederateAmbassador {
 	}
 
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Aircraft.class);
-
 	private static final Map<CmdLineOptions, Option> options = new LinkedHashMap<CmdLineOptions, Option>(); // LinkedHashMap preserves order
-	private boolean provoke(CmdLineOptions optionId) { return options.get(optionId).enabled; }
 
+	private boolean provoke(CmdLineOptions optionId) { return options.get(optionId).enabled; }
     private String rtiHost = "localhost";
 	private String federationName = "TestFederation";
 	private String federateName = "RefFedAircraft";
 	private int nrOfCycles = 40;
-
 	private RTIambassador rtiAmbassador;
 
 	public static void main(final String[] args) {
@@ -142,13 +140,12 @@ public class AircraftApp extends NullFederateAmbassador {
 			rtiAmbassador = rtiFactory.getRtiAmbassador();
 			FederateAmbassador nullAmbassador = new NullFederateAmbassador();
 			ArrayList<URL> fomList = new FomFiles()
-            .addRPR_BASE()
-            .addRPR_Enumerations()
-            .addRPR_Foundation()
-            .addRPR_Physical()
-            .addRPR_Switches()
-            .get();
-			
+				.addRPR_BASE()
+				.addRPR_Enumerations()
+				.addRPR_Foundation()
+				.addRPR_Physical()
+				.addRPR_Switches()
+				.get();
 			rtiAmbassador.connect(nullAmbassador, CallbackModel.HLA_IMMEDIATE);
 			try {
 				rtiAmbassador.createFederationExecution(this.federationName, fomList.toArray(new URL[fomList.size()]));
@@ -184,14 +181,7 @@ public class AircraftApp extends NullFederateAmbassador {
 			}
 
 		} catch (final Exception e) {
-			logger.error("Exception: {}", e.toString());
-			// try {
-			// 	logger.info("Press <ENTER> to shutdown");
-			// 	final BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-			// 	in.readLine();
-			// } catch (final IOException ioe) {
-			// }
+			logErrorAndExit("Exception: {}", e.toString());
 		}
-
 	}
 }
