@@ -113,6 +113,7 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
                 ObjectClassHandle theObjectClass,
                 String objectName,
                 FederateHandle producingFederate) throws FederateInternalError {
+            // TODO: check the switch to send the producing federate information - currently it causes an exception with the rtiAmbassador
             this.discoverObjectInstance(theObject, theObjectClass, objectName);
         }
 
@@ -138,7 +139,6 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
         public void reflectAttributeValues(ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes,
                 byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport,
                 SupplementalReflectInfo reflectInfo) throws FederateInternalError {
-            // TODO Auto-generated method stub
             logger.info("reflectAttributeValues without time");
             Aircraft aircraft = knownAircrafts.get(theObject);
             if (aircraft != null) {
