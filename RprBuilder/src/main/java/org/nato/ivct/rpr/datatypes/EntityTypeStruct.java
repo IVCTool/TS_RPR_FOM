@@ -23,7 +23,7 @@ import hla.rti1516e.encoding.HLAinteger16BE;
 import hla.rti1516e.encoding.HLAoctet;
 import hla.rti1516e.exceptions.RTIinternalError;
 
-public class EntityTypeStruct extends AttributeStruct{
+public class EntityTypeStruct extends AttributeStruct {
 
     public enum AttributeName {
         EntityKind, 
@@ -48,14 +48,7 @@ public class EntityTypeStruct extends AttributeStruct{
 
       
     public void decode (byte[] data) throws DecoderException, RTIinternalError {
-        HLAfixedRecord record = RtiFactoryFactory.getRtiFactory().getEncoderFactory().createHLAfixedRecord();
-        // record.decode(data);
-        // byte[] _b = record.get(0).toByteArray();
-        // DataElement _e = get(AttributeName.EntityKind.name());
-        // _e.decode(_b);
-
         ByteWrapper bw = new ByteWrapper(data);
-
         (get(AttributeName.EntityKind.name())).decode(bw);
         (get(AttributeName.Domain.name())).decode(bw);
         (get(AttributeName.CountryCode.name())).decode(bw);
@@ -63,14 +56,6 @@ public class EntityTypeStruct extends AttributeStruct{
         (get(AttributeName.Subcategory.name())).decode(bw);
         (get(AttributeName.Specific.name())).decode(bw);
         (get(AttributeName.Extra.name())).decode(bw);
-
-        // (get(AttributeName.EntityKind.name())).decode(record.get(0).toByteArray());
-        // (get(AttributeName.Domain.name())).decode(record.get(1).toByteArray());
-        // (get(AttributeName.CountryCode.name())).decode(record.get(2).toByteArray());
-        // (get(AttributeName.Category.name())).decode(record.get(3).toByteArray());
-        // (get(AttributeName.Subcategory.name())).decode(record.get(4).toByteArray());
-        // (get(AttributeName.Specific.name())).decode(record.get(5).toByteArray());
-        // (get(AttributeName.Extra.name())).decode(record.get(6).toByteArray());
     }
 
 

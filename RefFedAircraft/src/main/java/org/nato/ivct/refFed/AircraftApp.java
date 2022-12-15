@@ -176,8 +176,8 @@ public class AircraftApp extends NullFederateAmbassador {
 			aircraft.update();
 			
 			for (int i=0; i<nrOfCycles; i++) {
-				// byte b = (byte) i;
-				entityKind.setValue((byte) 0xa);
+				byte b = (byte) i;
+				entityKind.setValue(b);
 				aircraft.setEntityIdentifier(aEntityIdentifier);
 				aircraft.update();  
 				Thread.sleep(1000);

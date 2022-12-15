@@ -22,7 +22,10 @@ import java.util.concurrent.Semaphore;
 import org.nato.ivct.rpr.BaseEntity;
 import org.nato.ivct.rpr.Aircraft;
 import org.nato.ivct.rpr.FomFiles;
+import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
 import org.slf4j.Logger;
+
+import de.fraunhofer.iosb.tc_lib.TcFailed;
 import de.fraunhofer.iosb.tc_lib_if.AbstractTestCaseIf;
 import de.fraunhofer.iosb.tc_lib_if.TcFailedIf;
 import de.fraunhofer.iosb.tc_lib_if.TcInconclusiveIf;
@@ -214,6 +217,16 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
             aircraft.subscribe();
 
             receivedEntityIdentifier.acquire();
+            for (Aircraft a1 : knownAircrafts.values()) {
+                EntityTypeStruct et = a1.getEntityType();
+                byte k = et.getEntityKind();
+                short cc = et.getCountryCode();
+                byte c = et.getCategory();
+                byte sc = et.getSubcategory();
+                byte sp = et.getSpecific();
+                byte ex = et.getExtra();
+            }
+
             receivedEntityType.acquire();
             // receivedSpatial.acquire();
 
