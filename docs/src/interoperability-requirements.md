@@ -20,3 +20,9 @@ The functional modules are:
 - Synthetic Environment 
 - Logistics 
 - [Distributed Emission Regeneration](rpr-der.md)
+
+The dependencies between these modules are shown in the following figure:
+
+![RPR FOM Modules](images/rpr-fom-module-dependencies.png)
+
+The [Object Classes](object-classes.md) and [Interaction Classes](interaction-classes.md) are defined in these modules.
