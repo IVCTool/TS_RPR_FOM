@@ -67,6 +67,7 @@ public class TC_IR_RPR2_0008 extends AbstractTestCaseIf {
 
 	RTIambassador rtiAmbassador = null;
 	FederateAmbassador tcAmbassador = null;
+    Logger logger = null;
 	Semaphore semaphore = new Semaphore(0);
 
     class TestCaseAmbassador extends NullFederateAmbassador {
@@ -75,16 +76,17 @@ public class TC_IR_RPR2_0008 extends AbstractTestCaseIf {
 				ObjectInstanceHandle theObject, 
 				ObjectClassHandle theObjectClass,
 				String objectName) throws FederateInternalError {
+			logger.trace("discoverObjectInstance {}", theObject);
 			semaphore.release(1);
 		}
 		@Override
 		public void discoverObjectInstance(
 				ObjectInstanceHandle theObject,
-			ObjectClassHandle theObjectClass,
-			String objectName,
-			FederateHandle producingFederate) throws FederateInternalError
-		{
-			semaphore.release(1);
+				ObjectClassHandle theObjectClass,
+				String objectName,
+				FederateHandle producingFederate) throws FederateInternalError {
+			logger.trace("discoverObjectInstance {} with producingFederate {}", theObject, producingFederate);
+			discoverObjectInstance(theObject, theObjectClass, objectName);;
 		}
     }
     
@@ -93,11 +95,14 @@ public class TC_IR_RPR2_0008 extends AbstractTestCaseIf {
 		logger.info("Test Case Purpose: The test case verifies that the SuT "
 			+ "defines at least one leaf object class of `BaseEntity.PhysicalEntity` " 
 			+ "as published and/or subscribed in CS/SOM.");
+		logger.info(msg);
+		this.logger = logger;
 	}
 
 	@Override
 	protected void preambleAction(Logger logger) throws TcInconclusiveIf {
         RtiFactory rtiFactory;
+        logger.info("preamble action for test {}", this.getClass().getName());
 		try {
 			rtiFactory = RtiFactoryFactory.getRtiFactory();
 			rtiAmbassador = rtiFactory.getRtiAmbassador();
@@ -125,6 +130,7 @@ public class TC_IR_RPR2_0008 extends AbstractTestCaseIf {
 
 	@Override
 	protected void performTest(Logger logger) throws TcInconclusiveIf, TcFailedIf {
+        logger.info("perform test {}", this.getClass().getName());
 		try {
 			Aircraft.initialize(rtiAmbassador);
 			Aircraft aircraft = new Aircraft();
@@ -134,11 +140,12 @@ public class TC_IR_RPR2_0008 extends AbstractTestCaseIf {
 		} catch (Exception e) {
 			throw new TcInconclusiveIf(e.getMessage());
 		}
-		
+        logger.info("test {} passed", this.getClass().getName());
 	}
 
 	@Override
 	protected void postambleAction(Logger logger) throws TcInconclusiveIf {
+        logger.info("postamble action for test {}", this.getClass().getName());
         try {
             rtiAmbassador.resignFederationExecution(ResignAction.NO_ACTION);
         } catch (InvalidResignAction | OwnershipAcquisitionPending | FederateOwnsAttributes | FederateNotExecutionMember

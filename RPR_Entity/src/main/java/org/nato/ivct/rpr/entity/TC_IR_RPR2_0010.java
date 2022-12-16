@@ -25,7 +25,6 @@ import org.nato.ivct.rpr.FomFiles;
 import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
 import org.slf4j.Logger;
 
-import de.fraunhofer.iosb.tc_lib.TcFailed;
 import de.fraunhofer.iosb.tc_lib_if.AbstractTestCaseIf;
 import de.fraunhofer.iosb.tc_lib_if.TcFailedIf;
 import de.fraunhofer.iosb.tc_lib_if.TcInconclusiveIf;
@@ -92,10 +91,11 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
                 ObjectInstanceHandle theObject, 
                 ObjectClassHandle theObjectClass,
                 String objectName) throws FederateInternalError {
-            // create the helper object
+            logger.trace("discoverObjectInstance {}", theObject);
             try {
                 String receivedClass = rtiAmbassador.getObjectClassName(theObjectClass);
                 if (receivedClass.equals(aircraft.getHlaClassName())) {
+                    // create the helper object
                     Aircraft obj = new Aircraft();
                     obj.register(theObject);
                     knownAircrafts.put(theObject, obj);
@@ -116,7 +116,7 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
                 ObjectClassHandle theObjectClass,
                 String objectName,
                 FederateHandle producingFederate) throws FederateInternalError {
-            // TODO: check the switch to send the producing federate information - currently it causes an exception with the rtiAmbassador
+            logger.trace("discoverObjectInstance {} with producingFederate {}", theObject, producingFederate);
             this.discoverObjectInstance(theObject, theObjectClass, objectName);
         }
 
@@ -125,7 +125,7 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
                 byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport,
                 LogicalTime theTime, OrderType receivedOrdering, MessageRetractionHandle retractionHandle,
                 SupplementalReflectInfo reflectInfo) throws FederateInternalError {
-            logger.info("reflectAttributeValues with retractionHandle");
+            logger.trace("reflectAttributeValues with retractionHandle");
             reflectAttributeValues(theObject, theAttributes, userSuppliedTag, sentOrdering, theTransport, reflectInfo);
         }
 
@@ -134,7 +134,7 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
                 byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport,
                 LogicalTime theTime, OrderType receivedOrdering, SupplementalReflectInfo reflectInfo)
                 throws FederateInternalError {
-            logger.info("reflectAttributeValues with reflectInfo");
+            logger.trace("reflectAttributeValues with reflectInfo");
             reflectAttributeValues(theObject, theAttributes, userSuppliedTag, sentOrdering, theTransport, reflectInfo);
         }
 
@@ -142,7 +142,7 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
         public void reflectAttributeValues(ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes,
                 byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport,
                 SupplementalReflectInfo reflectInfo) throws FederateInternalError {
-            logger.info("reflectAttributeValues without time");
+            logger.trace("reflectAttributeValues without time");
             Aircraft aircraft = knownAircrafts.get(theObject);
             if (aircraft != null) {
                 aircraft.clear();
@@ -181,6 +181,7 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
     @Override
     protected void preambleAction(Logger logger) throws TcInconclusiveIf {
         RtiFactory rtiFactory;
+        logger.info("preamble action for test {}", this.getClass().getName());
         try {
             rtiFactory = RtiFactoryFactory.getRtiFactory();
             rtiAmbassador = rtiFactory.getRtiAmbassador();
@@ -208,6 +209,7 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
 
     @Override
     protected void performTest(Logger logger) throws TcInconclusiveIf, TcFailedIf {
+        logger.info("perform test {}", this.getClass().getName());
         try {
             Aircraft.initialize(rtiAmbassador);
             aircraft = new Aircraft();
@@ -233,10 +235,12 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
         } catch (Exception e) {
             throw new TcInconclusiveIf(e.getMessage());
         }        
+        logger.info("test {} passed", this.getClass().getName());
     }
 
     @Override
     protected void postambleAction(Logger logger) throws TcInconclusiveIf {
+        logger.info("postamble action for test {}", this.getClass().getName());
         try {
             rtiAmbassador.resignFederationExecution(ResignAction.NO_ACTION);
         } catch (InvalidResignAction | OwnershipAcquisitionPending | FederateOwnsAttributes | FederateNotExecutionMember
