@@ -48,7 +48,7 @@ public class AircraftApp extends NullFederateAmbassador {
 		Option(String optionNameLong, String optionNameShort) {
 			this.optionNameLong = optionNameLong;
 			this.optionNameShort = optionNameShort;
-			this.enabled = false;
+			this.enabled = true;
 		}
 	}
 
@@ -172,12 +172,14 @@ public class AircraftApp extends NullFederateAmbassador {
 			aircraft.setEntityType(entityType);
 			aircraft.update();
 			
-			for (int i=0; i<nrOfCycles; i++) {
-				byte b = (byte) i;
-				entityKind.setValue(b);
-				aircraft.setEntityIdentifier(aEntityIdentifier);
-				aircraft.update();  
-				Thread.sleep(1000);
+			if (provoke(CmdLineOptions.FlyAircraft)) {
+				for (int i=0; i<nrOfCycles; i++) {
+					byte b = (byte) i;
+					entityKind.setValue(b);
+					aircraft.setEntityIdentifier(aEntityIdentifier);
+					aircraft.update();  
+					Thread.sleep(1000);
+				}
 			}
 
 		} catch (final Exception e) {

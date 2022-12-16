@@ -5,8 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.nato.ivct.rpr.HLAobjectRoot;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.URL;
@@ -83,6 +83,7 @@ public class HLAobjectRootTest {
         try {
             HLAobjectRoot.initialize(rtiAmbassador);
             HLAobjectRoot obj = new HLAobjectRoot();
+            assertNotNull(obj.getHlaClassName());
 
         } catch (Exception e) {
             fail(e.getMessage());

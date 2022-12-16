@@ -14,7 +14,7 @@ limitations under the License. */
 
 package org.nato.ivct.rpr.datatypes;
 
-public class SpatialVariantStruct extends AttributeStruct {
+public class SpatialVariantStruct extends HLAfixedRecordStruct {
 
     public enum AttributeName {
         SpatialStatic,

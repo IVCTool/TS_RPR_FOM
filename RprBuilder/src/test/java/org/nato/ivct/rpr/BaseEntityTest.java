@@ -5,9 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.nato.ivct.rpr.BaseEntity;
-import org.nato.ivct.rpr.HLAobjectRoot;
-import org.nato.ivct.rpr.PhysicalEntity;
 import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -23,8 +20,6 @@ import hla.rti1516e.RTIambassador;
 import hla.rti1516e.ResignAction;
 import hla.rti1516e.RtiFactory;
 import hla.rti1516e.RtiFactoryFactory;
-import hla.rti1516e.encoding.HLAfixedRecord;
-import hla.rti1516e.encoding.HLAoctet;
 import hla.rti1516e.exceptions.AlreadyConnected;
 import hla.rti1516e.exceptions.CallNotAllowedFromWithinCallback;
 import hla.rti1516e.exceptions.ConnectionFailed;

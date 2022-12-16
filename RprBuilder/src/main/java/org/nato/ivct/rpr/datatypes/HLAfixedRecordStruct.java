@@ -15,22 +15,18 @@ limitations under the License. */
 package org.nato.ivct.rpr.datatypes;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-
-import hla.rti1516e.AttributeHandle;
-import hla.rti1516e.AttributeHandleValueMap;
-import hla.rti1516e.RTIambassador;
 import hla.rti1516e.RtiFactoryFactory;
+import hla.rti1516e.encoding.ByteWrapper;
 import hla.rti1516e.encoding.DataElement;
 import hla.rti1516e.encoding.DecoderException;
+import hla.rti1516e.encoding.EncoderException;
 import hla.rti1516e.encoding.HLAfixedRecord;
 import hla.rti1516e.exceptions.RTIinternalError;
 
-public class AttributeStruct {
+public class HLAfixedRecordStruct implements DataElement {
 
     class NamedDataElement {
         String name;
-        AttributeHandle handle;
         DataElement element;
         public NamedDataElement(String n, DataElement e) {
             name = n;
@@ -38,26 +34,36 @@ public class AttributeStruct {
         }
     } 
 
-    private static RTIambassador rtiAmbassador;
-    ArrayList<NamedDataElement> data = new ArrayList<>();
+    private ArrayList<NamedDataElement> data = new ArrayList<>();
 
-    public static void initialize(RTIambassador rtiAmbassador2Use) {
-        rtiAmbassador = rtiAmbassador2Use;
-    }
 
-    public AttributeStruct add(String name, DataElement element) {
+    public HLAfixedRecordStruct add(String name, DataElement element) {
         data.add(new NamedDataElement(name, element));
         return this;
     }
 
     public DataElement get(String name) {
         for (NamedDataElement d: data) {
-            if (name.equalsIgnoreCase(d.name)) return d.element;
+            if (name.equals(d.name)) return d.element;
         }
         return null;
     }
 
-    public HLAfixedRecord encode() throws RTIinternalError {
+
+    public byte[] toByteArray() throws EncoderException {
+        HLAfixedRecord valueMap;
+        try {
+            valueMap = RtiFactoryFactory.getRtiFactory().getEncoderFactory().createHLAfixedRecord();
+        } catch (RTIinternalError e) {
+            throw new EncoderException(e.getLocalizedMessage());
+        }
+        for (NamedDataElement d: data) {
+            valueMap.add(d.element);
+        }
+        return valueMap.toByteArray();
+    }
+
+    public HLAfixedRecord getDataElement() throws RTIinternalError {
         HLAfixedRecord valueMap = RtiFactoryFactory.getRtiFactory().getEncoderFactory().createHLAfixedRecord();
         for (NamedDataElement d: data) {
             valueMap.add(d.element);
@@ -65,24 +71,33 @@ public class AttributeStruct {
         return valueMap;
     }
 
-    public void decode (byte[] data) throws DecoderException, RTIinternalError {
-        HLAfixedRecord record = RtiFactoryFactory.getRtiFactory().getEncoderFactory().createHLAfixedRecord();
-        record.decode(data);
+    @Override
+    public int getOctetBoundary() {
+        // TODO Auto-generated method stub
+        return 0;
     }
 
-    public void decodeHandleValueMap(AttributeHandleValueMap valueMap) throws Exception {
-        data.clear();
-        for (Iterator<AttributeHandle> i = valueMap.keySet().iterator(); i.hasNext();) {
-            AttributeHandle recvHandle = i.next();
-            DataElement decoder = getDataElement (recvHandle);
-            decoder.decode(valueMap.get(recvHandle));
-        }
+    @Override
+    public void encode(ByteWrapper byteWrapper) throws EncoderException {
+        // TODO Auto-generated method stub
+        
     }
 
-    private DataElement getDataElement(AttributeHandle recvHandle) throws Exception {
-        for (NamedDataElement d: data) {
-            if (d.handle.equals(recvHandle)) return d.element;
-        }
-        throw new Exception("unknown attribute handle");
+    @Override
+    public int getEncodedLength() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public void decode(ByteWrapper byteWrapper) throws DecoderException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void decode(byte[] bytes) throws DecoderException {
+        // TODO Auto-generated method stub
+        
     }
 }
