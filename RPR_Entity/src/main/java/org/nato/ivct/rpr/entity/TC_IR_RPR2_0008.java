@@ -95,7 +95,6 @@ public class TC_IR_RPR2_0008 extends AbstractTestCaseIf {
 		logger.info("Test Case Purpose: The test case verifies that the SuT "
 			+ "defines at least one leaf object class of `BaseEntity.PhysicalEntity` " 
 			+ "as published and/or subscribed in CS/SOM.");
-		logger.info(msg);
 		this.logger = logger;
 	}
 
