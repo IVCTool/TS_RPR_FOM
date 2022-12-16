@@ -16,7 +16,9 @@ The JUnit test pattern is widely used and most IDE will support them.
 
 ## Interoperability Requirements
 
-The test suite is designed to test the [Interoperability Requirements](docs/src/interoperability-requirements.md) defined RPR FOM modules.
+In order to verify if a RPR FOM federate can be considered standard compliant, several interoperability requirements have been defined. These requirements are structured groups, which are called badges. Such a badge stands for a certain compliance group. A federate is typically not using all of the RPR FOM elements and is therefor only compliant to a some of these badges.  
+
+The test suites are designed to test these [Interoperability Requirements](docs/src/interoperability-requirements.md).
 
 ## RPR FOM Builder
 
@@ -41,7 +43,7 @@ The *Aircraft* federate can be build and started with the gradle build command:
 The current test suite design uses the ServiceLoader interface feature of the IVCT framework. This is only available in the latest snapshot releases and not yet included in the production release. 
 
 
-## LICENCE
+## LICENSE
 
 Copyright 2022 NATO/OTAN
 
