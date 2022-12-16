@@ -92,9 +92,9 @@ public class TC_IR_RPR2_0008 extends AbstractTestCaseIf {
     
 	@Override
 	protected void logTestPurpose(Logger logger) {
-		logger.info("Test Case Purpose: The test case verifies that the SuT "
-			+ "defines at least one leaf object class of `BaseEntity.PhysicalEntity` " 
-			+ "as published and/or subscribed in CS/SOM.");
+		logger.info("Test Case Purpose: \n"
+			+ "    The test case verifies that the SuT defines at least one leaf object\n"
+			+ "    class of `BaseEntity.PhysicalEntity` as published and/or subscribed in CS/SOM."); 
 		this.logger = logger;
 	}
 
