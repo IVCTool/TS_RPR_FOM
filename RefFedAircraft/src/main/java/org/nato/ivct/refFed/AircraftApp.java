@@ -48,7 +48,7 @@ public class AircraftApp extends NullFederateAmbassador {
 		Option(String optionNameLong, String optionNameShort) {
 			this.optionNameLong = optionNameLong;
 			this.optionNameShort = optionNameShort;
-			this.enabled = true;
+			this.enabled = false;
 		}
 	}
 
@@ -74,7 +74,7 @@ public class AircraftApp extends NullFederateAmbassador {
 		System.exit(1);
 	}
 
-	private AircraftApp(final String[] args) {
+	protected AircraftApp(final String[] args) {
 		// Initialize provocation options
 		for (CmdLineOptions optionId : CmdLineOptions.values()) {
 			// Create optionNameLong from optionId
