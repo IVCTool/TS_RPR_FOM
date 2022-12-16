@@ -10,7 +10,7 @@ dependencies {
 }
 
 application {
-    mainClassName = "org.nato.ivct.refFed.AircraftApp"
+    mainClass.set("org.nato.ivct.refFed.AircraftApp")
 }
 
 group = 'org.nato.ivct.refFed'
