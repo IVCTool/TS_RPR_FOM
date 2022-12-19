@@ -36,7 +36,7 @@ In order to demonstrate and verify the interoperability test cases, a *System un
 
 The *Aircraft* federate can be build and started with the gradle build command:
 
-> .\gradlew :RefFedAircraft:run
+> .\gradlew :RefFedAircraft:run --args="-FlyAircraft"
 
 ## IVCT Compliance
 
