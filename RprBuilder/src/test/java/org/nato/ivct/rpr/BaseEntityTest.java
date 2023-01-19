@@ -7,12 +7,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.URL;
 import java.util.ArrayList;
 
+import hla.rti1516e.AttributeHandle;
 import hla.rti1516e.CallbackModel;
 import hla.rti1516e.FederateAmbassador;
 import hla.rti1516e.NullFederateAmbassador;
@@ -133,6 +136,10 @@ public class BaseEntityTest {
             aircraft.addSubscribe(PhysicalEntity.Attributes.AcousticSignatureIndex);
             aircraft.addSubscribe(BaseEntity.Attributes.EntityIdentifier);
             aircraft.register();
+
+            AttributeHandle handle = aircraft.getAttributeHandle("AfterburnerOn");
+            String handleName = HLAobjectRoot.getHandleString(handle);
+            assertEquals(handleName, "AfterburnerOn");
 
         } catch (Exception e) {
             fail(e.getMessage());
