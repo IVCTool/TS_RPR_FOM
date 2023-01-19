@@ -142,6 +142,18 @@ public class HLAobjectRoot {
         thisObjectHandle = newHandle;
     }
 
+    /**
+     * Publish all attributes which have been added for publication on this or any super class.
+     * If the current set of attributes are already published, no new publication is done.
+     * 
+     * @throws AttributeNotDefined
+     * @throws ObjectClassNotDefined
+     * @throws SaveInProgress
+     * @throws RestoreInProgress
+     * @throws FederateNotExecutionMember
+     * @throws NotConnected
+     * @throws RTIinternalError
+     */
     public void publish() throws AttributeNotDefined, ObjectClassNotDefined, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError {
         if (!isPublished) {
             AttributeHandleSet toPublish = rtiAmbassador.getAttributeHandleSetFactory().create();
@@ -158,6 +170,18 @@ public class HLAobjectRoot {
         }
     }
     
+    /**
+     * Subscribe to all attributes which have been added for subscription on this or any super class. 
+     * If the current set of attributes are already subscribed, no new subscription is done.
+     * 
+     * @throws AttributeNotDefined
+     * @throws ObjectClassNotDefined
+     * @throws SaveInProgress
+     * @throws RestoreInProgress
+     * @throws FederateNotExecutionMember
+     * @throws NotConnected
+     * @throws RTIinternalError
+     */
     public void subscribe() throws AttributeNotDefined, ObjectClassNotDefined, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError {
         if (!isSubscribed) {
             AttributeHandleSet toSubscribe = rtiAmbassador.getAttributeHandleSetFactory().create();
@@ -202,7 +226,7 @@ public class HLAobjectRoot {
      * @param handle
      * @return
      */
-    protected static String getHandleString(AttributeHandle handle) {
+    protected String getHandleString(AttributeHandle handle) {
         for (Entry<String, AttributeHandle> entry : knownAttributeHandles.entrySet()) {
             if (handle.equals(entry.getValue())) {
                 return entry.getKey();
