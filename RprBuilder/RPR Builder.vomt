@@ -145,6 +145,9 @@
       <void method="add">
        <int>0</int>
       </void>
+      <void method="add">
+       <int>3</int>
+      </void>
      </object>
      <boolean>false</boolean>
      <boolean>false</boolean>
@@ -223,13 +226,16 @@
    <void method="add">
     <object class="se.pitch.vomt2.model.PersistentProjectHelper$PersistentView">
      <boolean>true</boolean>
-     <object idref="TableType0"/>
+     <object class="java.lang.Enum" method="valueOf">
+      <class>se.pitch.vomt2.model.TableType</class>
+      <string>OBJECT_CLASS_TABLE</string>
+     </object>
      <object idref="PersistentProjectHelper$PersistentModule5"/>
      <int>5</int>
      <int>145</int>
      <int>1457</int>
      <int>667</int>
-     <object idref="Collections$EmptySet0"/>
+     <object class="java.util.LinkedHashSet"/>
      <object idref="Collections$EmptySet0"/>
     </object>
    </void>
