@@ -100,9 +100,9 @@ public class BaseEntityTest {
             base1.publishSpatial();
             base1.publishRelativeSpatial();
             base1.register();
+
             EntityTypeStruct aEntityType = base1.getEntityType();
             aEntityType.setEntityKind((byte) 0x1);
-            
             aEntityType.setEntityKind((byte) 0xa);
             aEntityType.setDomain((byte) 0xb);
             aEntityType.setCountryCode((short) 3);
@@ -131,15 +131,23 @@ public class BaseEntityTest {
             base1.update();            
 
             Aircraft aircraft = new Aircraft();
-            aircraft.publishAfterburnerOn();
             aircraft.addSubscribe(Platform.Attributes.AfterburnerOn);
             aircraft.addSubscribe(PhysicalEntity.Attributes.AcousticSignatureIndex);
             aircraft.addSubscribe(BaseEntity.Attributes.EntityIdentifier);
             aircraft.register();
 
+            // use the inherited method from Platform
+            aircraft.publishAfterburnerOn();    
+            // use the type safe attribute
+            aircraft.addPublish(Platform.Attributes.AntiCollisionLightsOn);
+            // use protected generic method
+            aircraft.addPubAttribute("RampDeployed");
+            aircraft.publish();
+
             AttributeHandle handle = aircraft.getAttributeHandle("AfterburnerOn");
-            String handleName = HLAobjectRoot.getHandleString(handle);
+            String handleName = aircraft.getHandleString(handle);
             assertEquals(handleName, "AfterburnerOn");
+
 
         } catch (Exception e) {
             fail(e.getMessage());
