@@ -5,10 +5,10 @@ import org.slf4j.LoggerFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.nato.ivct.rpr.Platform.Attributes;
 import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -142,6 +142,9 @@ public class BaseEntityTest {
             aircraft.addPublish(Platform.Attributes.AntiCollisionLightsOn);
             // use protected generic method
             aircraft.addPubAttribute("RampDeployed");
+            // use class method for subscription
+            Platform.addPub(Attributes.BlackOutBrakeLightsOn);
+
             aircraft.publish();
 
             AttributeHandle handle = aircraft.getAttributeHandle("AfterburnerOn");

@@ -43,8 +43,19 @@ public class Platform extends PhysicalEntity{
             TailLightsOn
         }
 
-    public Platform() throws Exception {
+        public String getHlaClassName() { return "HLAobjectRoot.BaseEntity.PhysicalEntity.Platform"; }
+
+        public Platform() throws Exception {
         super();
+    }
+
+    /**
+     * TODO: Discuss if class based subscription methods shall be used 
+     */
+    private static Platform anchor;
+    public static void addPub(Attributes attribute) throws Exception {
+        if (anchor == null) anchor = new Platform();
+        anchor.addPubAttribute(attribute.name());
     }
 
     /**
