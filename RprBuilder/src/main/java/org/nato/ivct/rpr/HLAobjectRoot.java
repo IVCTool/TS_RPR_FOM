@@ -110,7 +110,7 @@ public class HLAobjectRoot {
         AttributeHandleSet attr = subscribedAttributes.get(this.getClass().getSimpleName());
         if (attr == null) { 
             attr = rtiAmbassador.getAttributeHandleSetFactory().create();
-            subscribedAttributes.put(this.getHlaClassName(), attr);
+            subscribedAttributes.put(this.getClass().getSimpleName(), attr);
         }
         attr.add(getAttributeHandle(attributeName));
 
