@@ -1,5 +1,5 @@
 // Define Java Library conventions for this organization.
-// Projects need to use the organization's Java conventions and publish using Maven Publish
+// Projects need to use the organization's Java conventions and some common settings.
 
 plugins {
     id 'java-library'
@@ -11,8 +11,10 @@ java {
 	withSourcesJar()
 }
 
-// dependencies {
-// }
+dependencies {
+    // IVCT AbstractTestCase interface
+    implementation 'io.github.msg134:TC.lib:4.1.0-SNAPSHOT'
+}
 
 // Write the  IVCT-Version as set to variable in libraries.gradle
 // in a  property-file
