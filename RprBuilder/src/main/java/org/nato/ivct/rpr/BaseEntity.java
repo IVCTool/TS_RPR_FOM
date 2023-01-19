@@ -35,9 +35,6 @@ import hla.rti1516e.exceptions.RTIinternalError;
 
 public class BaseEntity extends HLAobjectRoot {
 
-    @Override
-    public String getHlaClassName() { return "HLAobjectRoot.BaseEntity"; }
-    
     public enum Attributes {
         EntityType,
         EntityIdentifier,
@@ -53,8 +50,6 @@ public class BaseEntity extends HLAobjectRoot {
     private HLAvariantRecord aSpatial = null;
     private HLAvariantRecord aRelativeSpatical = null;
     
-    
-
     public BaseEntity() throws Exception {
         super();
     }

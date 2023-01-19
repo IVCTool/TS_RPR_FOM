@@ -70,6 +70,7 @@ public class BaseEntityTest {
             rtiAmbassador.createFederationExecution("TestFederation", fomList.toArray(new URL[fomList.size()]));
         } catch (FederationExecutionAlreadyExists ignored) { }
         rtiAmbassador.joinFederationExecution("BaseEntityTest", "UnitTest", "TestFederation");
+        HLAobjectRoot.initialize(rtiAmbassador);
     }
 
     @AfterEach
@@ -84,7 +85,58 @@ public class BaseEntityTest {
     }
 
     @Test
+    void testHlaClassName() throws Exception {
+        Aircraft aircraft1 = new Aircraft();
+        String name = aircraft1.getHlaClassName();
+        assertEquals(name, "HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.Aircraft");
+    }
+
+    
+    @Test
     void testRegister() {
+        try {
+            HLAobjectRoot.initialize(rtiAmbassador);
+
+            BaseEntity base1 = new BaseEntity();
+            base1.subscribeEntityType();
+            base1.subscribeEntityIdentifier();
+            base1.subscribeIsPartOf();
+            base1.subscribeSpatial();
+            base1.subscribeRelativeSpatial();
+            base1.publishEntityType();
+            base1.publishEntityIdentifier();
+            base1.publishIsPartOf();
+            base1.publishSpatial();
+            base1.publishRelativeSpatial();
+            base1.register();
+
+            Aircraft aircraft1 = new Aircraft();
+            aircraft1.addSubscribe(Platform.Attributes.AfterburnerOn);
+            aircraft1.addSubscribe(PhysicalEntity.Attributes.AcousticSignatureIndex);
+            aircraft1.addSubscribe(BaseEntity.Attributes.EntityIdentifier);
+            aircraft1.register();
+
+            // use the inherited method from Platform
+            aircraft1.publishAfterburnerOn();    
+            // use the type safe attribute
+            aircraft1.addPublish(Platform.Attributes.AntiCollisionLightsOn);
+            // use protected generic method
+            aircraft1.addPubAttribute("RampDeployed");
+            // use class method for subscription
+            Platform.addPub(Attributes.BlackOutBrakeLightsOn);
+
+            aircraft1.publish();
+
+            AttributeHandle handle = aircraft1.getAttributeHandle("AfterburnerOn");
+            String handleName = aircraft1.getHandleString(handle);
+            assertEquals(handleName, "AfterburnerOn");
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    void testEntityTypeEncoding() {
         try {
             HLAobjectRoot.initialize(rtiAmbassador);
 
@@ -129,33 +181,8 @@ public class BaseEntityTest {
             
             base1.setEntityType(aEntityType);
             base1.update();            
-
-            Aircraft aircraft = new Aircraft();
-            aircraft.addSubscribe(Platform.Attributes.AfterburnerOn);
-            aircraft.addSubscribe(PhysicalEntity.Attributes.AcousticSignatureIndex);
-            aircraft.addSubscribe(BaseEntity.Attributes.EntityIdentifier);
-            aircraft.register();
-
-            // use the inherited method from Platform
-            aircraft.publishAfterburnerOn();    
-            // use the type safe attribute
-            aircraft.addPublish(Platform.Attributes.AntiCollisionLightsOn);
-            // use protected generic method
-            aircraft.addPubAttribute("RampDeployed");
-            // use class method for subscription
-            Platform.addPub(Attributes.BlackOutBrakeLightsOn);
-
-            aircraft.publish();
-
-            AttributeHandle handle = aircraft.getAttributeHandle("AfterburnerOn");
-            String handleName = aircraft.getHandleString(handle);
-            assertEquals(handleName, "AfterburnerOn");
-
-
         } catch (Exception e) {
             fail(e.getMessage());
         }
-
     }
-
 }

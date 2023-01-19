@@ -18,8 +18,6 @@ package org.nato.ivct.rpr;
 
 public class Aircraft extends Platform {
 
-    public String getHlaClassName() { return "HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.Aircraft"; }
-
     public Aircraft() throws Exception {
         super();
     }

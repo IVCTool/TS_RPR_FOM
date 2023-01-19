@@ -24,28 +24,26 @@ import hla.rti1516e.exceptions.RTIinternalError;
 
 public class Platform extends PhysicalEntity{
     
-        public enum Attributes {
-            AfterburnerOn,
-            AntiCollisionLightsOn,
-            BlackOutBrakeLightsOn,
-            BlackOutLightsOn,
-            BrakeLightsOn,
-            FormationLightsOn,
-            HatchState,
-            HeadLightsOn,
-            InteriorLightsOn,
-            LandingLightsOn,
-            LauncherRaised,
-            NavigationLightsOn,
-            RampDeployed,
-            RunningLightsOn,
-            SpotLightsOn,
-            TailLightsOn
-        }
+    public enum Attributes {
+        AfterburnerOn,
+        AntiCollisionLightsOn,
+        BlackOutBrakeLightsOn,
+        BlackOutLightsOn,
+        BrakeLightsOn,
+        FormationLightsOn,
+        HatchState,
+        HeadLightsOn,
+        InteriorLightsOn,
+        LandingLightsOn,
+        LauncherRaised,
+        NavigationLightsOn,
+        RampDeployed,
+        RunningLightsOn,
+        SpotLightsOn,
+        TailLightsOn
+    }
 
-        public String getHlaClassName() { return "HLAobjectRoot.BaseEntity.PhysicalEntity.Platform"; }
-
-        public Platform() throws Exception {
+    public Platform() throws Exception {
         super();
     }
 

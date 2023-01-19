@@ -66,16 +66,7 @@ public class HLAobjectRoot {
     public static void initialize(RTIambassador rtiAmbassador2Use) {
         rtiAmbassador = rtiAmbassador2Use;
     }
-
-    public String getHlaClassName() { 
-        return "HLAobjectRoot"; 
-    }
-
-    public ObjectClassHandle getClassHandle() throws NameNotFound, FederateNotExecutionMember, NotConnected, RTIinternalError {
-        return rtiAmbassador.getObjectClassHandle(getHlaClassName());
-    };
-
-
+    
     public HLAobjectRoot() throws Exception {
         if (rtiAmbassador == null) { throw new Exception("HLAobjectRoot not initialized"); } 
         if (thisClassHandle == null) { thisClassHandle = rtiAmbassador.getObjectClassHandle(getHlaClassName()); }
@@ -84,6 +75,10 @@ public class HLAobjectRoot {
         this.attributeValues = rtiAmbassador.getAttributeHandleValueMapFactory().create(0);
         encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory();
         log.trace("created {} object created", this);
+    }
+
+    public ObjectClassHandle getClassHandle() throws NameNotFound, FederateNotExecutionMember, NotConnected, RTIinternalError {
+        return rtiAmbassador.getObjectClassHandle(getHlaClassName());
     }
 
     public void clear() {
@@ -140,6 +135,31 @@ public class HLAobjectRoot {
 
     public void register(ObjectInstanceHandle newHandle) {
         thisObjectHandle = newHandle;
+    }
+
+    /**
+     * Get class name in HLA-style as full path with '.' separators. 
+     * 
+     * @return
+     */
+    public String getHlaClassName() {
+        String hlaClassName = null;
+        if (this.getClass() == HLAobjectRoot.class) {
+            hlaClassName = "HLAobjectRoot";
+        } else {
+            Class cls = this.getClass();
+            do {
+                if (hlaClassName == null) {
+                    hlaClassName = cls.getSimpleName();
+                } else {
+                    hlaClassName = cls.getSimpleName() + "." + hlaClassName;
+                }
+                cls = cls.getSuperclass();
+            }
+            while (cls != HLAobjectRoot.class);
+            hlaClassName = cls.getSimpleName() + "." + hlaClassName;
+        }
+        return hlaClassName;
     }
 
     /**
