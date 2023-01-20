@@ -14,11 +14,19 @@ limitations under the License. */
 
 package org.nato.ivct.rpr.datatypes;
 
-public class SpatialVariantStruct extends HLAfixedRecordStruct {
+import hla.rti1516e.RtiFactoryFactory;
+import hla.rti1516e.encoding.EncoderFactory;
+import hla.rti1516e.encoding.HLAoctet;
+import hla.rti1516e.exceptions.RTIinternalError;
+
+public class SpatialVariantStruct extends HLAvariantRecordStruct<HLAoctet> {
+
+    /** Discriminant */
+    DeadReckoningAlgorithmEnum8 DeadReckoningAlgorithm;
 
     public enum AttributeName {
         SpatialStatic,
-        SpatialFPWc,
+        SpatialFPW,
         SpatialRPW,
         DRM_RVW,
         SpatialFVW,
@@ -26,6 +34,21 @@ public class SpatialVariantStruct extends HLAfixedRecordStruct {
         SpatialRPB,
         SpatialRVB,
         SpatialFVB
+    }
+
+    public SpatialVariantStruct () throws RTIinternalError {
+        EncoderFactory encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory();
+
+        // add(AttributeName.SpatialStatic.name(), new SpatialStaticStruct());
+        // add(AttributeName.SpatialFPW.name(), encoderFactory.createHLAoctet());
+        // add(AttributeName.SpatialRPW.name(), encoderFactory.createHLAoctet());
+        // add(AttributeName.DRM_RVW.name(), encoderFactory.createHLAoctet());
+        // add(AttributeName.SpatialFVW.name(), encoderFactory.createHLAoctet());
+        // add(AttributeName.SpatialFPB.name(), encoderFactory.createHLAoctet());
+        // add(AttributeName.SpatialRPB.name(), encoderFactory.createHLAoctet());
+        // add(AttributeName.SpatialRVB.name(), encoderFactory.createHLAoctet());
+        // add(AttributeName.SpatialFVB.name(), encoderFactory.createHLAoctet());
+
     }
 
     /** TODO: attribute getter, setter, and structures to be completed
