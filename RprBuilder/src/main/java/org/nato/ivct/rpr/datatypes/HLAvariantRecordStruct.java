@@ -24,14 +24,40 @@ import hla.rti1516e.encoding.HLAoctet;
 import hla.rti1516e.encoding.HLAvariantRecord;
 import hla.rti1516e.exceptions.RTIinternalError;
 
-public class HLAvariantRecordStruct<T extends DataElement> implements HLAvariantRecord<T> {
+public class HLAvariantRecordStruct<T extends DataElement> implements DataElement {
 
-    DataElement discriminant;
-    DataElement dataElement;
+    String discriminantName = null;
+    T discriminant = null;
+    DataElement dataElement = null;
+    EncoderFactory encoderFactory;
+
+
+    public HLAvariantRecordStruct() throws RTIinternalError {
+        encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory();
+    }
+    
+    public void setVariant(T discriminant, DataElement dataElement) {
+        this.discriminant = discriminant;
+        this.dataElement = dataElement;
+    }
+
+    public void setDiscriminant(T discriminant) {
+        this.discriminant = discriminant;
+    }
+
+    public T getDiscriminant() {
+        return discriminant;
+    }
+
+    public DataElement getValue() {
+        return dataElement;
+    }
+    
 
     @Override
     public int getOctetBoundary() {
-        return dataElement.getOctetBoundary();
+        // TODO Auto-generated method stub
+        return 0;
     }
 
     @Override
@@ -41,21 +67,14 @@ public class HLAvariantRecordStruct<T extends DataElement> implements HLAvariant
 
     @Override
     public int getEncodedLength() {
-        return dataElement.getEncodedLength();
+        return discriminant.getEncodedLength() + dataElement.getEncodedLength();
     }
 
     @Override
     public byte[] toByteArray() throws EncoderException {
-        HLAvariantRecord<HLAoctet> value;
-        try {
-            EncoderFactory _encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory();
-            HLAoctet spatialDiscriminant = _encoderFactory.createHLAoctet((byte)1);
-            value = _encoderFactory.createHLAvariantRecord(spatialDiscriminant);
-        } catch (RTIinternalError e) {
-            throw new EncoderException(e.getLocalizedMessage());
-        }        
-
-        // TODO Auto-generated method stub
+        HLAvariantRecord<T> value;
+        value = encoderFactory.createHLAvariantRecord(discriminant);
+        value.setVariant(discriminant, dataElement);
         return value.toByteArray();
     }
 
@@ -69,30 +88,6 @@ public class HLAvariantRecordStruct<T extends DataElement> implements HLAvariant
     public void decode(byte[] bytes) throws DecoderException {
         // TODO Auto-generated method stub
         
-    }
-
-    @Override
-    public void setVariant(T discriminant, DataElement dataElement) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void setDiscriminant(T discriminant) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public T getDiscriminant() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public DataElement getValue() {
-        // TODO Auto-generated method stub
-        return null;
     }
     
 }

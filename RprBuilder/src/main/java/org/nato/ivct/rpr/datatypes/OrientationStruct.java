@@ -63,7 +63,7 @@ public class OrientationStruct extends HLAfixedRecordStruct {
     }
 
     public void setTheta(float Theta) {
-        ((HLAfloat32BE) get(AttributeName.Psi.name())).setValue(Theta);
+        ((HLAfloat32BE) get(AttributeName.Theta.name())).setValue(Theta);
     }
 
     /**
@@ -75,7 +75,7 @@ public class OrientationStruct extends HLAfixedRecordStruct {
     }
 
     public void setPhi(float Phi) {
-        ((HLAfloat32BE) get(AttributeName.Psi.name())).setValue(Phi);
+        ((HLAfloat32BE) get(AttributeName.Phi.name())).setValue(Phi);
     }
 
     @Override

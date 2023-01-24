@@ -15,6 +15,7 @@ limitations under the License. */
 package org.nato.ivct.rpr.datatypes;
 
 import java.util.ArrayList;
+
 import hla.rti1516e.RtiFactoryFactory;
 import hla.rti1516e.encoding.ByteWrapper;
 import hla.rti1516e.encoding.DataElement;
@@ -47,6 +48,16 @@ public class HLAfixedRecordStruct implements DataElement {
             if (name.equals(d.name)) return d.element;
         }
         return null;
+    }
+
+    public void set (String name, DataElement element) throws Exception {
+        for (NamedDataElement d: data) {
+            if (name.equals(d.name)) {
+                d.element = element;
+                return;
+            }
+        }
+        throw new Exception("value " + name + " not found");
     }
 
 

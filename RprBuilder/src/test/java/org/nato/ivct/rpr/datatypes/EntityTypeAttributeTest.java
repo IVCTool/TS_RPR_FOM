@@ -1,11 +1,10 @@
-package org.nato.ivct.rpr;
+package org.nato.ivct.rpr.datatypes;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,10 +38,24 @@ public class EntityTypeAttributeTest {
 
 
     @Test
-    void testAdd() {
+    void testGetter() {
         try {
             EntityTypeStruct entity = new EntityTypeStruct(RtiFactoryFactory.getRtiFactory().getEncoderFactory());
             assertNotNull(entity);
+            byte kind = entity.getEntityKind();
+            assertNotNull(kind);
+            byte domain = entity.getDomain();
+            assertNotNull(domain);
+            short code = entity.getCountryCode();
+            assertNotNull(code);
+            byte cat = entity.getCategory();
+            assertNotNull(cat);
+            byte sub = entity.getSubcategory();
+            assertNotNull(sub);
+            byte specfic = entity.getSpecific();
+            assertNotNull(specfic);
+            byte ext = entity.getExtra();
+            assertNotNull(ext);
             
         } catch (RTIinternalError e) {
             fail(e.getMessage());
