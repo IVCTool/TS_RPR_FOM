@@ -45,7 +45,7 @@ public class SpatialVariantStructTest {
     }
 
     @Test
-    void testGetSetSpatialFPW() throws Exception {
+    void testSetSpatialFPW() throws Exception {
         SpatialVariantStruct spatial = new SpatialVariantStruct();
         SpatialFPStruct fpw = spatial.getSpatialFPW();
         assertNotNull(fpw);
@@ -78,6 +78,33 @@ public class SpatialVariantStructTest {
         assert(ors2.getTheta().getValue() == 2.3f);
         VelocityVectorStruct vel2 = fpw.getVelocityVector();
         assertNotNull(vel2);
+
+    }
+
+    @Test
+    void testGetSpatialFPW() throws Exception {
+        SpatialVariantStruct spatial = new SpatialVariantStruct();
+        SpatialFPStruct fpw = spatial.getSpatialFPW();
+        WorldLocationStruct wls = fpw.getWorldLocation();
+        wls.setX(1.1);
+        wls.setY(1.2);
+        wls.setZ(1.3);
+        fpw.setIsFrozen(false);
+        OrientationStruct ors = fpw.getOrientation();
+        ors.setPhi(2.1f);
+        ors.setPsi(2.2f);
+        ors.setTheta(2.3f);
+        VelocityVectorStruct vel = fpw.getVelocityVector();
+
+        // test if values are correctly set
+        assert(spatial.getSpatialFPW().getWorldLocation().getX().getValue() == 1.1);
+        assert(spatial.getSpatialFPW().getWorldLocation().getY().getValue() == 1.2);
+        assert(spatial.getSpatialFPW().getWorldLocation().getZ().getValue() == 1.3);
+        assert(spatial.getSpatialFPW().getIsFrozen().getValue() == false);
+        assert(spatial.getSpatialFPW().getOrientation().getPhi().getValue() == 2.1f);
+        assert(spatial.getSpatialFPW().getOrientation().getPsi().getValue() == 2.2f);
+        assert(spatial.getSpatialFPW().getOrientation().getTheta().getValue() == 2.3f);
+        assertNotNull(spatial.getSpatialFPW().getVelocityVector());
 
     }
 
