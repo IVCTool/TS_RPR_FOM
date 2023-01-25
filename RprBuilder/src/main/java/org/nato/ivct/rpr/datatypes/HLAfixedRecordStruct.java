@@ -21,10 +21,15 @@ import hla.rti1516e.encoding.ByteWrapper;
 import hla.rti1516e.encoding.DataElement;
 import hla.rti1516e.encoding.DecoderException;
 import hla.rti1516e.encoding.EncoderException;
+import hla.rti1516e.encoding.EncoderFactory;
 import hla.rti1516e.encoding.HLAfixedRecord;
 import hla.rti1516e.exceptions.RTIinternalError;
 
 public class HLAfixedRecordStruct implements DataElement {
+
+    private ArrayList<NamedDataElement> data = new ArrayList<>();
+    private HLAfixedRecord valueMap;
+    EncoderFactory encoderFactory;
 
     class NamedDataElement {
         String name;
@@ -32,11 +37,12 @@ public class HLAfixedRecordStruct implements DataElement {
         public NamedDataElement(String n, DataElement e) {
             name = n;
             element = e;
-        }
-    } 
+        }    
+    }     
 
-    private ArrayList<NamedDataElement> data = new ArrayList<>();
-
+    public HLAfixedRecordStruct () throws RTIinternalError {
+        encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory();
+    }
 
     public HLAfixedRecordStruct add(String name, DataElement element) {
         data.add(new NamedDataElement(name, element));
@@ -54,38 +60,35 @@ public class HLAfixedRecordStruct implements DataElement {
         for (NamedDataElement d: data) {
             if (name.equals(d.name)) {
                 d.element = element;
+                valueMap = getDataElement();
                 return;
             }
         }
         throw new Exception("value " + name + " not found");
     }
 
-
-    public byte[] toByteArray() throws EncoderException {
-        HLAfixedRecord valueMap;
-        try {
-            valueMap = RtiFactoryFactory.getRtiFactory().getEncoderFactory().createHLAfixedRecord();
-        } catch (RTIinternalError e) {
-            throw new EncoderException(e.getLocalizedMessage());
-        }
-        for (NamedDataElement d: data) {
-            valueMap.add(d.element);
-        }
-        return valueMap.toByteArray();
-    }
-
-    public HLAfixedRecord getDataElement() throws RTIinternalError {
-        HLAfixedRecord valueMap = RtiFactoryFactory.getRtiFactory().getEncoderFactory().createHLAfixedRecord();
+    public HLAfixedRecord getDataElement() {
+        valueMap = encoderFactory.createHLAfixedRecord();
         for (NamedDataElement d: data) {
             valueMap.add(d.element);
         }
         return valueMap;
     }
 
+
+    @Override
+    public byte[] toByteArray() throws EncoderException {
+        HLAfixedRecord valueMap;
+        valueMap = encoderFactory.createHLAfixedRecord();
+        for (NamedDataElement d: data) {
+            valueMap.add(d.element);
+        }
+        return valueMap.toByteArray();
+    }
+
     @Override
     public int getOctetBoundary() {
-        // TODO Auto-generated method stub
-        return 0;
+        return getDataElement().getOctetBoundary();
     }
 
     @Override

@@ -19,6 +19,7 @@ import hla.rti1516e.encoding.DecoderException;
 import hla.rti1516e.encoding.EncoderFactory;
 import hla.rti1516e.encoding.HLAinteger16BE;
 import hla.rti1516e.encoding.HLAoctet;
+import hla.rti1516e.exceptions.RTIinternalError;
 
 public class EntityTypeStruct extends HLAfixedRecordStruct {
 
@@ -32,7 +33,8 @@ public class EntityTypeStruct extends HLAfixedRecordStruct {
         Extra
     }
 
-    public EntityTypeStruct (EncoderFactory encoderFactory) {
+    public EntityTypeStruct () throws RTIinternalError {
+        super();
         add(AttributeName.EntityKind.name(), encoderFactory.createHLAoctet());
         add(AttributeName.Domain.name(), encoderFactory.createHLAoctet());
         add(AttributeName.CountryCode.name(), encoderFactory.createHLAinteger16BE());

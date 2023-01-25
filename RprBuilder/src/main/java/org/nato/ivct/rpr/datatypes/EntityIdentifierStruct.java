@@ -16,6 +16,7 @@ package org.nato.ivct.rpr.datatypes;
 
 import hla.rti1516e.encoding.EncoderFactory;
 import hla.rti1516e.encoding.HLAinteger16BE;
+import hla.rti1516e.exceptions.RTIinternalError;
 
 /**
  * Unique, exercise-wide identification of the entity, or a symbolic group address referencing
@@ -44,8 +45,9 @@ public class EntityIdentifierStruct extends HLAfixedRecordStruct {
     EntityNumber
   }
 
-  public EntityIdentifierStruct (EncoderFactory encoderFactory) {
-    add(AttributeName.FederateIdentifier.name(), new FederateIdentifierStruct(encoderFactory));
+  public EntityIdentifierStruct () throws RTIinternalError {
+    super();
+    add(AttributeName.FederateIdentifier.name(), new FederateIdentifierStruct());
     add(AttributeName.EntityNumber.name(), encoderFactory.createHLAinteger16BE());
   }
 

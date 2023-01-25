@@ -15,9 +15,6 @@ limitations under the License. */
 package org.nato.ivct.rpr.datatypes;
 
 import hla.rti1516e.RtiFactoryFactory;
-import hla.rti1516e.encoding.ByteWrapper;
-import hla.rti1516e.encoding.DecoderException;
-import hla.rti1516e.encoding.EncoderException;
 import hla.rti1516e.encoding.EncoderFactory;
 import hla.rti1516e.encoding.HLAfloat32BE;
 import hla.rti1516e.exceptions.RTIinternalError;
@@ -78,39 +75,4 @@ public class OrientationStruct extends HLAfixedRecordStruct {
         ((HLAfloat32BE) get(AttributeName.Phi.name())).setValue(Phi);
     }
 
-    @Override
-    public int getOctetBoundary() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public void encode(ByteWrapper byteWrapper) throws EncoderException {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public int getEncodedLength() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public byte[] toByteArray() throws EncoderException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void decode(ByteWrapper byteWrapper) throws DecoderException {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void decode(byte[] bytes) throws DecoderException {
-        // TODO Auto-generated method stub
-        
-    }
 }

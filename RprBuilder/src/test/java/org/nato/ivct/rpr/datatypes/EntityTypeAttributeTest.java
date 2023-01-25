@@ -27,6 +27,7 @@ import hla.rti1516e.exceptions.RestoreInProgress;
 import hla.rti1516e.exceptions.SaveInProgress;
 import hla.rti1516e.exceptions.UnsupportedCallbackModel;
 
+
 public class EntityTypeAttributeTest {
     public static final Logger log = LoggerFactory.getLogger(EntityTypeAttributeTest.class);
     RTIambassador rtiAmbassador = null;
@@ -36,11 +37,10 @@ public class EntityTypeAttributeTest {
         rtiAmbassador = rtiFactory.getRtiAmbassador();
     }
 
-
     @Test
     void testGetter() {
         try {
-            EntityTypeStruct entity = new EntityTypeStruct(RtiFactoryFactory.getRtiFactory().getEncoderFactory());
+            EntityTypeStruct entity = new EntityTypeStruct();
             assertNotNull(entity);
             byte kind = entity.getEntityKind();
             assertNotNull(kind);

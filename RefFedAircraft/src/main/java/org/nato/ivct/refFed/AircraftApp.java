@@ -22,6 +22,7 @@ import hla.rti1516e.RtiFactory;
 import hla.rti1516e.RtiFactoryFactory;
 import hla.rti1516e.encoding.HLAfixedRecord;
 import hla.rti1516e.encoding.HLAoctet;
+import hla.rti1516e.encoding.HLAvariantRecord;
 import hla.rti1516e.exceptions.FederationExecutionAlreadyExists;
 import java.net.URL;
 import java.util.ArrayList;
@@ -31,6 +32,8 @@ import org.slf4j.LoggerFactory;
 
 import org.nato.ivct.rpr.*;
 import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
+import org.nato.ivct.rpr.datatypes.SpatialStaticStruct;
+import org.nato.ivct.rpr.datatypes.SpatialVariantStruct;
 
 public class AircraftApp extends NullFederateAmbassador {
     
@@ -172,11 +175,21 @@ public class AircraftApp extends NullFederateAmbassador {
 			aircraft.setEntityType(entityType);
 			aircraft.update();
 			
+			byte b = (byte) 42;
+			entityKind.setValue(b);
+			aircraft.setEntityIdentifier(aEntityIdentifier);
 			if (provoke(CmdLineOptions.FlyAircraft)) {
 				for (int i=0; i<nrOfCycles; i++) {
-					byte b = (byte) i;
-					entityKind.setValue(b);
-					aircraft.setEntityIdentifier(aEntityIdentifier);
+					double xPos = 1.0 + Math.sin(i);
+					double yPos = 2.0 + Math.sin(i);
+					double zPos = 3.0 + Math.sin(i);
+					SpatialVariantStruct spatial = aircraft.getSpatial();
+					SpatialStaticStruct spatialStatic = spatial.getSpatialStatic();
+					spatialStatic.setIsFrozen(false);
+					spatialStatic.getWorldLocation().setX(xPos);
+					spatialStatic.getWorldLocation().setY(yPos);
+					spatialStatic.getWorldLocation().setZ(zPos);
+					aircraft.setSpatial(spatial);
 					aircraft.update();  
 					Thread.sleep(1000);
 				}

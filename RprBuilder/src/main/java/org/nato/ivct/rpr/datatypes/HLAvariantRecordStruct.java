@@ -20,7 +20,6 @@ import hla.rti1516e.encoding.DataElement;
 import hla.rti1516e.encoding.DecoderException;
 import hla.rti1516e.encoding.EncoderException;
 import hla.rti1516e.encoding.EncoderFactory;
-import hla.rti1516e.encoding.HLAoctet;
 import hla.rti1516e.encoding.HLAvariantRecord;
 import hla.rti1516e.exceptions.RTIinternalError;
 
@@ -53,11 +52,9 @@ public class HLAvariantRecordStruct<T extends DataElement> implements DataElemen
         return dataElement;
     }
     
-
     @Override
     public int getOctetBoundary() {
-        // TODO Auto-generated method stub
-        return 0;
+        return getDataElement().getOctetBoundary();
     }
 
     @Override
@@ -78,6 +75,12 @@ public class HLAvariantRecordStruct<T extends DataElement> implements DataElemen
         return value.toByteArray();
     }
 
+    public HLAvariantRecord<T> getDataElement() {
+        HLAvariantRecord<T> value = encoderFactory.createHLAvariantRecord(discriminant);
+        value.setVariant(discriminant, dataElement);
+        return value;
+    }
+
     @Override
     public void decode(ByteWrapper byteWrapper) throws DecoderException {
         // TODO Auto-generated method stub
@@ -89,5 +92,6 @@ public class HLAvariantRecordStruct<T extends DataElement> implements DataElemen
         // TODO Auto-generated method stub
         
     }
+
     
 }

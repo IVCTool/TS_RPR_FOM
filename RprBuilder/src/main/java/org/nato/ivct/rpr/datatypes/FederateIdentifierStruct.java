@@ -17,6 +17,7 @@ package org.nato.ivct.rpr.datatypes;
 import hla.rti1516e.encoding.ByteWrapper;
 import hla.rti1516e.encoding.DecoderException;
 import hla.rti1516e.encoding.HLAinteger16BE;
+import hla.rti1516e.exceptions.RTIinternalError;
 import hla.rti1516e.encoding.EncoderFactory;
 
 /**
@@ -49,7 +50,8 @@ public class FederateIdentifierStruct extends HLAfixedRecordStruct {
   }
 
 
-  public FederateIdentifierStruct (EncoderFactory encoderFactory) {
+  public FederateIdentifierStruct () throws RTIinternalError {
+    super();
     add(AttributeName.SiteID.name(), encoderFactory.createHLAinteger16BE());
     add(AttributeName.ApplicationID.name(), encoderFactory.createHLAinteger16BE());
   }

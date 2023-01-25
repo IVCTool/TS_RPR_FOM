@@ -19,6 +19,7 @@ package org.nato.ivct.rpr;
 import java.util.Map.Entry;
 
 import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
+import org.nato.ivct.rpr.datatypes.SpatialVariantStruct;
 
 import hla.rti1516e.AttributeHandle;
 import hla.rti1516e.AttributeHandleValueMap;
@@ -47,7 +48,7 @@ public class BaseEntity extends HLAobjectRoot {
     // following are the not-yet typed attributes
     private HLAfixedRecord aEntityIdentifier = null;
     private HLAfixedRecord aIsPartOf = null;
-    private HLAvariantRecord aSpatial = null;
+    private SpatialVariantStruct aSpatial = null;
     private HLAvariantRecord aRelativeSpatical = null;
     
     public BaseEntity() throws Exception {
@@ -132,7 +133,7 @@ public class BaseEntity extends HLAobjectRoot {
     }
     public EntityTypeStruct getEntityType() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
         if (aEntityTypeAttribute == null) {
-            aEntityTypeAttribute = new EntityTypeStruct(encoderFactory);
+            aEntityTypeAttribute = new EntityTypeStruct();
         }
         return aEntityTypeAttribute;
     }
@@ -175,10 +176,13 @@ public class BaseEntity extends HLAobjectRoot {
         return (aIsPartOf != null);
     }
 
-    public void setSpatial (HLAvariantRecord value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
-        setAttributeValue (Attributes.Spatial.name(), value);
+    public void setSpatial (SpatialVariantStruct value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        setAttributeValue (Attributes.Spatial.name(), value.getValue());
     }
-    public HLAvariantRecord getSpatial() {
+    public SpatialVariantStruct getSpatial() throws RTIinternalError {
+        if (aSpatial == null) {
+            aSpatial = new SpatialVariantStruct();
+        }
         return aSpatial;
     }
     public Boolean isSetSpatial() {

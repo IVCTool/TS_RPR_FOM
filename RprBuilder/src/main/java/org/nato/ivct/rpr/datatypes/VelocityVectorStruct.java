@@ -14,6 +14,11 @@ limitations under the License. */
 
 package org.nato.ivct.rpr.datatypes;
 
+import hla.rti1516e.exceptions.RTIinternalError;
+
 public class VelocityVectorStruct extends HLAfixedRecordStruct {
-    
+
+    public VelocityVectorStruct() throws RTIinternalError {
+        super();
+    }
 }
