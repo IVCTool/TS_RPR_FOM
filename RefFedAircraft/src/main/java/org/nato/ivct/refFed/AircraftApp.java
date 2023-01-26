@@ -22,7 +22,6 @@ import hla.rti1516e.RtiFactory;
 import hla.rti1516e.RtiFactoryFactory;
 import hla.rti1516e.encoding.HLAfixedRecord;
 import hla.rti1516e.encoding.HLAoctet;
-import hla.rti1516e.encoding.HLAvariantRecord;
 import hla.rti1516e.exceptions.FederationExecutionAlreadyExists;
 import java.net.URL;
 import java.util.ArrayList;
