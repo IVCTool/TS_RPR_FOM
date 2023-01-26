@@ -48,8 +48,8 @@ public class SpatialFPStruct extends HLAfixedRecordStruct {
     }
 
     /** Whether the object is frozen or not. */
-    public HLAboolean  getIsFrozen() {
-        return ((HLAboolean ) get(AttributeName.IsFrozen.name()));
+    public boolean  getIsFrozen() {
+        return ((HLAboolean ) get(AttributeName.IsFrozen.name())).getValue();
     }
     
     public void setIsFrozen(boolean IsFrozen) {

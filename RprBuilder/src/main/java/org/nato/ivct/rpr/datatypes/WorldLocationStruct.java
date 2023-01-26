@@ -43,8 +43,8 @@ public class WorldLocationStruct extends HLAfixedRecordStruct {
      * 
      * @return Distance from the origin along the X axis.
      */
-    public HLAfloat64BE getX() {
-      return ((HLAfloat64BE) get(AttributeName.X.name()));
+    public double getX() {
+      return ((HLAfloat64BE) get(AttributeName.X.name())).getValue();
     }
 
     public void setX(double X) {
@@ -55,8 +55,8 @@ public class WorldLocationStruct extends HLAfixedRecordStruct {
      * 
      * @return Distance from the origin along the Y axis.
      */
-    public HLAfloat64BE getY() {
-      return ((HLAfloat64BE) get(AttributeName.Y.name()));
+    public double getY() {
+      return ((HLAfloat64BE) get(AttributeName.Y.name())).getValue();
     }
 
     public void setY(double Y) {
@@ -67,8 +67,8 @@ public class WorldLocationStruct extends HLAfixedRecordStruct {
      * 
      * @return Distance from the origin along the Z axis.
      */
-    public HLAfloat64BE getZ() {
-      return ((HLAfloat64BE) get(AttributeName.Z.name()));
+    public double getZ() {
+      return ((HLAfloat64BE) get(AttributeName.Z.name())).getValue();
     }
 
     public void setZ(double Z) {
