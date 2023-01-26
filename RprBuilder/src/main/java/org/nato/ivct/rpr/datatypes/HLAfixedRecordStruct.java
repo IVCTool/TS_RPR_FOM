@@ -16,6 +16,9 @@ package org.nato.ivct.rpr.datatypes;
 
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import hla.rti1516e.RtiFactoryFactory;
 import hla.rti1516e.encoding.ByteWrapper;
 import hla.rti1516e.encoding.DataElement;
@@ -26,6 +29,7 @@ import hla.rti1516e.encoding.HLAfixedRecord;
 import hla.rti1516e.exceptions.RTIinternalError;
 
 public class HLAfixedRecordStruct implements DataElement {
+    public static final Logger log = LoggerFactory.getLogger(HLAfixedRecordStruct.class);
 
     private ArrayList<NamedDataElement> data = new ArrayList<>();
     private HLAfixedRecord valueMap;
@@ -93,25 +97,25 @@ public class HLAfixedRecordStruct implements DataElement {
 
     @Override
     public void encode(ByteWrapper byteWrapper) throws EncoderException {
-        // TODO Auto-generated method stub
-        
+        log.warn("encode(ByteWrapper byteWrapper) not tested");        
+        getDataElement().encode(byteWrapper);            
     }
 
     @Override
     public int getEncodedLength() {
-        // TODO Auto-generated method stub
-        return 0;
+        log.warn("getEncodedLength() not tested");        
+        return getDataElement().getEncodedLength();
     }
 
     @Override
     public void decode(ByteWrapper byteWrapper) throws DecoderException {
         // TODO Auto-generated method stub
-        
+        log.warn("decode(ByteWrapper byteWrapper) not implemented");        
     }
 
     @Override
     public void decode(byte[] bytes) throws DecoderException {
         // TODO Auto-generated method stub
-        
+        log.warn("decode(byte[] bytes) not implemented");        
     }
 }

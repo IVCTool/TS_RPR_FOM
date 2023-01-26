@@ -14,6 +14,9 @@ limitations under the License. */
 
 package org.nato.ivct.rpr.datatypes;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import hla.rti1516e.RtiFactoryFactory;
 import hla.rti1516e.encoding.ByteWrapper;
 import hla.rti1516e.encoding.DataElement;
@@ -24,24 +27,27 @@ import hla.rti1516e.encoding.HLAvariantRecord;
 import hla.rti1516e.exceptions.RTIinternalError;
 
 public class HLAvariantRecordStruct<T extends DataElement> implements DataElement {
+    public static final Logger log = LoggerFactory.getLogger(HLAvariantRecordStruct.class);
 
-    String discriminantName = null;
-    T discriminant = null;
-    DataElement dataElement = null;
-    EncoderFactory encoderFactory;
+    protected T discriminant = null;
+    protected DataElement dataElement = null;
+    protected EncoderFactory encoderFactory;
 
 
     public HLAvariantRecordStruct() throws RTIinternalError {
         encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory();
     }
     
-    public void setVariant(T discriminant, DataElement dataElement) {
-        this.discriminant = discriminant;
-        this.dataElement = dataElement;
-    }
-
-    public void setDiscriminant(T discriminant) {
-        this.discriminant = discriminant;
+    public void setVariant(T aDiscriminant, DataElement aDataElement) {
+        if (this.discriminant == null) {
+            log.trace("setVariant(" + aDiscriminant + ", " + aDataElement.getClass() + ")"); 
+        } else if (this.discriminant.equals(aDiscriminant)) {
+            log.warn("setVariant(" + aDiscriminant + ", " + aDataElement.getClass() +") reset with (" + this.discriminant + ", " + aDataElement.getClass()); 
+        } else {
+            log.warn("setVariant(" + aDiscriminant + ", " + aDataElement.getClass() +") overwriting with (" + this.discriminant + ", " + aDataElement.getClass()); 
+        }
+        this.discriminant = aDiscriminant;
+        this.dataElement = aDataElement;
     }
 
     public T getDiscriminant() {
@@ -52,6 +58,17 @@ public class HLAvariantRecordStruct<T extends DataElement> implements DataElemen
         return dataElement;
     }
     
+    public HLAvariantRecord<T> getDataElement() {
+        HLAvariantRecord<T> value = encoderFactory.createHLAvariantRecord(discriminant);
+        value.setVariant(discriminant, dataElement);
+        return value;
+    }
+
+
+    /**
+     * Inherited methods from DataElement
+     */
+
     @Override
     public int getOctetBoundary() {
         return getDataElement().getOctetBoundary();
@@ -59,12 +76,14 @@ public class HLAvariantRecordStruct<T extends DataElement> implements DataElemen
 
     @Override
     public void encode(ByteWrapper byteWrapper) throws EncoderException {
-        dataElement.encode(byteWrapper);        
+        log.warn("decode(byte[] bytes) not tested");        
+        getDataElement().encode(byteWrapper);        
     }
 
     @Override
     public int getEncodedLength() {
-        return discriminant.getEncodedLength() + dataElement.getEncodedLength();
+        log.warn("decode(byte[] bytes) not tested");        
+        return getDataElement().getEncodedLength();
     }
 
     @Override
@@ -75,22 +94,16 @@ public class HLAvariantRecordStruct<T extends DataElement> implements DataElemen
         return value.toByteArray();
     }
 
-    public HLAvariantRecord<T> getDataElement() {
-        HLAvariantRecord<T> value = encoderFactory.createHLAvariantRecord(discriminant);
-        value.setVariant(discriminant, dataElement);
-        return value;
-    }
-
     @Override
     public void decode(ByteWrapper byteWrapper) throws DecoderException {
         // TODO Auto-generated method stub
-        
+        log.warn("decode(ByteWrapper byteWrapper) not implemented");        
     }
 
     @Override
     public void decode(byte[] bytes) throws DecoderException {
         // TODO Auto-generated method stub
-        
+        log.warn("decode(byte[] bytes) not implemented");        
     }
 
     

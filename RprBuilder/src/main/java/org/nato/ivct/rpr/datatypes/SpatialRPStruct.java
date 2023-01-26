@@ -27,7 +27,7 @@ public class SpatialRPStruct extends HLAfixedRecordStruct {
     public enum AttributeName {
         WorldLocation,
         IsFrozen,
-        OrientationStruct,
+        Orientation,
         VelocityVector,
         AngularVelocity
     }
@@ -37,7 +37,7 @@ public class SpatialRPStruct extends HLAfixedRecordStruct {
 
         add(AttributeName.WorldLocation.name(), new WorldLocationStruct());
         add(AttributeName.IsFrozen.name(), encoderFactory.createHLAboolean());
-        add(AttributeName.OrientationStruct.name(), new OrientationStruct());  
+        add(AttributeName.Orientation.name(), new OrientationStruct());  
         add(AttributeName.VelocityVector.name(), new VelocityVectorStruct());  
         add(AttributeName.AngularVelocity.name(), new AngularVelocityVectorStruct());  
     }
@@ -68,11 +68,11 @@ public class SpatialRPStruct extends HLAfixedRecordStruct {
      * coordinate system).
      */
     public OrientationStruct getOrientation() {
-        return ((OrientationStruct) get(AttributeName.OrientationStruct.name()));
+        return ((OrientationStruct) get(AttributeName.Orientation.name()));
     }
     
     public void setOrientation(OrientationStruct Orientation) {
-        add(AttributeName.OrientationStruct.name(), Orientation);
+        add(AttributeName.Orientation.name(), Orientation);
     }
     
     /** The rate at which an object's position is changing over time. */

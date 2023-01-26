@@ -14,14 +14,57 @@ limitations under the License. */
 
 package org.nato.ivct.rpr.datatypes;
 
-import hla.rti1516e.RtiFactoryFactory;
-import hla.rti1516e.encoding.EncoderFactory;
 import hla.rti1516e.encoding.HLAfloat32BE;
 import hla.rti1516e.exceptions.RTIinternalError;
 
+
 /**
- * 
- * 
+ * The rate at which the orientation is changing over time, in body coordinates.
+ */
+public class AngularVelocityVectorStruct extends HLAfixedRecordStruct {
+
+    public enum AttributeName {
+        XAngularVelocity,
+        YAngularVelocity,
+        ZAngularVelocity
+    }
+
+    public AngularVelocityVectorStruct() throws RTIinternalError {
+        super();
+        add(AttributeName.XAngularVelocity.name(), encoderFactory.createHLAfloat32BE());
+        add(AttributeName.YAngularVelocity.name(), encoderFactory.createHLAfloat32BE());
+        add(AttributeName.ZAngularVelocity.name(), encoderFactory.createHLAfloat32BE());
+    }
+
+    /** Acceleration component about the X axis. */
+    public float getXAngularVelocity() {
+        return ((HLAfloat32BE) get(AttributeName.XAngularVelocity.name())).getValue();
+    }
+    
+    public void setXAngularVelocity(float WorldLocation) {
+        ((HLAfloat32BE) get(AttributeName.XAngularVelocity.name())).setValue(WorldLocation);
+    }
+
+    /** Acceleration component about the Y axis. */
+    public float getYAngularVelocity() {
+        return ((HLAfloat32BE) get(AttributeName.YAngularVelocity.name())).getValue();
+    }
+    
+    public void setYAngularVelocity(float WorldLocation) {
+        ((HLAfloat32BE) get(AttributeName.YAngularVelocity.name())).setValue(WorldLocation);
+    }
+
+    /** Acceleration component about the Z axis. */
+    public float getZAngularVelocity() {
+        return ((HLAfloat32BE) get(AttributeName.ZAngularVelocity.name())).getValue();
+    }
+    
+    public void setZAngularVelocity(float WorldLocation) {
+        ((HLAfloat32BE) get(AttributeName.ZAngularVelocity.name())).setValue(WorldLocation);
+    }
+}
+
+/**
     <fixedRecordData>
         <name>AngularVelocityVectorStruct</name>
         <encoding>HLAfixedRecord</encoding>
@@ -43,50 +86,3 @@ import hla.rti1516e.exceptions.RTIinternalError;
         </field>
     </fixedRecordData>
  */
-
-/**
- * The rate at which the orientation is changing over time, in body coordinates.
- */
-public class AngularVelocityVectorStruct extends HLAfixedRecordStruct {
-
-    public enum AttributeName {
-        XAngularVelocity,
-        YAngularVelocity,
-        ZAngularVelocity
-    }
-
-    public AngularVelocityVectorStruct() throws RTIinternalError {
-        EncoderFactory encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory();
-
-        add(AttributeName.XAngularVelocity.name(), encoderFactory.createHLAfloat32BE());
-        add(AttributeName.YAngularVelocity.name(), encoderFactory.createHLAfloat32BE());
-        add(AttributeName.ZAngularVelocity.name(), encoderFactory.createHLAfloat32BE());
-    }
-
-    /** Acceleration component about the X axis. */
-    public HLAfloat32BE getXAngularVelocity() {
-        return ((HLAfloat32BE) get(AttributeName.XAngularVelocity.name()));
-    }
-    
-    public void setXAngularVelocity(float WorldLocation) {
-        ((HLAfloat32BE) get(AttributeName.XAngularVelocity.name())).setValue(WorldLocation);
-    }
-
-    /** Acceleration component about the Y axis. */
-    public HLAfloat32BE YAngularVelocity() {
-        return ((HLAfloat32BE) get(AttributeName.YAngularVelocity.name()));
-    }
-    
-    public void setYAngularVelocity(float WorldLocation) {
-        ((HLAfloat32BE) get(AttributeName.YAngularVelocity.name())).setValue(WorldLocation);
-    }
-
-    /** Acceleration component about the Z axis. */
-    public HLAfloat32BE getZAngularVelocity() {
-        return ((HLAfloat32BE) get(AttributeName.ZAngularVelocity.name()));
-    }
-    
-    public void setZAngularVelocity(float WorldLocation) {
-        ((HLAfloat32BE) get(AttributeName.ZAngularVelocity.name())).setValue(WorldLocation);
-    }
-}

@@ -32,8 +32,7 @@ public class OrientationStruct extends HLAfixedRecordStruct {
     }
 
     public OrientationStruct () throws RTIinternalError {
-        EncoderFactory encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory();
-
+        super();
         add(AttributeName.Psi.name(), encoderFactory.createHLAfloat32BE());
         add(AttributeName.Theta.name(), encoderFactory.createHLAfloat32BE());
         add(AttributeName.Phi.name(), encoderFactory.createHLAfloat32BE());
@@ -43,8 +42,8 @@ public class OrientationStruct extends HLAfixedRecordStruct {
      * 
      * @return Rotation about the Z axis.
      */
-    public HLAfloat32BE getPsi() {
-        return ((HLAfloat32BE) get(AttributeName.Psi.name()));
+    public float getPsi() {
+        return ((HLAfloat32BE) get(AttributeName.Psi.name())).getValue();
     }
 
     public void setPsi(float Psi) {
@@ -55,8 +54,8 @@ public class OrientationStruct extends HLAfixedRecordStruct {
      * 
      * @return Rotation about the Y axis.
      */
-    public HLAfloat32BE getTheta() {
-        return ((HLAfloat32BE) get(AttributeName.Theta.name()));
+    public float getTheta() {
+        return ((HLAfloat32BE) get(AttributeName.Theta.name())).getValue();
     }
 
     public void setTheta(float Theta) {
@@ -67,8 +66,8 @@ public class OrientationStruct extends HLAfixedRecordStruct {
      * 
      * @return Rotation about the X axis.
      */
-    public HLAfloat32BE getPhi() {
-        return ((HLAfloat32BE) get(AttributeName.Phi.name()));
+    public float getPhi() {
+        return ((HLAfloat32BE) get(AttributeName.Phi.name())).getValue();
     }
 
     public void setPhi(float Phi) {
