@@ -60,7 +60,7 @@ public class HLAfixedRecordStruct implements DataElement {
         return null;
     }
 
-    public void set (String name, DataElement element) throws Exception {
+    public void set (String name, DataElement element) {
         for (NamedDataElement d: data) {
             if (name.equals(d.name)) {
                 d.element = element;
@@ -68,9 +68,15 @@ public class HLAfixedRecordStruct implements DataElement {
                 return;
             }
         }
-        throw new Exception("value " + name + " not found");
+        log.error("value " + name + " not found");
     }
 
+
+    /**
+     * get the typed DataElement for this specific instance
+     * 
+     * @return
+     */
     public HLAfixedRecord getDataElement() {
         valueMap = encoderFactory.createHLAfixedRecord();
         for (NamedDataElement d: data) {
@@ -79,10 +85,12 @@ public class HLAfixedRecordStruct implements DataElement {
         return valueMap;
     }
 
+    /**
+     * Inherited methods from DataElement
+     */
 
     @Override
     public byte[] toByteArray() throws EncoderException {
-        HLAfixedRecord valueMap;
         valueMap = encoderFactory.createHLAfixedRecord();
         for (NamedDataElement d: data) {
             valueMap.add(d.element);
@@ -97,25 +105,27 @@ public class HLAfixedRecordStruct implements DataElement {
 
     @Override
     public void encode(ByteWrapper byteWrapper) throws EncoderException {
-        log.warn("encode(ByteWrapper byteWrapper) not tested");        
+        log.trace("encode(ByteWrapper byteWrapper)");        
         getDataElement().encode(byteWrapper);            
     }
 
     @Override
     public int getEncodedLength() {
-        log.warn("getEncodedLength() not tested");        
+        log.trace("getEncodedLength()");        
         return getDataElement().getEncodedLength();
     }
 
     @Override
     public void decode(ByteWrapper byteWrapper) throws DecoderException {
-        // TODO Auto-generated method stub
-        log.warn("decode(ByteWrapper byteWrapper) not implemented");        
+        log.trace("decode(ByteWrapper byteWrapper)");
+        valueMap = getDataElement();
+        valueMap.decode(byteWrapper);
     }
 
     @Override
     public void decode(byte[] bytes) throws DecoderException {
-        // TODO Auto-generated method stub
-        log.warn("decode(byte[] bytes) not implemented");        
+        log.trace("decode(byte[] bytes)");    
+        valueMap = getDataElement();
+        valueMap.decode(bytes);    
     }
 }

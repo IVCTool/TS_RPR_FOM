@@ -15,8 +15,10 @@ limitations under the License. */
 package org.nato.ivct.rpr.datatypes;
 
 import hla.rti1516e.RtiFactoryFactory;
+import hla.rti1516e.encoding.DataElement;
 import hla.rti1516e.encoding.EncoderFactory;
 import hla.rti1516e.encoding.HLAboolean;
+import hla.rti1516e.encoding.HLAfixedRecord;
 import hla.rti1516e.exceptions.RTIinternalError;
 
 /** Spatial structure for Dead Reckoning Algorithm Static (1). */
@@ -32,12 +34,17 @@ public class SpatialStaticStruct extends HLAfixedRecordStruct {
 
     public SpatialStaticStruct () throws RTIinternalError {
         EncoderFactory encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory();
-        
         add(AttributeName.WorldLocation.name(), new WorldLocationStruct());
         add(AttributeName.IsFrozen.name(), encoderFactory.createHLAboolean());
         add(AttributeName.Orientation.name(), new OrientationStruct());
     }
-    
+
+    public SpatialStaticStruct (HLAfixedRecord record) throws RTIinternalError {
+        this();
+        setWorldLocation((WorldLocationStruct) record.get(0));
+        setIsFrozen(((HLAboolean) record.get(1)).getValue());
+        setOrientation((OrientationStruct) record.get(2));
+    }
     
     /** 
      * Location of the object. 
@@ -47,7 +54,7 @@ public class SpatialStaticStruct extends HLAfixedRecordStruct {
     }
     
     public void setWorldLocation(WorldLocationStruct WorldLocation) {
-        add(AttributeName.WorldLocation.name(), WorldLocation);
+        set(AttributeName.WorldLocation.name(), WorldLocation);
     }
 
     /**
@@ -72,6 +79,6 @@ public class SpatialStaticStruct extends HLAfixedRecordStruct {
     }
 
     public void setOrientation(OrientationStruct Orientation) {
-        add(AttributeName.Orientation.name(), Orientation);
+        set(AttributeName.Orientation.name(), Orientation);
     }
 }

@@ -96,15 +96,17 @@ public class HLAvariantRecordStruct<T extends DataElement> implements DataElemen
 
     @Override
     public void decode(ByteWrapper byteWrapper) throws DecoderException {
-        // TODO Auto-generated method stub
-        log.warn("decode(ByteWrapper byteWrapper) not implemented");        
+        log.warn("decode(ByteWrapper byteWrapper) not tested");       
+        HLAvariantRecord<T> value = encoderFactory.createHLAvariantRecord(discriminant);
+        value.decode(byteWrapper);
+        setVariant(value.getDiscriminant(), value.getValue());
     }
 
     @Override
     public void decode(byte[] bytes) throws DecoderException {
-        // TODO Auto-generated method stub
-        log.warn("decode(byte[] bytes) not implemented");        
+        log.warn("decode(byte[] bytes) not tested");
+        HLAvariantRecord<T> value = encoderFactory.createHLAvariantRecord(discriminant);
+        setVariant(value.getDiscriminant(), value.getValue());
     }
 
-    
 }

@@ -5,12 +5,11 @@ import static org.junit.Assert.assertNull;
 
 import org.junit.jupiter.api.Test;
 
-import hla.rti1516e.encoding.HLAboolean;
-import hla.rti1516e.encoding.HLAfloat32BE;
-import hla.rti1516e.encoding.HLAfloat64BE;
+import hla.rti1516e.encoding.DecoderException;
 import hla.rti1516e.exceptions.RTIinternalError;
 
 public class SpatialVariantStructTest {
+
     @Test
     void testGetSetSpatialStatic() throws RTIinternalError {
         SpatialVariantStruct spatial = new SpatialVariantStruct();
@@ -42,6 +41,25 @@ public class SpatialVariantStructTest {
         assert(psi == 4.4f);
         assert(theta == 5.5f);
         assert(phi == 6.6f);
+    }
+
+
+    @Test
+    void testEncodeDecode () throws RTIinternalError, DecoderException {
+        SpatialVariantStruct spatial = new SpatialVariantStruct();
+        spatial.getSpatialStatic().setIsFrozen(false);
+        spatial.getSpatialStatic().getWorldLocation().setX(1.1);
+        spatial.getSpatialStatic().getWorldLocation().setY(2.2);
+        spatial.getSpatialStatic().getWorldLocation().setZ(3.3);
+        spatial.getSpatialStatic().getOrientation().setPsi(4.4f);
+        spatial.getSpatialStatic().getOrientation().setTheta(5.5f);
+        spatial.getSpatialStatic().getOrientation().setPhi(6.6f);
+
+        byte[] bytes = spatial.toByteArray();
+        assert(bytes.length > 0);
+
+        SpatialVariantStruct received = new SpatialVariantStruct();
+        received.decode(bytes);
     }
 
     @Test
