@@ -67,12 +67,42 @@ public class SpatialVariantStruct extends HLAvariantRecordStruct<HLAoctet> {
 
             decoder.decode(bytes);
             switch (((HLAoctet) decoder.getDiscriminant()).getValue()) {
-                case 1:
-                    HLAfixedRecord r = (HLAfixedRecord) decoder.getValue();
-                    SpatialStaticStruct sp = new SpatialStaticStruct(r);
-                    setSpatialStatic(sp);
+                
+                case 1: // SpatialStatic   ((byte) 1)
+                    setSpatialStatic(new SpatialStaticStruct((HLAfixedRecord) decoder.getValue()));
                     break;
-                        
+                
+                case 2: // SpatialFPW      ((byte) 2)
+                    setSpatialFPW(new SpatialFPStruct((HLAfixedRecord) decoder.getValue())); 
+                    break;
+                
+                case 3: // SpatialRPW   ((byte) 3)
+                    setSpatialRPW(new SpatialRPStruct((HLAfixedRecord) decoder.getValue())); 
+                    break;
+                
+                case 4: // SpatialRVW   ((byte) 4)
+                    setSpatialRVW(new SpatialRVStruct((HLAfixedRecord) decoder.getValue())); 
+                    break;
+                
+                case 5: // SpatialFVW   ((byte) 5)
+                    setSpatialFVW(new SpatialFVStruct((HLAfixedRecord) decoder.getValue())); 
+                    break;
+                
+                case 6:// SpatialFPB    ((byte) 6)
+                    setSpatialFPB(new SpatialFPStruct((HLAfixedRecord) decoder.getValue())); 
+                    break;
+                
+                case 7:// SpatialRPB    ((byte) 7)
+                    setSpatialRPB(new SpatialRPStruct((HLAfixedRecord) decoder.getValue())); 
+                    break;
+
+                case 8: // SpatialRVB   ((byte) 8)
+                    setSpatialRVB(new SpatialRVStruct((HLAfixedRecord) decoder.getValue())); 
+                    break;
+                
+                case 9:// SpatialFVB    ((byte) 9)
+                    setSpatialFVB(new SpatialFVStruct((HLAfixedRecord) decoder.getValue())); 
+                    break;
                 default: break;
             }
                     

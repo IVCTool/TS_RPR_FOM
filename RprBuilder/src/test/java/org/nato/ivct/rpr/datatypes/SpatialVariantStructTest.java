@@ -11,7 +11,7 @@ import hla.rti1516e.exceptions.RTIinternalError;
 public class SpatialVariantStructTest {
 
     @Test
-    void testGetSetSpatialStatic() throws RTIinternalError {
+    void testSetGetSpatialStatic() throws RTIinternalError {
         SpatialVariantStruct spatial = new SpatialVariantStruct();
         SpatialStaticStruct spatialStatic = spatial.getSpatialStatic();
         assertNotNull(spatialStatic);
@@ -45,7 +45,7 @@ public class SpatialVariantStructTest {
 
 
     @Test
-    void testEncodeDecode () throws RTIinternalError, DecoderException {
+    void testEncodeDecodeSpatialVariantStruct () throws RTIinternalError, DecoderException {
         SpatialVariantStruct spatial = new SpatialVariantStruct();
         spatial.getSpatialStatic().setIsFrozen(false);
         spatial.getSpatialStatic().getWorldLocation().setX(1.1);
@@ -60,10 +60,122 @@ public class SpatialVariantStructTest {
 
         SpatialVariantStruct received = new SpatialVariantStruct();
         received.decode(bytes);
+        // test if values are correctly set
+        assert(received.getSpatialStatic().getWorldLocation().getX() == 1.1);
+        assert(received.getSpatialStatic().getWorldLocation().getY() == 2.2);
+        assert(received.getSpatialStatic().getWorldLocation().getZ() == 3.3);
+        assert(received.getSpatialStatic().getIsFrozen() == false);
+        assert(received.getSpatialStatic().getOrientation().getPsi() == 4.4f);
+        assert(received.getSpatialStatic().getOrientation().getTheta() == 5.5f);
+        assert(received.getSpatialStatic().getOrientation().getPhi() == 6.6f);
     }
 
     @Test
-    void testSetSpatialFPW() throws Exception {
+    void testEncodeDecodeSpatialFPStruct () throws RTIinternalError, DecoderException {
+        SpatialVariantStruct spatial = new SpatialVariantStruct();
+        spatial.getSpatialFPW().setIsFrozen(false);
+        spatial.getSpatialFPW().getWorldLocation().setX(1.1);
+        spatial.getSpatialFPW().getWorldLocation().setY(2.2);
+        spatial.getSpatialFPW().getWorldLocation().setZ(3.3);
+        spatial.getSpatialFPW().getOrientation().setPsi(4.4f);
+        spatial.getSpatialFPW().getOrientation().setTheta(5.5f);
+        spatial.getSpatialFPW().getOrientation().setPhi(6.6f);
+        spatial.getSpatialFPW().getVelocityVector().setXVelocity(7.7f);
+        spatial.getSpatialFPW().getVelocityVector().setYVelocity(8.8f);
+        spatial.getSpatialFPW().getVelocityVector().setZVelocity(9.9f);
+
+        byte[] bytes = spatial.toByteArray();
+        assert(bytes.length > 0);
+
+        SpatialVariantStruct received = new SpatialVariantStruct();
+        received.decode(bytes);
+        // test if values are correctly set
+        assert(received.getSpatialFPW().getWorldLocation().getX() == 1.1);
+        assert(received.getSpatialFPW().getWorldLocation().getY() == 2.2);
+        assert(received.getSpatialFPW().getWorldLocation().getZ() == 3.3);
+        assert(received.getSpatialFPW().getIsFrozen() == false);
+        assert(received.getSpatialFPW().getOrientation().getPsi() == 4.4f);
+        assert(received.getSpatialFPW().getOrientation().getTheta() == 5.5f);
+        assert(received.getSpatialFPW().getOrientation().getPhi() == 6.6f);
+        assert(received.getSpatialFPW().getVelocityVector().getXVelocity() == 7.7f);
+        assert(received.getSpatialFPW().getVelocityVector().getYVelocity() == 8.8f);
+        assert(received.getSpatialFPW().getVelocityVector().getZVelocity() == 9.9f);
+    }
+
+    
+    @Test
+    void testEncodeDecodeSpatialRPStruct () throws RTIinternalError, DecoderException {
+        SpatialVariantStruct spatial = new SpatialVariantStruct();
+        spatial.getSpatialRPW().setIsFrozen(false);
+        spatial.getSpatialRPW().getWorldLocation().setX(1.1);
+        spatial.getSpatialRPW().getWorldLocation().setY(2.2);
+        spatial.getSpatialRPW().getWorldLocation().setZ(3.3);
+        spatial.getSpatialRPW().getOrientation().setPsi(4.4f);
+        spatial.getSpatialRPW().getOrientation().setTheta(5.5f);
+        spatial.getSpatialRPW().getOrientation().setPhi(6.6f);
+        spatial.getSpatialRPW().getVelocityVector().setXVelocity(7.7f);
+        spatial.getSpatialRPW().getVelocityVector().setYVelocity(8.8f);
+        spatial.getSpatialRPW().getVelocityVector().setZVelocity(9.9f);
+
+        byte[] bytes = spatial.toByteArray();
+        assert(bytes.length > 0);
+
+        SpatialVariantStruct received = new SpatialVariantStruct();
+        received.decode(bytes);
+        // test if values are correctly set
+        assert(received.getSpatialRPW().getWorldLocation().getX() == 1.1);
+        assert(received.getSpatialRPW().getWorldLocation().getY() == 2.2);
+        assert(received.getSpatialRPW().getWorldLocation().getZ() == 3.3);
+        assert(received.getSpatialRPW().getIsFrozen() == false);
+        assert(received.getSpatialRPW().getOrientation().getPsi() == 4.4f);
+        assert(received.getSpatialRPW().getOrientation().getTheta() == 5.5f);
+        assert(received.getSpatialRPW().getOrientation().getPhi() == 6.6f);
+        assert(received.getSpatialRPW().getVelocityVector().getXVelocity() == 7.7f);
+        assert(received.getSpatialRPW().getVelocityVector().getYVelocity() == 8.8f);
+        assert(received.getSpatialRPW().getVelocityVector().getZVelocity() == 9.9f);
+    }
+
+   
+    @Test
+    void testEncodeDecodeSpatialFVStruct () throws RTIinternalError, DecoderException {
+        SpatialVariantStruct spatial = new SpatialVariantStruct();
+        spatial.getSpatialFVW().setIsFrozen(false);
+        spatial.getSpatialFVW().getWorldLocation().setX(1.1);
+        spatial.getSpatialFVW().getWorldLocation().setY(2.2);
+        spatial.getSpatialFVW().getWorldLocation().setZ(3.3);
+        spatial.getSpatialFVW().getOrientation().setPsi(4.4f);
+        spatial.getSpatialFVW().getOrientation().setTheta(5.5f);
+        spatial.getSpatialFVW().getOrientation().setPhi(6.6f);
+        spatial.getSpatialFVW().getVelocityVector().setXVelocity(7.7f);
+        spatial.getSpatialFVW().getVelocityVector().setYVelocity(8.8f);
+        spatial.getSpatialFVW().getVelocityVector().setZVelocity(9.9f);
+        spatial.getSpatialFVW().getAccelerationVector().setXAcceleration(1.2f);
+        spatial.getSpatialFVW().getAccelerationVector().setYAcceleration(1.3f);
+        spatial.getSpatialFVW().getAccelerationVector().setZAcceleration(1.4f);
+
+        byte[] bytes = spatial.toByteArray();
+        assert(bytes.length > 0);
+
+        SpatialVariantStruct received = new SpatialVariantStruct();
+        received.decode(bytes);
+        // test if values are correctly set
+        assert(received.getSpatialFVW().getWorldLocation().getX() == 1.1);
+        assert(received.getSpatialFVW().getWorldLocation().getY() == 2.2);
+        assert(received.getSpatialFVW().getWorldLocation().getZ() == 3.3);
+        assert(received.getSpatialFVW().getIsFrozen() == false);
+        assert(received.getSpatialFVW().getOrientation().getPsi() == 4.4f);
+        assert(received.getSpatialFVW().getOrientation().getTheta() == 5.5f);
+        assert(received.getSpatialFVW().getOrientation().getPhi() == 6.6f);
+        assert(received.getSpatialFVW().getVelocityVector().getXVelocity() == 7.7f);
+        assert(received.getSpatialFVW().getVelocityVector().getYVelocity() == 8.8f);
+        assert(received.getSpatialFVW().getVelocityVector().getZVelocity() == 9.9f);
+        assert(received.getSpatialFVW().getAccelerationVector().getXAcceleration() == 1.2f);
+        assert(received.getSpatialFVW().getAccelerationVector().getYAcceleration() == 1.3f);
+        assert(received.getSpatialFVW().getAccelerationVector().getZAcceleration() == 1.4f);
+    }
+
+    @Test
+    void testSetGetSpatialFPW() throws Exception {
         SpatialVariantStruct spatial = new SpatialVariantStruct();
         SpatialFPStruct fpw = spatial.getSpatialFPW();
         assertNotNull(fpw);
@@ -100,6 +212,30 @@ public class SpatialVariantStructTest {
     }
 
     @Test
+    void testGetSpatialFPW() throws Exception {
+        SpatialVariantStruct spatial = new SpatialVariantStruct();
+        spatial.getSpatialFPW().getWorldLocation().setX(1.1);
+        spatial.getSpatialFPW().getWorldLocation().setY(1.2);
+        spatial.getSpatialFPW().getWorldLocation().setZ(1.3);
+        spatial.getSpatialFPW().setIsFrozen(false);
+        spatial.getSpatialFPW().getOrientation().setPhi(2.1f);
+        spatial.getSpatialFPW().getOrientation().setPsi(2.2f);
+        spatial.getSpatialFPW().getOrientation().setTheta(2.3f);
+        VelocityVectorStruct vel = spatial.getSpatialFPW().getVelocityVector();
+
+        // test if values are correctly set
+        assert(spatial.getSpatialFPW().getWorldLocation().getX() == 1.1);
+        assert(spatial.getSpatialFPW().getWorldLocation().getY() == 1.2);
+        assert(spatial.getSpatialFPW().getWorldLocation().getZ() == 1.3);
+        assert(spatial.getSpatialFPW().getIsFrozen() == false);
+        assert(spatial.getSpatialFPW().getOrientation().getPhi() == 2.1f);
+        assert(spatial.getSpatialFPW().getOrientation().getPsi() == 2.2f);
+        assert(spatial.getSpatialFPW().getOrientation().getTheta() == 2.3f);
+        assertNotNull(spatial.getSpatialFPW().getVelocityVector());
+
+    }
+
+    @Test
     void testRandomSetVariant() throws RTIinternalError {
         SpatialVariantStruct spatial = new SpatialVariantStruct();
 
@@ -123,33 +259,6 @@ public class SpatialVariantStructTest {
     }
 
     @Test
-    void testGetSpatialFPW() throws Exception {
-        SpatialVariantStruct spatial = new SpatialVariantStruct();
-        SpatialFPStruct fpw = spatial.getSpatialFPW();
-        WorldLocationStruct wls = fpw.getWorldLocation();
-        wls.setX(1.1);
-        wls.setY(1.2);
-        wls.setZ(1.3);
-        fpw.setIsFrozen(false);
-        OrientationStruct ors = fpw.getOrientation();
-        ors.setPhi(2.1f);
-        ors.setPsi(2.2f);
-        ors.setTheta(2.3f);
-        VelocityVectorStruct vel = fpw.getVelocityVector();
-
-        // test if values are correctly set
-        assert(spatial.getSpatialFPW().getWorldLocation().getX() == 1.1);
-        assert(spatial.getSpatialFPW().getWorldLocation().getY() == 1.2);
-        assert(spatial.getSpatialFPW().getWorldLocation().getZ() == 1.3);
-        assert(spatial.getSpatialFPW().getIsFrozen() == false);
-        assert(spatial.getSpatialFPW().getOrientation().getPhi() == 2.1f);
-        assert(spatial.getSpatialFPW().getOrientation().getPsi() == 2.2f);
-        assert(spatial.getSpatialFPW().getOrientation().getTheta() == 2.3f);
-        assertNotNull(spatial.getSpatialFPW().getVelocityVector());
-
-    }
-
-    @Test
     void testReset() throws RTIinternalError {
         SpatialVariantStruct spatial = new SpatialVariantStruct();
         SpatialStaticStruct spatialStatic = spatial.getSpatialStatic();
@@ -161,8 +270,4 @@ public class SpatialVariantStructTest {
         assertNotNull(fpw);
     }
 
-    @Test
-    void testSetSpatialStatic() {
-
-    }
 }

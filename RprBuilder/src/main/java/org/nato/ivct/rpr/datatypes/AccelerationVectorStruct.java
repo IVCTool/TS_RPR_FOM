@@ -57,7 +57,7 @@ public class AccelerationVectorStruct extends HLAfixedRecordStruct {
     }
 
     public void setZAcceleration(float ZAcceleration) {
-        ((HLAfloat32BE) get(AttributeName.YAcceleration.name())).setValue(ZAcceleration);
+        ((HLAfloat32BE) get(AttributeName.ZAcceleration.name())).setValue(ZAcceleration);
     }    
 }
 

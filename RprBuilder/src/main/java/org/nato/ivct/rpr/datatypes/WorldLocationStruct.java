@@ -14,8 +14,6 @@ limitations under the License. */
 
 package org.nato.ivct.rpr.datatypes;
 
-import hla.rti1516e.RtiFactoryFactory;
-import hla.rti1516e.encoding.EncoderFactory;
 import hla.rti1516e.encoding.HLAfloat64BE;
 import hla.rti1516e.exceptions.RTIinternalError;
 
@@ -32,11 +30,10 @@ public class WorldLocationStruct extends HLAfixedRecordStruct {
     }
 
     public WorldLocationStruct () throws RTIinternalError {
-      EncoderFactory encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory();
-
-      add(AttributeName.X.name(), encoderFactory.createHLAfloat64BE());
-      add(AttributeName.Y.name(), encoderFactory.createHLAfloat64BE());
-      add(AttributeName.Z.name(), encoderFactory.createHLAfloat64BE());
+        super();
+        add(AttributeName.X.name(), encoderFactory.createHLAfloat64BE());
+        add(AttributeName.Y.name(), encoderFactory.createHLAfloat64BE());
+        add(AttributeName.Z.name(), encoderFactory.createHLAfloat64BE());
     }
 
     /**
@@ -44,11 +41,11 @@ public class WorldLocationStruct extends HLAfixedRecordStruct {
      * @return Distance from the origin along the X axis.
      */
     public double getX() {
-      return ((HLAfloat64BE) get(AttributeName.X.name())).getValue();
+        return ((HLAfloat64BE) get(AttributeName.X.name())).getValue();
     }
 
     public void setX(double X) {
-      ((HLAfloat64BE) get(AttributeName.X.name())).setValue(X);
+        ((HLAfloat64BE) get(AttributeName.X.name())).setValue(X);
     }
 
     /**
@@ -56,11 +53,11 @@ public class WorldLocationStruct extends HLAfixedRecordStruct {
      * @return Distance from the origin along the Y axis.
      */
     public double getY() {
-      return ((HLAfloat64BE) get(AttributeName.Y.name())).getValue();
+        return ((HLAfloat64BE) get(AttributeName.Y.name())).getValue();
     }
 
     public void setY(double Y) {
-      ((HLAfloat64BE) get(AttributeName.Y.name())).setValue(Y);
+        ((HLAfloat64BE) get(AttributeName.Y.name())).setValue(Y);
     }
 
     /**
@@ -68,11 +65,11 @@ public class WorldLocationStruct extends HLAfixedRecordStruct {
      * @return Distance from the origin along the Z axis.
      */
     public double getZ() {
-      return ((HLAfloat64BE) get(AttributeName.Z.name())).getValue();
+        return ((HLAfloat64BE) get(AttributeName.Z.name())).getValue();
     }
 
     public void setZ(double Z) {
-      ((HLAfloat64BE) get(AttributeName.Z.name())).setValue(Z);
+        ((HLAfloat64BE) get(AttributeName.Z.name())).setValue(Z);
     }
 
 }

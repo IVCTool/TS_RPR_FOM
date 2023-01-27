@@ -14,9 +14,8 @@ limitations under the License. */
 
 package org.nato.ivct.rpr.datatypes;
 
-import hla.rti1516e.RtiFactoryFactory;
-import hla.rti1516e.encoding.EncoderFactory;
 import hla.rti1516e.encoding.HLAboolean;
+import hla.rti1516e.encoding.HLAfixedRecord;
 import hla.rti1516e.exceptions.RTIinternalError;
 
 /** 
@@ -34,8 +33,7 @@ public class SpatialRVStruct extends HLAfixedRecordStruct {
     }
 
     public SpatialRVStruct () throws RTIinternalError {
-        EncoderFactory encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory();
-
+        super();
         add(AttributeName.WorldLocation.name(), new WorldLocationStruct());
         add(AttributeName.IsFrozen.name(), encoderFactory.createHLAboolean());
         add(AttributeName.Orientation.name(), new OrientationStruct());  
@@ -45,6 +43,17 @@ public class SpatialRVStruct extends HLAfixedRecordStruct {
     }
 
    
+    public SpatialRVStruct(HLAfixedRecord value) throws RTIinternalError {
+        this();
+        setWorldLocation((WorldLocationStruct) value.get(0));
+        setIsFrozen(((HLAboolean) value.get(1)).getValue());
+        setOrientation((OrientationStruct) value.get(2));
+        setVelocityVector((VelocityVectorStruct) value.get(3));
+        setAccelerationVector((AccelerationVectorStruct) value.get(4));
+        setAngularVelocity((AccelerationVectorStruct) value.get(5));
+    }
+
+
     /** Location of the object. */
     public WorldLocationStruct getWorldLocation() {
         return ((WorldLocationStruct) get(AttributeName.WorldLocation.name()));
@@ -55,8 +64,8 @@ public class SpatialRVStruct extends HLAfixedRecordStruct {
     }
 
     /** Whether the object is frozen or not. */
-    public HLAboolean  getIsFrozen() {
-        return ((HLAboolean ) get(AttributeName.IsFrozen.name()));
+    public boolean  getIsFrozen() {
+        return ((HLAboolean ) get(AttributeName.IsFrozen.name())).getValue();
     }
     
     public void setIsFrozen(boolean IsFrozen) {

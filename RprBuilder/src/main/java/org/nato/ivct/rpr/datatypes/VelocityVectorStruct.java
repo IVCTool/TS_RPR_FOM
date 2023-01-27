@@ -14,11 +14,53 @@ limitations under the License. */
 
 package org.nato.ivct.rpr.datatypes;
 
+import hla.rti1516e.encoding.HLAfloat32BE;
 import hla.rti1516e.exceptions.RTIinternalError;
 
+
+/**
+ * The rate at which the position is changing over time.
+ */
 public class VelocityVectorStruct extends HLAfixedRecordStruct {
+
+    public enum AttributeName {
+        XVelocity,
+        YVelocity,
+        ZVelocity
+    }
 
     public VelocityVectorStruct() throws RTIinternalError {
         super();
+        add(AttributeName.XVelocity.name(), encoderFactory.createHLAfloat32BE());
+        add(AttributeName.YVelocity.name(), encoderFactory.createHLAfloat32BE());
+        add(AttributeName.ZVelocity.name(), encoderFactory.createHLAfloat32BE());    
+    }
+
+    
+    /** Velocity component along the X axis. */
+    public float getXVelocity() {
+        return ((HLAfloat32BE) get(AttributeName.XVelocity.name())).getValue();
+    }
+  
+    public void setXVelocity(float XVelocity) {
+        ((HLAfloat32BE) get(AttributeName.XVelocity.name())).setValue(XVelocity);
+    }
+    
+    /** Velocity component along the Y axis. */ 
+    public float getYVelocity() {
+        return ((HLAfloat32BE) get(AttributeName.YVelocity.name())).getValue();
+    }
+
+    public void setYVelocity(float YVelocity) {
+        ((HLAfloat32BE) get(AttributeName.YVelocity.name())).setValue(YVelocity);
+    }
+
+    /** Velocity component along the Z axis. */
+    public float getZVelocity() {
+        return ((HLAfloat32BE) get(AttributeName.ZVelocity.name())).getValue();
+    }
+
+    public void setZVelocity(float ZVelocity) {
+        ((HLAfloat32BE) get(AttributeName.ZVelocity.name())).setValue(ZVelocity);
     }
 }

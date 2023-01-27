@@ -18,7 +18,6 @@ import hla.rti1516e.encoding.ByteWrapper;
 import hla.rti1516e.encoding.DecoderException;
 import hla.rti1516e.encoding.HLAinteger16BE;
 import hla.rti1516e.exceptions.RTIinternalError;
-import hla.rti1516e.encoding.EncoderFactory;
 
 /**
  * Unique identification of the simulation application (federate) in an exercise, or a symbolic

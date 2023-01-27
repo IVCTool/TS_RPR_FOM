@@ -14,9 +14,8 @@ limitations under the License. */
 
 package org.nato.ivct.rpr.datatypes;
 
-import hla.rti1516e.RtiFactoryFactory;
-import hla.rti1516e.encoding.EncoderFactory;
 import hla.rti1516e.encoding.HLAboolean;
+import hla.rti1516e.encoding.HLAfixedRecord;
 import hla.rti1516e.exceptions.RTIinternalError;
 
 /** 
@@ -33,8 +32,7 @@ public class SpatialFVStruct extends HLAfixedRecordStruct {
     }
 
     public SpatialFVStruct () throws RTIinternalError {
-        EncoderFactory encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory();
-
+        super();
         add(AttributeName.WorldLocation.name(), new WorldLocationStruct());
         add(AttributeName.IsFrozen.name(), encoderFactory.createHLAboolean());
         add(AttributeName.OrientationStruct.name(), new OrientationStruct());  
@@ -43,18 +41,28 @@ public class SpatialFVStruct extends HLAfixedRecordStruct {
     }
 
    
+    public SpatialFVStruct(HLAfixedRecord value) throws RTIinternalError {
+        this();
+        setWorldLocation((WorldLocationStruct) value.get(0));
+        setIsFrozen(((HLAboolean) value.get(1)).getValue());
+        setOrientation((OrientationStruct) value.get(2));
+        setVelocityVector((VelocityVectorStruct) value.get(3));
+        setAccelerationVector((AccelerationVectorStruct) value.get(4));
+    }
+
+
     /** Location of the object. */
     public WorldLocationStruct getWorldLocation() {
         return ((WorldLocationStruct) get(AttributeName.WorldLocation.name()));
     }
     
     public void setWorldLocation(WorldLocationStruct WorldLocation) {
-        add(AttributeName.WorldLocation.name(), WorldLocation);
+        set(AttributeName.WorldLocation.name(), WorldLocation);
     }
 
     /** Whether the object is frozen or not. */
-    public HLAboolean  getIsFrozen() {
-        return ((HLAboolean ) get(AttributeName.IsFrozen.name()));
+    public boolean  getIsFrozen() {
+        return ((HLAboolean ) get(AttributeName.IsFrozen.name())).getValue();
     }
     
     public void setIsFrozen(boolean IsFrozen) {
@@ -72,7 +80,7 @@ public class SpatialFVStruct extends HLAfixedRecordStruct {
     }
     
     public void setOrientation(OrientationStruct Orientation) {
-        add(AttributeName.OrientationStruct.name(), Orientation);
+        set(AttributeName.OrientationStruct.name(), Orientation);
     }
     
     /** The rate at which an object's position is changing over time. */
@@ -81,7 +89,7 @@ public class SpatialFVStruct extends HLAfixedRecordStruct {
     }
     
     public void setVelocityVector(VelocityVectorStruct VelocityVector) {
-        add(AttributeName.VelocityVector.name(), VelocityVector);
+        set(AttributeName.VelocityVector.name(), VelocityVector);
     }
     
     /** The rate at which an object's orientation is changing over time. */
@@ -90,6 +98,6 @@ public class SpatialFVStruct extends HLAfixedRecordStruct {
     }
 
     public void setAccelerationVector(AccelerationVectorStruct AccelerationVector) {
-        add(AttributeName.AccelerationVector.name(), AccelerationVector);
+        set(AttributeName.AccelerationVector.name(), AccelerationVector);
     }
 }

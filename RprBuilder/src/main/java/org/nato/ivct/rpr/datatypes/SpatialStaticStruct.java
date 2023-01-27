@@ -33,7 +33,7 @@ public class SpatialStaticStruct extends HLAfixedRecordStruct {
     }
 
     public SpatialStaticStruct () throws RTIinternalError {
-        EncoderFactory encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory();
+        super();
         add(AttributeName.WorldLocation.name(), new WorldLocationStruct());
         add(AttributeName.IsFrozen.name(), encoderFactory.createHLAboolean());
         add(AttributeName.Orientation.name(), new OrientationStruct());

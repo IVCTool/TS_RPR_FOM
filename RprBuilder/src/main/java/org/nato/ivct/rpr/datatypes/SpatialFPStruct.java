@@ -14,9 +14,8 @@ limitations under the License. */
 
 package org.nato.ivct.rpr.datatypes;
 
-import hla.rti1516e.RtiFactoryFactory;
-import hla.rti1516e.encoding.EncoderFactory;
 import hla.rti1516e.encoding.HLAboolean;
+import hla.rti1516e.encoding.HLAfixedRecord;
 import hla.rti1516e.exceptions.RTIinternalError;
 
 public class SpatialFPStruct extends HLAfixedRecordStruct {
@@ -29,8 +28,7 @@ public class SpatialFPStruct extends HLAfixedRecordStruct {
     }
 
     public SpatialFPStruct () throws RTIinternalError {
-        EncoderFactory encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory();
-
+        super();
         add(AttributeName.WorldLocation.name(), new WorldLocationStruct());
         add(AttributeName.IsFrozen.name(), encoderFactory.createHLAboolean());
         add(AttributeName.OrientationStruct.name(), new OrientationStruct());  
@@ -38,12 +36,21 @@ public class SpatialFPStruct extends HLAfixedRecordStruct {
     }
 
    
+    public SpatialFPStruct(HLAfixedRecord value) throws RTIinternalError {
+        this();
+        setWorldLocation((WorldLocationStruct) value.get(0));
+        setIsFrozen(((HLAboolean) value.get(1)).getValue());
+        setOrientation((OrientationStruct) value.get(2));
+        setVelocityVector((VelocityVectorStruct) value.get(3));
+    }
+
+
     /** Location of the object. */
     public WorldLocationStruct getWorldLocation() {
         return ((WorldLocationStruct) get(AttributeName.WorldLocation.name()));
     }
     
-    public void setWorldLocation(WorldLocationStruct WorldLocation) throws Exception {
+    public void setWorldLocation(WorldLocationStruct WorldLocation) {
         set(AttributeName.WorldLocation.name(), WorldLocation);
     }
 
@@ -66,7 +73,7 @@ public class SpatialFPStruct extends HLAfixedRecordStruct {
         return ((OrientationStruct) get(AttributeName.OrientationStruct.name()));
     }
     
-    public void setOrientation(OrientationStruct Orientation) throws Exception {
+    public void setOrientation(OrientationStruct Orientation) {
         set(AttributeName.OrientationStruct.name(), Orientation);
     }
     
@@ -75,7 +82,7 @@ public class SpatialFPStruct extends HLAfixedRecordStruct {
         return ((VelocityVectorStruct) get(AttributeName.VelocityVector.name()));
     }
     
-    public void setVelocityVector(VelocityVectorStruct VelocityVector) throws Exception {
+    public void setVelocityVector(VelocityVectorStruct VelocityVector) {
         set(AttributeName.VelocityVector.name(), VelocityVector);
     }
 }
