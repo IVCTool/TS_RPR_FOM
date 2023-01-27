@@ -177,7 +177,7 @@ public class BaseEntity extends HLAobjectRoot {
     }
 
     public void setSpatial (SpatialVariantStruct value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
-        setAttributeValue (Attributes.Spatial.name(), value.getValue());
+        setAttributeValue (Attributes.Spatial.name(), value);
     }
     public SpatialVariantStruct getSpatial() throws RTIinternalError {
         if (aSpatial == null) {
