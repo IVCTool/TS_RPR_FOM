@@ -182,12 +182,18 @@ public class AircraftApp extends NullFederateAmbassador {
 					double xPos = 1.0 + Math.sin(i);
 					double yPos = 2.0 + Math.sin(i);
 					double zPos = 3.0 + Math.sin(i);
+					float phi = 4.0f + (float) Math.cos(i);
+					float psi = 5.0f + (float) Math.cos(i);
+					float theta = 6.0f + (float) Math.cos(i);
 					SpatialVariantStruct spatial = aircraft.getSpatial();
 					SpatialStaticStruct spatialStatic = spatial.getSpatialStatic();
 					spatialStatic.setIsFrozen(false);
 					spatialStatic.getWorldLocation().setX(xPos);
 					spatialStatic.getWorldLocation().setY(yPos);
 					spatialStatic.getWorldLocation().setZ(zPos);
+					spatialStatic.getOrientation().setPhi(phi);
+					spatialStatic.getOrientation().setPsi(psi);
+					spatialStatic.getOrientation().setTheta(theta);
 					aircraft.setSpatial(spatial);
 					aircraft.update();  
 					Thread.sleep(1000);
