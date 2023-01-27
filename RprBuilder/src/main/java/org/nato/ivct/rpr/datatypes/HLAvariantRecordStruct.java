@@ -54,10 +54,6 @@ public class HLAvariantRecordStruct<T extends DataElement> implements DataElemen
         return discriminant;
     }
 
-    public DataElement getValue() {
-        return dataElement;
-    }
-    
     public HLAvariantRecord<T> getDataElement() {
         HLAvariantRecord<T> value = encoderFactory.createHLAvariantRecord(discriminant);
         value.setVariant(discriminant, dataElement);
