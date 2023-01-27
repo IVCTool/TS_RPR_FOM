@@ -19,10 +19,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.Semaphore;
 
-import org.nato.ivct.rpr.BaseEntity;
 import org.nato.ivct.rpr.Aircraft;
+import org.nato.ivct.rpr.BaseEntity;
 import org.nato.ivct.rpr.FomFiles;
 import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
+import org.nato.ivct.rpr.datatypes.SpatialStaticStruct;
 import org.slf4j.Logger;
 
 import de.fraunhofer.iosb.tc_lib_if.AbstractTestCaseIf;
@@ -83,7 +84,9 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
     Semaphore receivedEntityType = new Semaphore(0);
     Semaphore receivedSpatial = new Semaphore(0);
     HashMap<ObjectInstanceHandle, Aircraft> knownAircrafts = new HashMap<>();
+    HashMap<ObjectInstanceHandle, BaseEntity> knownEntities = new HashMap<>();
     Aircraft aircraft;
+    BaseEntity entity;
 
     class TestCaseAmbassador extends NullFederateAmbassador {
         @Override
@@ -99,6 +102,10 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
                     Aircraft obj = new Aircraft();
                     obj.register(theObject);
                     knownAircrafts.put(theObject, obj);
+                } else if (receivedClass.equals(entity.getHlaClassName())) {
+                    BaseEntity newEntity = new BaseEntity();
+                    newEntity.register(theObject);
+                    knownEntities.put(theObject, newEntity);
                 }
 
             } catch (InvalidObjectClassHandle | FederateNotExecutionMember | NotConnected | RTIinternalError e) {
@@ -161,9 +168,43 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
                 if (aircraft.isSetEntityType()) {
                     receivedEntityType.release(1);
                 }
-                // if (aircraft.isSetSpatial()) {
-                //     receivedSpatial.release(1);
-                // }
+                if (aircraft.isSetSpatial()) {
+                    receivedSpatial.release(1);
+                }
+            }
+            BaseEntity entity = knownEntities.get(theObject);
+            if (entity != null) {
+                entity.clear();
+                try {
+                    entity.decode(theAttributes);
+                    SpatialStaticStruct spatial = entity.getSpatial().getSpatialStatic();
+                    logger.info("BaseEntity update received at x={}, y={}, z={}", 
+                        spatial.getWorldLocation().getX(),
+                        spatial.getWorldLocation().getY(),
+                        spatial.getWorldLocation().getZ()
+                    );
+                } catch (NameNotFound e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (InvalidObjectClassHandle e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (FederateNotExecutionMember e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (NotConnected e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (RTIinternalError e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (DecoderException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
             
         }
@@ -211,6 +252,13 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
     protected void performTest(Logger logger) throws TcInconclusiveIf, TcFailedIf {
         logger.info("perform test {}", this.getClass().getName());
         try {
+            BaseEntity.initialize(rtiAmbassador);
+            entity = new BaseEntity();
+            entity.addSubscribe(BaseEntity.Attributes.EntityIdentifier);
+            entity.addSubscribe(BaseEntity.Attributes.EntityType);
+            entity.addSubscribe(BaseEntity.Attributes.Spatial);
+            entity.subscribe();
+
             Aircraft.initialize(rtiAmbassador);
             aircraft = new Aircraft();
             aircraft.addSubscribe(BaseEntity.Attributes.EntityIdentifier);
