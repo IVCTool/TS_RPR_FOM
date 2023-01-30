@@ -59,13 +59,13 @@ public class HLAobjectRoot {
     private static RTIambassador rtiAmbassador;
     private static HashMap<String,AttributeHandle> knownAttributeHandles = null;  // known attribute handles
     private static HashMap<String, AttributeHandleSet> publishedAttributes = new HashMap<>();
-    protected static HashMap<String, AttributeHandleSet> subscribedAttributes = new HashMap<>();
-    
+    private static HashMap<String, AttributeHandleSet> subscribedAttributes = new HashMap<>();
+
+    private Boolean isPublished = false;
+    private Boolean isSubscribed = false;
     private ObjectClassHandle thisClassHandle = null;
     private ObjectInstanceHandle thisObjectHandle;
     private AttributeHandleValueMap attributeValues;  // (handle,value) map for updates
-    private Boolean isPublished = false;
-    private Boolean isSubscribed = false;
     private Boolean isRegistered = false;
 
     protected EncoderFactory encoderFactory;
