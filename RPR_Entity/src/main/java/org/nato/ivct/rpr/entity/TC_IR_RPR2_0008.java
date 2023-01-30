@@ -60,6 +60,7 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
 
 /**
  * IR-RPR2-0008: 
+ * 
  * SuT shall define at least one leaf object class of `BaseEntity.PhysicalEntity` 
  * as published and/or subscribed in CS/SOM.
  */

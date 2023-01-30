@@ -5,14 +5,14 @@ import org.slf4j.LoggerFactory;
 import org.junit.jupiter.api.Test;
 import hla.rti1516e.RTIambassador;
 
-public class TC_IR_RPR2_0010Test {
+public class TC_IR_RPR2_0011Test {
 
-    public static final Logger log = LoggerFactory.getLogger(TC_IR_RPR2_0010Test.class);
+    public static final Logger log = LoggerFactory.getLogger(TC_IR_RPR2_0011Test.class);
     RTIambassador rtiAmbassador = null;
     
     @Test
     void testPerformTest() {
-        TC_IR_RPR2_0010 tc = new TC_IR_RPR2_0010();
+        TC_IR_RPR2_0011 tc = new TC_IR_RPR2_0011();
         tc.setSutFederateName("TC_IR_RPR2_0010");
         tc.setFederationName("TestFederation");
         tc.setSkipOperatorMsg(true);
@@ -21,7 +21,7 @@ public class TC_IR_RPR2_0010Test {
 
     @Test
     void testCapabilitiesTest() {
-        TC_IR_RPR2_0010 tc = new TC_IR_RPR2_0010();
+        TC_IR_RPR2_0011 tc = new TC_IR_RPR2_0011();
         tc.setSutFederateName("TC_IR_RPR2_0010");
         tc.setFederationName("NETN-ETR_TEST");
         tc.setSkipOperatorMsg(true);

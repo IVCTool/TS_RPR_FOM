@@ -46,9 +46,16 @@ import hla.rti1516e.exceptions.RTIinternalError;
 import hla.rti1516e.exceptions.RestoreInProgress;
 import hla.rti1516e.exceptions.SaveInProgress;
 
+
+/** 
+ * The HLAobjectRoot class is the base for all OMT helper classes. It provides
+ * support services to handle subscription and publication settings on OMT
+ * attributes. The class need to be initialized with an RTIambassador, before
+ * any services can be used.
+ */
 public class HLAobjectRoot {
 
-    public static final Logger log = LoggerFactory.getLogger(HLAobjectRoot.class);
+    private static final Logger log = LoggerFactory.getLogger(HLAobjectRoot.class);
     private static RTIambassador rtiAmbassador;
     private static HashMap<String,AttributeHandle> knownAttributeHandles = null;  // known attribute handles
     private static HashMap<String, AttributeHandleSet> publishedAttributes = new HashMap<>();
@@ -95,9 +102,11 @@ public class HLAobjectRoot {
             attr = rtiAmbassador.getAttributeHandleSetFactory().create();
             publishedAttributes.put(this.getClass().getSimpleName(), attr);
         }
-        attr.add(getAttributeHandle(attributeName));
+        if (attr.add(getAttributeHandle(attributeName))) {
+            // mark as not published, because new attribute was added, 
+            isPublished = false;
+        };
 
-        isPublished = false;
         log.trace("added publish for {}->{}({})", this.getHlaClassName(), attributeName, getAttributeHandle(attributeName));
     }
 

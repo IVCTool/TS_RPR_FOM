@@ -71,11 +71,12 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
 
 
 /**
- * IR_RPR2_0010:
+ * IR-RPR2-0011:
+ * 
  * SuT shall update the following required attributes for PhysicalEntity subclass object instances 
  * registered by SuT: EntityIdentifier, EntityType, Spatial.
  */
-public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
+public class TC_IR_RPR2_0011 extends AbstractTestCaseIf {
     
     RTIambassador rtiAmbassador = null;
     FederateAmbassador tcAmbassador = null;
