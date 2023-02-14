@@ -36,7 +36,7 @@
 		},
 		{
 			"id"			:	"IR-RPR-COM-0008",
-			"description"	:	"If the associated RadioTransmitter Object is "On and Transmitting" and there are no associated EncodedAudioRadioSignal interactions, then the receiver shall be receiving an unmodulated carrier."
+			"description"	:	"If the associated RadioTransmitter Object is On and Transmitting and there are no associated EncodedAudioRadioSignal interactions, then the receiver shall be receiving an unmodulated carrier."
 		},
 		{
 			"id"			:	"IR-RPR-COM-0009",
