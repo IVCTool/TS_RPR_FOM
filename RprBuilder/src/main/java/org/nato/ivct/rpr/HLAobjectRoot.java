@@ -127,6 +127,10 @@ public class HLAobjectRoot {
         log.trace("set value {}->{} = {}", this, attributeName, value);
     }
 
+    // protected DataElement getAttributeValue(String attributeName) {
+    //     return attributeValues.get(attributeName);
+    // }
+
     public void update() throws AttributeNotOwned, AttributeNotDefined, ObjectInstanceNotKnown, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError {
         rtiAmbassador.updateAttributeValues(thisObjectHandle, attributeValues, null);
         log.trace("update {}({}) to RTI", this, thisObjectHandle);
@@ -143,6 +147,10 @@ public class HLAobjectRoot {
 
     public void setObjectHandle(ObjectInstanceHandle newHandle) {
         thisObjectHandle = newHandle;
+    }
+
+    public ObjectInstanceHandle getObjectHandle() {
+        return thisObjectHandle;
     }
 
     /**

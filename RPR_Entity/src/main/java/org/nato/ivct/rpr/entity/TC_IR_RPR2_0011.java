@@ -221,12 +221,12 @@ public class TC_IR_RPR2_0011 extends AbstractTestCaseIf {
             rtiAmbassador = rtiFactory.getRtiAmbassador();
             tcAmbassador = new TestCaseAmbassador();
             ArrayList<URL> fomList = new FomFiles()
-            .addRPR_BASE()
-            .addRPR_Enumerations()
-            .addRPR_Foundation()
-            .addRPR_Physical()
-            .addRPR_Switches()
-            .get();
+                .addRPR_BASE()
+                .addRPR_Enumerations()
+                .addRPR_Foundation()
+                .addRPR_Physical()
+                .addRPR_Switches()
+                .get();
             
             rtiAmbassador.connect(tcAmbassador, CallbackModel.HLA_IMMEDIATE);
             try {
@@ -253,19 +253,26 @@ public class TC_IR_RPR2_0011 extends AbstractTestCaseIf {
             phyEntity.subscribe();
 
             receivedEntityIdentifier.acquire();
-            for (PhysicalEntity a1 : knownPhysicalEntitys.values()) {
-                EntityTypeStruct et = a1.getEntityType();
-                byte k = et.getEntityKind();
-                short cc = et.getCountryCode();
-                byte c = et.getCategory();
-                byte sc = et.getSubcategory();
-                byte sp = et.getSpecific();
-                byte ex = et.getExtra();
-            }
-
             receivedEntityType.acquire();
             receivedSpatial.acquire();
 
+            for (PhysicalEntity phyEnt : knownPhysicalEntitys.values()) {
+                logger.trace("received entity identifier {}({}): EntityNumber={}, FederateIdentifier[SiteID={}, ApplicationID={}]",
+                    phyEnt.getHlaClassName(), phyEnt.getObjectHandle(), 
+                    phyEnt.getEntityIdentifier().getEntityNumber(),
+                    phyEnt.getEntityIdentifier().getFederateIdentifier().getSiteID(),
+                    phyEnt.getEntityIdentifier().getFederateIdentifier().getApplicationID()
+                );
+                logger.trace("received entity type {}({}): entityKind={}, countryCode={}, category={}, subcategory={}, specific={}, extra={}", 
+                    phyEnt.getHlaClassName(), phyEnt.getObjectHandle(), 
+                    phyEnt.getEntityType().getEntityKind(), 
+                    phyEnt.getEntityType().getCountryCode(),
+                    phyEnt.getEntityType().getCategory(),
+                    phyEnt.getEntityType().getSubcategory(),
+                    phyEnt.getEntityType().getSpecific(),
+                    phyEnt.getEntityType().getExtra()
+                );
+            }
         } catch (Exception e) {
             throw new TcInconclusiveIf(e.getMessage());
         }        

@@ -18,6 +18,7 @@ package org.nato.ivct.rpr;
 
 import java.util.Map.Entry;
 
+import org.nato.ivct.rpr.datatypes.EntityIdentifierStruct;
 import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
 import org.nato.ivct.rpr.datatypes.SpatialVariantStruct;
 
@@ -46,7 +47,7 @@ public class BaseEntity extends HLAobjectRoot {
     
     private EntityTypeStruct aEntityTypeAttribute = null;
     // following are the not-yet typed attributes
-    private HLAfixedRecord aEntityIdentifier = null;
+    private EntityIdentifierStruct aEntityIdentifier = null;
     private HLAfixedRecord aIsPartOf = null;
     private SpatialVariantStruct aSpatial = null;
     private HLAvariantRecord aRelativeSpatical = null;
@@ -65,7 +66,8 @@ public class BaseEntity extends HLAobjectRoot {
                     getEntityType().decode(entry.getValue());
                     break;
                 case EntityIdentifier:
-                    getEntityIdentifier().decode(entry.getValue());
+                    aEntityIdentifier = getEntityIdentifier();
+                    aEntityIdentifier.decode(entry.getValue());
                     break;
                 case IsPartOf:
                     getIsPartOf().decode(entry.getValue());
@@ -141,14 +143,14 @@ public class BaseEntity extends HLAobjectRoot {
         return (aEntityTypeAttribute != null);
     }
 
-    public void setEntityIdentifier(HLAfixedRecord value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
-        setAttributeValue(Attributes.EntityIdentifier.name(), value);
+    public void setEntityIdentifier(EntityIdentifierStruct value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        aEntityIdentifier = value;
+        setAttributeValue(Attributes.EntityIdentifier.name(), value.getDataElement());
     }
-    public HLAfixedRecord getEntityIdentifier() {
+    public EntityIdentifierStruct getEntityIdentifier() throws RTIinternalError, NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, EncoderException {
         if (aEntityIdentifier == null) {
-            aEntityIdentifier = encoderFactory.createHLAfixedRecord(); 
-            aEntityIdentifier.add(encoderFactory.createHLAfixedRecord()); // Federate Identifier
-            aEntityIdentifier.add(encoderFactory.createHLAoctet());       // EntityNumber
+            aEntityIdentifier = new EntityIdentifierStruct();
+            setAttributeValue(Attributes.EntityIdentifier.name(), aEntityIdentifier);
         }
         return aEntityIdentifier;
     }

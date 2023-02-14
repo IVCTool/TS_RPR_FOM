@@ -20,8 +20,6 @@ import hla.rti1516e.NullFederateAmbassador;
 import hla.rti1516e.RTIambassador;
 import hla.rti1516e.RtiFactory;
 import hla.rti1516e.RtiFactoryFactory;
-import hla.rti1516e.encoding.HLAfixedRecord;
-import hla.rti1516e.encoding.HLAoctet;
 import hla.rti1516e.exceptions.FederationExecutionAlreadyExists;
 import java.net.URL;
 import java.util.ArrayList;
@@ -30,6 +28,7 @@ import java.util.Map;
 import org.slf4j.LoggerFactory;
 
 import org.nato.ivct.rpr.*;
+import org.nato.ivct.rpr.datatypes.EntityIdentifierStruct;
 import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
 import org.nato.ivct.rpr.datatypes.SpatialStaticStruct;
 import org.nato.ivct.rpr.datatypes.SpatialVariantStruct;
@@ -161,8 +160,11 @@ public class AircraftApp extends NullFederateAmbassador {
             aircraft.addPublish(BaseEntity.Attributes.Spatial);
             aircraft.register();
 
-            HLAfixedRecord aEntityIdentifier = aircraft.getEntityIdentifier();
-            HLAoctet entityKind = (HLAoctet) aEntityIdentifier.get(1);
+			EntityIdentifierStruct entityIdentifier = aircraft.getEntityIdentifier();
+			entityIdentifier.setEntityNumber((short) 1);
+            entityIdentifier.getFederateIdentifier().setApplicationID((short) 2);
+            entityIdentifier.getFederateIdentifier().setSiteID((short) 3);
+			aircraft.setEntityIdentifier(entityIdentifier);
 			EntityTypeStruct entityType = aircraft.getEntityType();
             entityType.setEntityKind((byte) 0xa);
             entityType.setDomain((byte) 0xb);
@@ -174,9 +176,6 @@ public class AircraftApp extends NullFederateAmbassador {
 			aircraft.setEntityType(entityType);
 			aircraft.update();
 			
-			byte b = (byte) 42;
-			entityKind.setValue(b);
-			aircraft.setEntityIdentifier(aEntityIdentifier);
 			if (provoke(CmdLineOptions.provokeFlyAircraft)) {
 				for (int i=0; i<nrOfCycles; i++) {
 					double xPos = 1.0 + Math.sin(i);

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.nato.ivct.rpr.Platform.Attributes;
+import org.nato.ivct.rpr.datatypes.EntityIdentifierStruct;
 import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -152,6 +153,11 @@ public class BaseEntityTest {
             base1.publishSpatial();
             base1.publishRelativeSpatial();
             base1.register();
+
+            EntityIdentifierStruct aEntityIdentifier = base1.getEntityIdentifier();
+            aEntityIdentifier.setEntityNumber((short) 1);
+            aEntityIdentifier.getFederateIdentifier().setApplicationID((short) 2);
+            aEntityIdentifier.getFederateIdentifier().setSiteID((short) 3);
 
             EntityTypeStruct aEntityType = base1.getEntityType();
             aEntityType.setEntityKind((byte) 0x1);
