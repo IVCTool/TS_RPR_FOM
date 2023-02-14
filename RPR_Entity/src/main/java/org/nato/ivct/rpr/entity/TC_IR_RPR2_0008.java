@@ -119,7 +119,7 @@ public class TC_IR_RPR2_0008 extends AbstractTestCaseIf {
 			try {
 				rtiAmbassador.createFederationExecution(federationName, fomList.toArray(new URL[fomList.size()]));
 			} catch (FederationExecutionAlreadyExists ignored) { }
-			rtiAmbassador.joinFederationExecution(sutFederateName, federationName, fomList.toArray(new URL[fomList.size()]));
+			rtiAmbassador.joinFederationExecution(this.getClass().getSimpleName(), federationName, fomList.toArray(new URL[fomList.size()]));
 		} catch (RTIinternalError | ConnectionFailed | InvalidLocalSettingsDesignator | UnsupportedCallbackModel 
 				| AlreadyConnected | CallNotAllowedFromWithinCallback | CouldNotCreateLogicalTimeFactory 
 				| FederationExecutionDoesNotExist | InconsistentFDD | ErrorReadingFDD | CouldNotOpenFDD 

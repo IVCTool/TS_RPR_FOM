@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.Semaphore;
 
-import org.nato.ivct.rpr.Aircraft;
+import org.nato.ivct.rpr.PhysicalEntity;
 import org.nato.ivct.rpr.BaseEntity;
 import org.nato.ivct.rpr.FomFiles;
 import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
@@ -84,9 +84,9 @@ public class TC_IR_RPR2_0011 extends AbstractTestCaseIf {
     Semaphore receivedEntityIdentifier = new Semaphore(0);
     Semaphore receivedEntityType = new Semaphore(0);
     Semaphore receivedSpatial = new Semaphore(0);
-    HashMap<ObjectInstanceHandle, Aircraft> knownAircrafts = new HashMap<>();
+    HashMap<ObjectInstanceHandle, PhysicalEntity> knownPhysicalEntitys = new HashMap<>();
     HashMap<ObjectInstanceHandle, BaseEntity> knownEntities = new HashMap<>();
-    Aircraft aircraft;
+    PhysicalEntity phyEntity;
     BaseEntity entity;
 
     class TestCaseAmbassador extends NullFederateAmbassador {
@@ -98,23 +98,19 @@ public class TC_IR_RPR2_0011 extends AbstractTestCaseIf {
             logger.trace("discoverObjectInstance {}", theObject);
             try {
                 String receivedClass = rtiAmbassador.getObjectClassName(theObjectClass);
-                if (receivedClass.equals(aircraft.getHlaClassName())) {
+                if (receivedClass.equals(phyEntity.getHlaClassName())) {
                     // create the helper object
-                    Aircraft obj = new Aircraft();
-                    obj.register(theObject);
-                    knownAircrafts.put(theObject, obj);
+                    PhysicalEntity obj = new PhysicalEntity();
+                    obj.setObjectHandle(theObject);
+                    knownPhysicalEntitys.put(theObject, obj);
                 } else if (receivedClass.equals(entity.getHlaClassName())) {
                     BaseEntity newEntity = new BaseEntity();
-                    newEntity.register(theObject);
+                    newEntity.setObjectHandle(theObject);
                     knownEntities.put(theObject, newEntity);
                 }
 
-            } catch (InvalidObjectClassHandle | FederateNotExecutionMember | NotConnected | RTIinternalError e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
             } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                logger.error("discoverObjectInstance received Exception", e);
             }
         }
 
@@ -151,25 +147,21 @@ public class TC_IR_RPR2_0011 extends AbstractTestCaseIf {
                 byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport,
                 SupplementalReflectInfo reflectInfo) throws FederateInternalError {
             logger.trace("reflectAttributeValues without time");
-            Aircraft aircraft = knownAircrafts.get(theObject);
-            if (aircraft != null) {
-                aircraft.clear();
+            PhysicalEntity phyEntity = knownPhysicalEntitys.get(theObject);
+            if (phyEntity != null) {
+                phyEntity.clear();
                 try {
-                    aircraft.decode(theAttributes);
-                } catch (NameNotFound | InvalidObjectClassHandle | FederateNotExecutionMember | NotConnected
-                        | RTIinternalError e) {
-                    throw new FederateInternalError(e.getLocalizedMessage());
-                } catch (DecoderException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    phyEntity.decode(theAttributes);
+                } catch (Exception e) {
+                    logger.error("reflectAttributeValues received Exception", e);
                 }
-                if (aircraft.isSetEntityType()) {
+                if (phyEntity.isSetEntityType()) {
                     receivedEntityIdentifier.release(1);
                 }
-                if (aircraft.isSetEntityType()) {
+                if (phyEntity.isSetEntityType()) {
                     receivedEntityType.release(1);
                 }
-                if (aircraft.isSetSpatial()) {
+                if (phyEntity.isSetSpatial()) {
                     receivedSpatial.release(1);
                 }
             }
@@ -240,7 +232,7 @@ public class TC_IR_RPR2_0011 extends AbstractTestCaseIf {
             try {
                 rtiAmbassador.createFederationExecution(federationName, fomList.toArray(new URL[fomList.size()]));
             } catch (FederationExecutionAlreadyExists ignored) { }
-            rtiAmbassador.joinFederationExecution(sutFederateName, federationName, fomList.toArray(new URL[fomList.size()]));
+            rtiAmbassador.joinFederationExecution(this.getClass().getSimpleName(), federationName, fomList.toArray(new URL[fomList.size()]));
         } catch (RTIinternalError | ConnectionFailed | InvalidLocalSettingsDesignator | UnsupportedCallbackModel 
                 | AlreadyConnected | CallNotAllowedFromWithinCallback | CouldNotCreateLogicalTimeFactory 
                 | FederationExecutionDoesNotExist | InconsistentFDD | ErrorReadingFDD | CouldNotOpenFDD 
@@ -253,22 +245,15 @@ public class TC_IR_RPR2_0011 extends AbstractTestCaseIf {
     protected void performTest(Logger logger) throws TcInconclusiveIf, TcFailedIf {
         logger.info("perform test {}", this.getClass().getName());
         try {
-            BaseEntity.initialize(rtiAmbassador);
-            entity = new BaseEntity();
-            entity.addSubscribe(BaseEntity.Attributes.EntityIdentifier);
-            entity.addSubscribe(BaseEntity.Attributes.EntityType);
-            entity.addSubscribe(BaseEntity.Attributes.Spatial);
-            entity.subscribe();
-
-            Aircraft.initialize(rtiAmbassador);
-            aircraft = new Aircraft();
-            aircraft.addSubscribe(BaseEntity.Attributes.EntityIdentifier);
-            aircraft.addSubscribe(BaseEntity.Attributes.EntityType);
-            aircraft.addSubscribe(BaseEntity.Attributes.Spatial);
-            aircraft.subscribe();
+            PhysicalEntity.initialize(rtiAmbassador);
+            phyEntity = new PhysicalEntity();
+            phyEntity.addSubscribe(BaseEntity.Attributes.EntityIdentifier);
+            phyEntity.addSubscribe(BaseEntity.Attributes.EntityType);
+            phyEntity.addSubscribe(BaseEntity.Attributes.Spatial);
+            phyEntity.subscribe();
 
             receivedEntityIdentifier.acquire();
-            for (Aircraft a1 : knownAircrafts.values()) {
+            for (PhysicalEntity a1 : knownPhysicalEntitys.values()) {
                 EntityTypeStruct et = a1.getEntityType();
                 byte k = et.getEntityKind();
                 short cc = et.getCountryCode();
@@ -279,7 +264,7 @@ public class TC_IR_RPR2_0011 extends AbstractTestCaseIf {
             }
 
             receivedEntityType.acquire();
-            // receivedSpatial.acquire();
+            receivedSpatial.acquire();
 
         } catch (Exception e) {
             throw new TcInconclusiveIf(e.getMessage());
