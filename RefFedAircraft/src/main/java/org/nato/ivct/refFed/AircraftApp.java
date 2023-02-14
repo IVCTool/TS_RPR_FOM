@@ -37,7 +37,7 @@ import org.nato.ivct.rpr.datatypes.SpatialVariantStruct;
 public class AircraftApp extends NullFederateAmbassador {
     
     public enum CmdLineOptions {
-        FlyAircraft,
+        provokeFlyAircraft,
         provokeMissingMandatoryAttribute,
         provokeDeadReckoningError
     }
@@ -61,7 +61,7 @@ public class AircraftApp extends NullFederateAmbassador {
     private String rtiHost = "localhost";
 	private String federationName = "TestFederation";
 	private String federateName = "RefFedAircraft";
-	private int nrOfCycles = 40;
+	private int nrOfCycles = 400;
 	private RTIambassador rtiAmbassador;
 
 	public static void main(final String[] args) {
@@ -177,7 +177,7 @@ public class AircraftApp extends NullFederateAmbassador {
 			byte b = (byte) 42;
 			entityKind.setValue(b);
 			aircraft.setEntityIdentifier(aEntityIdentifier);
-			if (provoke(CmdLineOptions.FlyAircraft)) {
+			if (provoke(CmdLineOptions.provokeFlyAircraft)) {
 				for (int i=0; i<nrOfCycles; i++) {
 					double xPos = 1.0 + Math.sin(i);
 					double yPos = 2.0 + Math.sin(i);

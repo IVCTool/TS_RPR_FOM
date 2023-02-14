@@ -9,8 +9,7 @@ public class AircraftAppTest {
     
     @Test
     void testAircraftApp () {
-        String[] args = {"-rtiHost", "testHost", "-federationName", "testFederation", "-federateName", "testFederate", "-FlyAircraft"};
-        AircraftApp app = new AircraftApp(args);
-        assertNotNull(app);
+        String[] args = {"-rtiHost", "localhost", "-federationName", "TestFederation", "-federateName", "Flyer1", "-pFlyAircraft"};
+        AircraftApp.main(args);
     }
 }

@@ -16,7 +16,7 @@
             "request": "launch",
             "mainClass": "org.nato.ivct.refFed.AircraftApp",
             "projectName": "RefFedAircraft",
-            "args": ["-federateName", "Flyer1", "-FlyAircraft"]
+            "args": ["-federateName", "Flyer1", "-provokeFlyAircraft"]
         }
     ]
 }
