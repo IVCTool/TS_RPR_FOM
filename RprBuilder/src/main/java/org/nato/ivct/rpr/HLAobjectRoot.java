@@ -106,7 +106,6 @@ public class HLAobjectRoot {
             // mark as not published, because new attribute was added, 
             isPublished = false;
         };
-
         log.trace("added publish for {}->{}({})", this.getHlaClassName(), attributeName, getAttributeHandle(attributeName));
     }
 
@@ -116,9 +115,10 @@ public class HLAobjectRoot {
             attr = rtiAmbassador.getAttributeHandleSetFactory().create();
             subscribedAttributes.put(this.getClass().getSimpleName(), attr);
         }
-        attr.add(getAttributeHandle(attributeName));
-
-        isSubscribed = false;
+        if (attr.add(getAttributeHandle(attributeName))) {
+            // attribute was not yet subscribed
+            isSubscribed = false;
+        }
         log.trace("added subscribe for {}->{}({})", this.getClass().getSimpleName(), attributeName, getAttributeHandle(attributeName));
     }
     
@@ -135,14 +135,13 @@ public class HLAobjectRoot {
     public void register() throws ObjectClassNotPublished, ObjectClassNotDefined, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError, AttributeNotDefined {
         publish();
         if (!isRegistered) {
-
             thisObjectHandle = rtiAmbassador.registerObjectInstance(thisClassHandle);
             log.trace("register {}({}) as {}", this, thisClassHandle, thisObjectHandle);
             isRegistered = true;
         }
     }
 
-    public void register(ObjectInstanceHandle newHandle) {
+    public void setObjectHandle(ObjectInstanceHandle newHandle) {
         thisObjectHandle = newHandle;
     }
 
