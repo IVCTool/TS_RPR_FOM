@@ -12,7 +12,7 @@
         },
         {
             "type": "java",
-            "name": "Launch AircraftApp",
+            "name": "Flyer1",
             "request": "launch",
             "mainClass": "org.nato.ivct.refFed.AircraftApp",
             "projectName": "RefFedAircraft",
