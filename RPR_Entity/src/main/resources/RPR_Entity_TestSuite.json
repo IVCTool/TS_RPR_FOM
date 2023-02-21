@@ -4,7 +4,7 @@
     "name": "RPR-ENTITY 2.0 Test Suite",
     "description": "Collection of RPR-ENTITY test cases",
     "tsRunTimeFolder": "",
-    "tsLibTimeFolder": "RPR_Entity-0.1-SNAPSHOT.jar",
+    "tsLibTimeFolder": "RPR_Entity-0.1-SNAPSHOT/RPR_Entity-0.1-SNAPSHOT.jar",
     "testcases": [
         {
             "TC": "org.nato.ivct.rpr.entity.TC_IR_RPR2_0008",
