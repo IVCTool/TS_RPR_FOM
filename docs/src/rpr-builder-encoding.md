@@ -53,26 +53,26 @@ The implementation approach of the helper classed is to provide a base class for
 
 The helper class will be specific for a particular parameter or attribute and will provide Java type save getter and setter methods. 
 
-```
-# Initialize the Helper Classes
+```java
+// Initialize the Helper Classes
 HLAobjectRoot.initialize(rtiAmbassador);
-# Create typed instance helper 
+// Create typed instance helper 
 BaseEntity base1 = new BaseEntity();
 base1.subscribeEntityType();
 base1.subscribeEntityIdentifier();
 base1.register();
-# use getter and setter to work with attributes
+// use getter and setter to work with attributes
 base1.getEntityIdentifier().setEntityNumber((short) 1);
 base1.getEntityIdentifier().getFederateIdentifier().setApplicationID((short) 2);
 base1.getEntityIdentifier().getFederateIdentifier().setSiteID((short) 3);
 base1.getEntityType().setEntityKind((byte) 0x1);
-# send all changed attributes to the rti ambassador 
+// send all changed attributes to the rti ambassador 
 base1.update()
 ```
 
 On the receiver side, the helper classes allow the construction of a type save proxy object by decoding the received _AttributeHandleValueMap theAttributes_. 
 
-```
+```java
 BaseEntity recvEntity = new BaseEntity();
 recvEntity.decode(theAttributes);
 short n = recvEntity.getEntityIdentifier().getEntityNumber();
