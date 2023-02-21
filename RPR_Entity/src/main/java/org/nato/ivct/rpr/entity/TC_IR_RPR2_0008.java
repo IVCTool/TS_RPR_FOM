@@ -17,15 +17,17 @@ package org.nato.ivct.rpr.entity;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.Semaphore;
 
 import org.nato.ivct.rpr.BaseEntity;
-import org.nato.ivct.rpr.Aircraft;
 import org.nato.ivct.rpr.FomFiles;
+import org.nato.ivct.rpr.PhysicalEntity;
 import org.slf4j.Logger;
 import de.fraunhofer.iosb.tc_lib_if.AbstractTestCaseIf;
 import de.fraunhofer.iosb.tc_lib_if.TcFailedIf;
 import de.fraunhofer.iosb.tc_lib_if.TcInconclusiveIf;
+import hla.rti1516e.AttributeHandle;
 import hla.rti1516e.CallbackModel;
 import hla.rti1516e.FederateAmbassador;
 import hla.rti1516e.FederateHandle;
@@ -51,6 +53,7 @@ import hla.rti1516e.exceptions.FederationExecutionDoesNotExist;
 import hla.rti1516e.exceptions.InconsistentFDD;
 import hla.rti1516e.exceptions.InvalidLocalSettingsDesignator;
 import hla.rti1516e.exceptions.InvalidResignAction;
+import hla.rti1516e.exceptions.NameNotFound;
 import hla.rti1516e.exceptions.NotConnected;
 import hla.rti1516e.exceptions.OwnershipAcquisitionPending;
 import hla.rti1516e.exceptions.RTIinternalError;
@@ -69,7 +72,11 @@ public class TC_IR_RPR2_0008 extends AbstractTestCaseIf {
 	RTIambassador rtiAmbassador = null;
 	FederateAmbassador tcAmbassador = null;
     Logger logger = null;
-	Semaphore semaphore = new Semaphore(0);
+	Semaphore physicalEntityDiscovered = new Semaphore(0);
+    HashMap<ObjectInstanceHandle, PhysicalEntity> knownPhysicalEntitys = new HashMap<>();
+    PhysicalEntity phyEntity;
+	private FederateHandle sutHandle;
+	boolean phyEntityFromSutFound = false;
 
     class TestCaseAmbassador extends NullFederateAmbassador {
 		@Override
@@ -78,8 +85,21 @@ public class TC_IR_RPR2_0008 extends AbstractTestCaseIf {
 				ObjectClassHandle theObjectClass,
 				String objectName) throws FederateInternalError {
 			logger.trace("discoverObjectInstance {}", theObject);
-			semaphore.release(1);
+			try {
+			
+                String receivedClass = rtiAmbassador.getObjectClassName(theObjectClass);
+                if (receivedClass.equals(phyEntity.getHlaClassName())) {
+					// create the helper object
+                    PhysicalEntity obj = new PhysicalEntity();
+                    obj.setObjectHandle(theObject);
+                    knownPhysicalEntitys.put(theObject, obj);
+                } 
+			} catch (Exception e) {
+				logger.warn("discovered object instance, but federate {} is not connected", getSutFederateName());
+			}
+			physicalEntityDiscovered.release(1);
 		}
+
 		@Override
 		public void discoverObjectInstance(
 				ObjectInstanceHandle theObject,
@@ -87,9 +107,31 @@ public class TC_IR_RPR2_0008 extends AbstractTestCaseIf {
 				String objectName,
 				FederateHandle producingFederate) throws FederateInternalError {
 			logger.trace("discoverObjectInstance {} with producingFederate {}", theObject, producingFederate);
-			discoverObjectInstance(theObject, theObjectClass, objectName);;
+			discoverObjectInstance(theObject, theObjectClass, objectName);
+			testSutHandle(producingFederate, theObject);
+		}
+
+		@Override
+		public void informAttributeOwnership(ObjectInstanceHandle theObject, AttributeHandle theAttribute,
+				FederateHandle theOwner) throws FederateInternalError {
+			testSutHandle(theOwner, theObject);
 		}
     }
+
+	private boolean testSutHandle(FederateHandle theFederate, ObjectInstanceHandle theObject) {
+		try {
+			PhysicalEntity phyEntity = knownPhysicalEntitys.get(theObject);
+			sutHandle = rtiAmbassador.getFederateHandle(getSutFederateName());
+			if ((sutHandle == theFederate) &&  (phyEntity != null)){
+				phyEntityFromSutFound = true;
+				physicalEntityDiscovered.release(1);
+				return true;
+			}
+		} catch (NameNotFound | FederateNotExecutionMember | NotConnected | RTIinternalError e) {
+			logger.warn("System under Test federate \"{}\" not yet found", getSutFederateName());
+		}
+		return false;
+	}
     
 	@Override
 	protected void logTestPurpose(Logger logger) {
@@ -132,11 +174,20 @@ public class TC_IR_RPR2_0008 extends AbstractTestCaseIf {
 	protected void performTest(Logger logger) throws TcInconclusiveIf, TcFailedIf {
         logger.info("perform test {}", this.getClass().getName());
 		try {
-			Aircraft.initialize(rtiAmbassador);
-			Aircraft aircraft = new Aircraft();
-			aircraft.addSubscribe(BaseEntity.Attributes.EntityIdentifier);
-			aircraft.subscribe();
-			semaphore.acquire();
+			PhysicalEntity.initialize(rtiAmbassador);
+			phyEntity = new PhysicalEntity();
+			phyEntity.addSubscribe(BaseEntity.Attributes.EntityIdentifier);
+			phyEntity.subscribe();
+			// wait until object is discovered and check if SuT owns it
+			while (! phyEntityFromSutFound) {
+				physicalEntityDiscovered.acquire();
+				for (PhysicalEntity aPhysicalEntity : knownPhysicalEntitys.values()) {
+					ObjectInstanceHandle objectHandle = aPhysicalEntity.getObjectHandle();
+					AttributeHandle entityIdentifierHandle = aPhysicalEntity.getAttributeHandle(BaseEntity.Attributes.EntityIdentifier.name());
+					rtiAmbassador.queryAttributeOwnership(objectHandle, entityIdentifierHandle);
+				}
+
+			}
 		} catch (Exception e) {
 			throw new TcInconclusiveIf(e.getMessage());
 		}
