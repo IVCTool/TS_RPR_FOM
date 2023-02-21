@@ -14,7 +14,7 @@ public class TC_IR_RPR2_0011Test {
     @Test
     void testPerformTest() {
         TC_IR_RPR2_0011 tc = new TC_IR_RPR2_0011();
-        tc.setSutFederateName("TC_IR_RPR2_0011");
+        tc.setSutFederateName("Flyer1");
         tc.setFederationName("TestFederation");
         tc.setSkipOperatorMsg(true);
         tc.execute(log);
@@ -22,11 +22,23 @@ public class TC_IR_RPR2_0011Test {
 
     @Test
     @Disabled
-    void testCapabilitiesTest() {
+    void testNETN_ETR_Test() {
         TC_IR_RPR2_0011 tc = new TC_IR_RPR2_0011();
         tc.setSutFederateName("TC_IR_RPR2_0011");
         tc.setFederationName("NETN-ETR_TEST");
         tc.setSkipOperatorMsg(true);
         tc.execute(log);
     }
+
+    @Test
+    @Disabled
+    void testPerformTestHologate() {
+        TC_IR_RPR2_0011 tc = new TC_IR_RPR2_0011();
+        tc.setSutFederateName("Hologate");
+        tc.setFederationName("HologateFederation");
+        tc.setSkipOperatorMsg(true);
+        tc.execute(log);
+    }
+
+
 }
