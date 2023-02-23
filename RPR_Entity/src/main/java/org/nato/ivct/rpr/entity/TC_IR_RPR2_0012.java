@@ -17,6 +17,9 @@ package org.nato.ivct.rpr.entity;
 import java.net.URL;
 import java.util.ArrayList;
 
+import org.nato.ivct.rpr.Aircraft;
+import org.nato.ivct.rpr.BaseEntity;
+import org.nato.ivct.rpr.PhysicalEntity;
 import org.nato.ivct.rpr.FomFiles;
 import org.nato.ivct.rpr.entity.TC_IR_RPR2_0008.TestCaseAmbassador;
 import org.slf4j.Logger;
@@ -69,6 +72,8 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 				ObjectClassHandle theObjectClass,
 				String objectName) throws FederateInternalError {
 			logger.trace("discoverObjectInstance {}", theObject);
+			logger.info("discoverObjectInstance {}", theObject);
+			System.out.println("######### ich habe was bekommen"   );
 			//semaphore.release(1);
 		}
 
@@ -126,16 +131,76 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 		}
 	}
 
-		/*
-		 *
-		 */
-		
-
-		
+	
 		
 	@Override
 	protected void performTest(Logger logger) throws TcInconclusiveIf, TcFailedIf {
-		// TODO Auto-generated method stub
+		Aircraft.initialize(rtiAmbassador);
+		
+		try {
+			Aircraft aircraft = new Aircraft();
+			//aircraft.addSubscribe(BaseEntity.Attributes.EntityIdentifier);
+			aircraft.addSubscribe(PhysicalEntity.Attributes.CamouflageType);
+			aircraft.addSubscribe(PhysicalEntity.Attributes.DamageState);
+			aircraft.addSubscribe(PhysicalEntity.Attributes.EngineSmokeOn);
+			aircraft.addSubscribe(PhysicalEntity.Attributes.FirePowerDisabled);
+			aircraft.addSubscribe(PhysicalEntity.Attributes.FlamesPresent);
+			aircraft.addSubscribe(PhysicalEntity.Attributes.Immobilized);
+			aircraft.addSubscribe(PhysicalEntity.Attributes.IsConcealed);
+			aircraft.addSubscribe(PhysicalEntity.Attributes.PowerPlantOn);
+			aircraft.addSubscribe(PhysicalEntity.Attributes.SmokePlumePresent);
+			aircraft.addSubscribe(PhysicalEntity.Attributes.TentDeployed);
+			aircraft.addSubscribe(PhysicalEntity.Attributes.TrailingEffectsCode);
+
+			
+			/*  Domain Appropriateness for PhysicalEntity Attributes
+			CamouflageType
+			DamageState
+			EngineSmokeOn
+			FirePowerDisabled
+			FlamesPresent
+			Immobilized
+			IsConcealed
+			PowerPlantOn
+			SmokePlumePresent
+			TentDeployed
+			TrailingEffectsCode
+			*/
+			/*PhysicalEntity.Attributes.
+			    AcousticSignatureIndex,
+		        AlternateEntityType,
+		        ArticulatedParametersArray,
+		        CamouflageType,
+		        DamageState,
+		        EngineSmokeOn,
+		        FirePowerDisabled,
+		        FlamesPresent,
+		        ForceIdentifier,
+		        HasAmmunitionSupplyCap,
+		        HasFuelSupplyCap,
+		        HasRecoveryCap,
+		        HasRepairCap,
+		        Immobilized,
+		        InfraredSignatureIndex,
+		        IsConcealed,
+		        LiveEntityMeasuredSpeed,
+		        Marking,
+		        PowerPlantOn,
+		        PropulsionSystemsData,
+		        RadarCrossSectionSignatureIndex,
+		        SmokePlumePresent,
+		        TentDeployed,
+		        TrailingEffectsCode,
+		        VectoringNozzleSystemData  
+			*/
+			
+			
+			aircraft.subscribe();
+		} catch (Exception e) {
+			throw new TcInconclusiveIf(e.getMessage());
+		}
+		
+		
 
 	}
 
