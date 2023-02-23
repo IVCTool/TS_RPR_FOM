@@ -8,14 +8,11 @@ import org.junit.jupiter.api.Test;
 import org.nato.ivct.rpr.Platform.Attributes;
 import org.nato.ivct.rpr.datatypes.EntityIdentifierStruct;
 import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-
 import java.net.URL;
 import java.util.ArrayList;
-
 import hla.rti1516e.AttributeHandle;
 import hla.rti1516e.CallbackModel;
 import hla.rti1516e.FederateAmbassador;

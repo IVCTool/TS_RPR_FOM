@@ -45,11 +45,11 @@ public class BaseEntity extends HLAobjectRoot {
         RelativeSpatial
     }
     
-    private EntityTypeStruct aEntityTypeAttribute = null;
-    // following are the not-yet typed attributes
+    private EntityTypeStruct aEntityType = null;
     private EntityIdentifierStruct aEntityIdentifier = null;
-    private HLAfixedRecord aIsPartOf = null;
     private SpatialVariantStruct aSpatial = null;
+    // following are the not-yet typed attributes
+    private HLAfixedRecord aIsPartOf = null;
     private HLAvariantRecord aRelativeSpatical = null;
     
     public BaseEntity() throws Exception {
@@ -62,12 +62,10 @@ public class BaseEntity extends HLAobjectRoot {
             Attributes attribute = Attributes.valueOf(getHandleString(attributeHandle));
             switch (attribute) {
                 case EntityType:
-                    aEntityTypeAttribute = getEntityType();
                     getEntityType().decode(entry.getValue());
                     break;
                 case EntityIdentifier:
-                    aEntityIdentifier = getEntityIdentifier();
-                    aEntityIdentifier.decode(entry.getValue());
+                    getEntityIdentifier().decode(entry.getValue());
                     break;
                 case IsPartOf:
                     getIsPartOf().decode(entry.getValue());
@@ -130,17 +128,17 @@ public class BaseEntity extends HLAobjectRoot {
      * setter and getter for BaseEntity attributes
      */
     public void setEntityType (EntityTypeStruct value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
-        aEntityTypeAttribute = value;
-        setAttributeValue(Attributes.EntityType.name(), aEntityTypeAttribute.getDataElement());
+        aEntityType = value;
+        setAttributeValue(Attributes.EntityType.name(), aEntityType.getDataElement());
     }
     public EntityTypeStruct getEntityType() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
-        if (aEntityTypeAttribute == null) {
-            aEntityTypeAttribute = new EntityTypeStruct();
+        if (aEntityType == null) {
+            aEntityType = new EntityTypeStruct();
         }
-        return aEntityTypeAttribute;
+        return aEntityType;
     }
     public Boolean isSetEntityType() {
-        return (aEntityTypeAttribute != null);
+        return (aEntityType != null);
     }
 
     public void setEntityIdentifier(EntityIdentifierStruct value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {

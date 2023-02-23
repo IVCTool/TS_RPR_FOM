@@ -246,7 +246,7 @@ public class HLAobjectRoot {
      * @throws NotConnected
      * @throws RTIinternalError
      */
-    protected AttributeHandle getAttributeHandle(String attributeName) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
+    public AttributeHandle getAttributeHandle(String attributeName) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
         AttributeHandle handle = knownAttributeHandles.get(attributeName);
         if (handle == null) {
             handle = rtiAmbassador.getAttributeHandle(thisClassHandle, attributeName);

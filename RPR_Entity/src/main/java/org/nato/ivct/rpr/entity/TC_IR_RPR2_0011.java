@@ -22,13 +22,13 @@ import java.util.concurrent.Semaphore;
 import org.nato.ivct.rpr.PhysicalEntity;
 import org.nato.ivct.rpr.BaseEntity;
 import org.nato.ivct.rpr.FomFiles;
-import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
 import org.nato.ivct.rpr.datatypes.SpatialStaticStruct;
 import org.slf4j.Logger;
 
 import de.fraunhofer.iosb.tc_lib_if.AbstractTestCaseIf;
 import de.fraunhofer.iosb.tc_lib_if.TcFailedIf;
 import de.fraunhofer.iosb.tc_lib_if.TcInconclusiveIf;
+import hla.rti1516e.AttributeHandle;
 import hla.rti1516e.AttributeHandleValueMap;
 import hla.rti1516e.CallbackModel;
 import hla.rti1516e.FederateAmbassador;
@@ -81,6 +81,7 @@ public class TC_IR_RPR2_0011 extends AbstractTestCaseIf {
     RTIambassador rtiAmbassador = null;
     FederateAmbassador tcAmbassador = null;
     Logger logger = null;
+	Semaphore physicalEntityDiscovered = new Semaphore(0);
     Semaphore receivedEntityIdentifier = new Semaphore(0);
     Semaphore receivedEntityType = new Semaphore(0);
     Semaphore receivedSpatial = new Semaphore(0);
@@ -88,6 +89,8 @@ public class TC_IR_RPR2_0011 extends AbstractTestCaseIf {
     HashMap<ObjectInstanceHandle, BaseEntity> knownEntities = new HashMap<>();
     PhysicalEntity phyEntity;
     BaseEntity entity;
+	private FederateHandle sutHandle;
+	boolean phyEntityFromSutFound = false;
 
     class TestCaseAmbassador extends NullFederateAmbassador {
         @Override
@@ -103,10 +106,12 @@ public class TC_IR_RPR2_0011 extends AbstractTestCaseIf {
                     PhysicalEntity obj = new PhysicalEntity();
                     obj.setObjectHandle(theObject);
                     knownPhysicalEntitys.put(theObject, obj);
+                    physicalEntityDiscovered.release(1);
                 } else if (receivedClass.equals(entity.getHlaClassName())) {
                     BaseEntity newEntity = new BaseEntity();
                     newEntity.setObjectHandle(theObject);
                     knownEntities.put(theObject, newEntity);
+                    physicalEntityDiscovered.release(1);
                 }
 
             } catch (Exception e) {
@@ -122,7 +127,14 @@ public class TC_IR_RPR2_0011 extends AbstractTestCaseIf {
                 FederateHandle producingFederate) throws FederateInternalError {
             logger.trace("discoverObjectInstance {} with producingFederate {}", theObject, producingFederate);
             this.discoverObjectInstance(theObject, theObjectClass, objectName);
+			testSutHandle(producingFederate, theObject);
         }
+
+		@Override
+		public void informAttributeOwnership(ObjectInstanceHandle theObject, AttributeHandle theAttribute,
+				FederateHandle theOwner) throws FederateInternalError {
+			testSutHandle(theOwner, theObject);
+		}
 
         @Override
         public void reflectAttributeValues(ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes,
@@ -198,11 +210,26 @@ public class TC_IR_RPR2_0011 extends AbstractTestCaseIf {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-            }
-            
+            }            
         }
     }
     
+	private boolean testSutHandle(FederateHandle theFederate, ObjectInstanceHandle theObject) {
+		try {
+			PhysicalEntity phyEntity = knownPhysicalEntitys.get(theObject);
+			sutHandle = rtiAmbassador.getFederateHandle(getSutFederateName());
+			if ((sutHandle == theFederate) &&  (phyEntity != null)){
+				phyEntityFromSutFound = true;
+				physicalEntityDiscovered.release(1);
+				return true;
+			}
+		} catch (NameNotFound | FederateNotExecutionMember | NotConnected | RTIinternalError e) {
+			logger.warn("System under Test federate \"{}\" not yet found", getSutFederateName());
+		}
+		return false;
+	}
+
+
     @Override
     protected void logTestPurpose(Logger logger) {
         String msg =    "Test Case Purpose: The test case verifies that the SuT registers and publishes ";
@@ -255,7 +282,15 @@ public class TC_IR_RPR2_0011 extends AbstractTestCaseIf {
             receivedEntityIdentifier.acquire();
             receivedEntityType.acquire();
             receivedSpatial.acquire();
-
+			// wait until physical entity object is discovered and check if SuT owns it
+            while (!phyEntityFromSutFound) {
+				physicalEntityDiscovered.acquire();
+				for (PhysicalEntity aPhysicalEntity : knownPhysicalEntitys.values()) {
+					ObjectInstanceHandle objectHandle = aPhysicalEntity.getObjectHandle();
+					AttributeHandle entityIdentifierHandle = aPhysicalEntity.getAttributeHandle(BaseEntity.Attributes.EntityIdentifier.name());
+					rtiAmbassador.queryAttributeOwnership(objectHandle, entityIdentifierHandle);
+				}
+            }
             for (PhysicalEntity phyEnt : knownPhysicalEntitys.values()) {
                 logger.trace("received entity identifier {}({}): EntityNumber={}, FederateIdentifier[SiteID={}, ApplicationID={}]",
                     phyEnt.getHlaClassName(), phyEnt.getObjectHandle(), 
