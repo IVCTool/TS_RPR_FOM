@@ -1,4 +1,4 @@
 {
-    "p1" : "valueA",
+    "timeout" : "5000",
     "p2" : "valueB"
 }

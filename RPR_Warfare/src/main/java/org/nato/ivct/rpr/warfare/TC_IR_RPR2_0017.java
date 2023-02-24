@@ -82,6 +82,7 @@ public class TC_IR_RPR2_0017 extends AbstractTestCaseIf {
     Munition munitionProxy;
 	private FederateHandle sutHandle;
 	boolean munitionFromSutFound = false;
+	private int timeout;
 
     class TestCaseAmbassador extends NullFederateAmbassador {
 		@Override
@@ -151,6 +152,7 @@ public class TC_IR_RPR2_0017 extends AbstractTestCaseIf {
 	protected void preambleAction(Logger logger) throws TcInconclusiveIf {
         RtiFactory rtiFactory;
         logger.info("preamble action for test {}", this.getClass().getName());
+		timeout = Integer.parseInt(getTcParam("timeout"));
 		try {
 			rtiFactory = RtiFactoryFactory.getRtiFactory();
 			rtiAmbassador = rtiFactory.getRtiAmbassador();
@@ -188,34 +190,38 @@ public class TC_IR_RPR2_0017 extends AbstractTestCaseIf {
 			munitionProxy.subscribe();
 			munitionProxy.publish();
 			munitionProxy.register();
-
-			Thread t = new Thread (() -> {
-				// wait until object is discovered and check if SuT owns it
-				while (! munitionFromSutFound) {
-					try {
-						munitionDiscovered.acquire();
-						for (Munition aMunition : knownMunitionEntities.values()) {
-							ObjectInstanceHandle objectHandle = aMunition.getObjectHandle();
-							AttributeHandle entityIdentifierHandle;
-							entityIdentifierHandle = aMunition.getAttributeHandle(BaseEntity.Attributes.EntityIdentifier.name());
-							rtiAmbassador.queryAttributeOwnership(objectHandle, entityIdentifierHandle);
-						}
-					} catch (InterruptedException | NameNotFound | InvalidObjectClassHandle | FederateNotExecutionMember | NotConnected | RTIinternalError | AttributeNotDefined | ObjectInstanceNotKnown | SaveInProgress | RestoreInProgress e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			});
-
-			t.start();;
-			t.join(5000);
-			if (t.isAlive()) {
-				logger.warn("timeout received for test {}", this.getClass().getName());
-				throw new TcInconclusiveIf("timeout");
-			}
-
 		} catch (Exception e) {
 			throw new TcInconclusiveIf(e.getMessage());
+		}
+
+		Thread t = new Thread (() -> {
+			// wait until object is discovered and check if SuT owns it
+			while (! munitionFromSutFound) {
+				try {
+					munitionDiscovered.acquire();
+					for (Munition aMunition : knownMunitionEntities.values()) {
+						ObjectInstanceHandle objectHandle = aMunition.getObjectHandle();
+						AttributeHandle entityIdentifierHandle;
+						entityIdentifierHandle = aMunition.getAttributeHandle(BaseEntity.Attributes.EntityIdentifier.name());
+						rtiAmbassador.queryAttributeOwnership(objectHandle, entityIdentifierHandle);
+					}
+				} catch (InterruptedException | NameNotFound | InvalidObjectClassHandle | FederateNotExecutionMember | NotConnected | RTIinternalError | AttributeNotDefined | ObjectInstanceNotKnown | SaveInProgress | RestoreInProgress e) {
+					e.printStackTrace();
+					return;
+				}
+			}
+		});
+		t.start();
+		try {
+			t.join(timeout);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			logger.warn("timeout received for test {}", this.getClass().getName());
+			e.printStackTrace();
+		}
+		if (t.isAlive()) {
+			logger.warn("timeout received for test {}", this.getClass().getName());
+			throw new TcFailedIf("timeout");
 		}
         logger.info("test {} passed", this.getClass().getName());
 	}
