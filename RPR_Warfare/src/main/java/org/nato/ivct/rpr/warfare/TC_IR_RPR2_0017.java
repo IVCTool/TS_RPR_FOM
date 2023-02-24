@@ -40,6 +40,7 @@ import hla.rti1516e.ResignAction;
 import hla.rti1516e.RtiFactory;
 import hla.rti1516e.RtiFactoryFactory;
 import hla.rti1516e.exceptions.AlreadyConnected;
+import hla.rti1516e.exceptions.AttributeNotDefined;
 import hla.rti1516e.exceptions.CallNotAllowedFromWithinCallback;
 import hla.rti1516e.exceptions.ConnectionFailed;
 import hla.rti1516e.exceptions.CouldNotCreateLogicalTimeFactory;
@@ -53,9 +54,11 @@ import hla.rti1516e.exceptions.FederationExecutionAlreadyExists;
 import hla.rti1516e.exceptions.FederationExecutionDoesNotExist;
 import hla.rti1516e.exceptions.InconsistentFDD;
 import hla.rti1516e.exceptions.InvalidLocalSettingsDesignator;
+import hla.rti1516e.exceptions.InvalidObjectClassHandle;
 import hla.rti1516e.exceptions.InvalidResignAction;
 import hla.rti1516e.exceptions.NameNotFound;
 import hla.rti1516e.exceptions.NotConnected;
+import hla.rti1516e.exceptions.ObjectInstanceNotKnown;
 import hla.rti1516e.exceptions.OwnershipAcquisitionPending;
 import hla.rti1516e.exceptions.RTIinternalError;
 import hla.rti1516e.exceptions.RestoreInProgress;
@@ -181,17 +184,36 @@ public class TC_IR_RPR2_0017 extends AbstractTestCaseIf {
 			PhysicalEntity.initialize(rtiAmbassador);
 			munitionProxy = new Munition();
 			munitionProxy.subscribeLauncherFlashPresent();
+			munitionProxy.publishLauncherFlashPresent();
 			munitionProxy.subscribe();
-			// wait until object is discovered and check if SuT owns it
-			while (! munitionFromSutFound) {
-				munitionDiscovered.acquire();
-				for (Munition aMunition : knownMunitionEntities.values()) {
-					ObjectInstanceHandle objectHandle = aMunition.getObjectHandle();
-					AttributeHandle entityIdentifierHandle = aMunition.getAttributeHandle(BaseEntity.Attributes.EntityIdentifier.name());
-					rtiAmbassador.queryAttributeOwnership(objectHandle, entityIdentifierHandle);
-				}
+			munitionProxy.publish();
+			munitionProxy.register();
 
+			Thread t = new Thread (() -> {
+				// wait until object is discovered and check if SuT owns it
+				while (! munitionFromSutFound) {
+					try {
+						munitionDiscovered.acquire();
+						for (Munition aMunition : knownMunitionEntities.values()) {
+							ObjectInstanceHandle objectHandle = aMunition.getObjectHandle();
+							AttributeHandle entityIdentifierHandle;
+							entityIdentifierHandle = aMunition.getAttributeHandle(BaseEntity.Attributes.EntityIdentifier.name());
+							rtiAmbassador.queryAttributeOwnership(objectHandle, entityIdentifierHandle);
+						}
+					} catch (InterruptedException | NameNotFound | InvalidObjectClassHandle | FederateNotExecutionMember | NotConnected | RTIinternalError | AttributeNotDefined | ObjectInstanceNotKnown | SaveInProgress | RestoreInProgress e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			});
+
+			t.start();;
+			t.join(5000);
+			if (t.isAlive()) {
+				logger.warn("timeout received for test {}", this.getClass().getName());
+				throw new TcInconclusiveIf("timeout");
 			}
+
 		} catch (Exception e) {
 			throw new TcInconclusiveIf(e.getMessage());
 		}
