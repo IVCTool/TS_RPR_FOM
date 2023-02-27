@@ -23,6 +23,7 @@ import java.util.concurrent.Semaphore;
 import org.nato.ivct.rpr.BaseEntity;
 import org.nato.ivct.rpr.FomFiles;
 import org.nato.ivct.rpr.PhysicalEntity;
+import org.nato.ivct.rpr.RprBuilderException;
 import org.nato.ivct.rpr.Munition;
 import org.slf4j.Logger;
 import de.fraunhofer.iosb.tc_lib_if.AbstractTestCaseIf;
@@ -92,18 +93,17 @@ public class TC_IR_RPR2_0017 extends AbstractTestCaseIf {
 				String objectName) throws FederateInternalError {
 			logger.trace("discoverObjectInstance {}", theObject);
 			try {
-			
                 String receivedClass = rtiAmbassador.getObjectClassName(theObjectClass);
                 if (receivedClass.equals(munitionProxy.getHlaClassName())) {
 					// create the helper object
                     Munition obj = new Munition();
                     obj.setObjectHandle(theObject);
                     knownMunitionEntities.put(theObject, obj);
+					munitionDiscovered.release(1);
                 } 
-			} catch (Exception e) {
-				logger.warn("discovered object instance, but federate {} is not connected", getSutFederateName());
-			}
-			munitionDiscovered.release(1);
+			} catch (NotConnected | InvalidObjectClassHandle | FederateNotExecutionMember | RTIinternalError | RprBuilderException e) {
+				logger.warn("exception in discovered object instance: {}", e.getMessage());
+			} 
 		}
 
 		@Override
@@ -126,9 +126,9 @@ public class TC_IR_RPR2_0017 extends AbstractTestCaseIf {
 
 	private boolean testSutHandle(FederateHandle theFederate, ObjectInstanceHandle theObject) {
 		try {
-			Munition phyEntity = knownMunitionEntities.get(theObject);
+			Munition aMunition = knownMunitionEntities.get(theObject);
 			sutHandle = rtiAmbassador.getFederateHandle(getSutFederateName());
-			if ((sutHandle == theFederate) &&  (phyEntity != null)){
+			if ((sutHandle == theFederate) &&  (aMunition != null)){
 				munitionFromSutFound = true;
 				munitionDiscovered.release(1);
 				return true;
@@ -186,10 +186,8 @@ public class TC_IR_RPR2_0017 extends AbstractTestCaseIf {
 			PhysicalEntity.initialize(rtiAmbassador);
 			munitionProxy = new Munition();
 			munitionProxy.subscribeLauncherFlashPresent();
-			munitionProxy.publishLauncherFlashPresent();
+			munitionProxy.subscribeEntityIdentifier();
 			munitionProxy.subscribe();
-			munitionProxy.publish();
-			munitionProxy.register();
 		} catch (Exception e) {
 			throw new TcInconclusiveIf(e.getMessage());
 		}
@@ -215,7 +213,6 @@ public class TC_IR_RPR2_0017 extends AbstractTestCaseIf {
 		try {
 			t.join(timeout);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			logger.warn("timeout received for test {}", this.getClass().getName());
 			e.printStackTrace();
 		}

@@ -146,6 +146,7 @@ public class AircraftApp extends NullFederateAmbassador {
 				.addRPR_Foundation()
 				.addRPR_Physical()
 				.addRPR_Switches()
+				.addRPR_Warfare()
 				.get();
 			rtiAmbassador.connect(nullAmbassador, CallbackModel.HLA_IMMEDIATE);
 			try {
@@ -159,6 +160,12 @@ public class AircraftApp extends NullFederateAmbassador {
             aircraft.addPublish(BaseEntity.Attributes.EntityType);
             aircraft.addPublish(BaseEntity.Attributes.Spatial);
             aircraft.register();
+
+			Munition munitionProxy = new Munition();
+            munitionProxy.addPublish(BaseEntity.Attributes.EntityIdentifier);
+			munitionProxy.publishLauncherFlashPresent();
+			munitionProxy.publish();
+			munitionProxy.register();			
 
 			EntityIdentifierStruct entityIdentifier = aircraft.getEntityIdentifier();
 			entityIdentifier.setEntityNumber((short) 1);
