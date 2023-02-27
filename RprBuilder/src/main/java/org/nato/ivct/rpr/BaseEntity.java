@@ -52,7 +52,7 @@ public class BaseEntity extends HLAobjectRoot {
     private HLAfixedRecord aIsPartOf = null;
     private HLAvariantRecord aRelativeSpatical = null;
     
-    public BaseEntity() throws Exception {
+    public BaseEntity() throws RprBuilderException {
         super();
     }
     

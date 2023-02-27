@@ -43,7 +43,7 @@ public class Platform extends PhysicalEntity{
         TailLightsOn
     }
 
-    public Platform() throws Exception {
+    public Platform() throws RprBuilderException {
         super();
     }
 

@@ -28,7 +28,7 @@ public class Munition extends PhysicalEntity{
         LauncherFlashPresent
     }
 
-    public Munition() throws Exception {
+    public Munition() throws RprBuilderException {
         super();
     }
 

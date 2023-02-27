@@ -54,7 +54,7 @@ public class PhysicalEntity extends BaseEntity {
 
     // TODO: create fields
     
-    public PhysicalEntity() throws Exception {
+    public PhysicalEntity() throws RprBuilderException {
         super();
     }
 
