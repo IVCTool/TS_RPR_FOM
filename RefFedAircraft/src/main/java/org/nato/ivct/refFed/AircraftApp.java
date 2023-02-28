@@ -158,6 +158,19 @@ public class AircraftApp extends NullFederateAmbassador {
             aircraft.addPublish(BaseEntity.Attributes.EntityIdentifier);
             aircraft.addPublish(BaseEntity.Attributes.EntityType);
             aircraft.addPublish(BaseEntity.Attributes.Spatial);
+            
+            aircraft.addPublish(PhysicalEntity.Attributes.CamouflageType);
+            aircraft.addPublish(PhysicalEntity.Attributes.DamageState);
+            aircraft.addPublish(PhysicalEntity.Attributes.EngineSmokeOn);
+            aircraft.addPublish(PhysicalEntity.Attributes.FirePowerDisabled);
+            aircraft.addPublish(PhysicalEntity.Attributes.FlamesPresent);
+            aircraft.addPublish(PhysicalEntity.Attributes.Immobilized);
+            aircraft.addPublish(PhysicalEntity.Attributes.IsConcealed);
+            aircraft.addPublish(PhysicalEntity.Attributes.PowerPlantOn);
+            aircraft.addPublish(PhysicalEntity.Attributes.SmokePlumePresent);
+            aircraft.addPublish(PhysicalEntity.Attributes.TentDeployed);
+            aircraft.addPublish(PhysicalEntity.Attributes.TrailingEffectsCode);
+                        
             aircraft.register();
 
 			EntityIdentifierStruct entityIdentifier = aircraft.getEntityIdentifier();
@@ -196,6 +209,7 @@ public class AircraftApp extends NullFederateAmbassador {
 					aircraft.setSpatial(spatial);
 					aircraft.update();  
 					Thread.sleep(1000);
+					System.out.println("provokeFlyAircraft: " +i);  // Debug
 				}
 			}
 
