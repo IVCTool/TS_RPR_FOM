@@ -28,6 +28,6 @@ public class CamouflageEnum32Test {
         byte[] bytes = camouflageDesert.getDataElement().toByteArray();
         assert(bytes.length > 0);
         CamouflageEnum32 camouflageReceived = CamouflageEnum32.decode(bytes);
-        assertTrue(camouflageDesert == camouflageDesert);
+        assertTrue(camouflageDesert == camouflageReceived);
     }
 }

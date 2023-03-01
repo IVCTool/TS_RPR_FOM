@@ -35,7 +35,7 @@ public enum CamouflageEnum32 {
     
     private CamouflageEnum32(int value) {
         EncoderFactory encoderFactory;
-        DataElement de;
+        HLAinteger32BE de;
         try {
             encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory();
             de = encoderFactory.createHLAinteger32BE(value);
