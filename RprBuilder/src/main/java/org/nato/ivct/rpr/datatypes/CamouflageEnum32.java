@@ -33,15 +33,14 @@ public enum CamouflageEnum32 {
 
     private final DataElement value;
     
-    private CamouflageEnum32(int value) {
+    private CamouflageEnum32(int value) throws ExceptionInInitializerError {
         HLAinteger32BE de;
         try {
             de = Builder.getEncoderFactory().createHLAinteger32BE(value);
+            this.value = de;
         } catch (RTIinternalError e) {
-            e.printStackTrace();
-            de = null;
+            throw new ExceptionInInitializerError(e);
         }
-        this.value = de;
     }
     
     public int getValue() {
@@ -52,15 +51,9 @@ public enum CamouflageEnum32 {
         return value;
     }
 
-    public static CamouflageEnum32 decode(byte[] bytes) {
-        HLAinteger32BE de;
-        try {
-            de = Builder.getEncoderFactory().createHLAinteger32BE();
-            de.decode(bytes);
-        } catch (RTIinternalError | DecoderException e) {
-            e.printStackTrace();
-            de = null;
-        }
+    public static CamouflageEnum32 decode(byte[] bytes) throws RTIinternalError, DecoderException {
+        HLAinteger32BE de = Builder.getEncoderFactory().createHLAinteger32BE();
+        de.decode(bytes);
         switch (de.getValue()) {
             case 0: return UniformPaintScheme;
             case 1: return DesertCamouflage;

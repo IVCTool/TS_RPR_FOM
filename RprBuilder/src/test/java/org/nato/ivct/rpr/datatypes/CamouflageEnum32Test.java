@@ -6,6 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
+import hla.rti1516e.encoding.DecoderException;
+import hla.rti1516e.exceptions.RTIinternalError;
+
 public class CamouflageEnum32Test {
     @Test
     void testGetValue() {
@@ -23,7 +26,7 @@ public class CamouflageEnum32Test {
     }
 
     @Test
-    void testEncoding() {
+    void testEncoding() throws RTIinternalError, DecoderException {
         CamouflageEnum32 camouflageDesert = CamouflageEnum32.DesertCamouflage;
         byte[] bytes = camouflageDesert.getDataElement().toByteArray();
         assert(bytes.length > 0);

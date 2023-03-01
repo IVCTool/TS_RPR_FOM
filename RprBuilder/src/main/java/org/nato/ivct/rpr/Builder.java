@@ -34,9 +34,10 @@ public class Builder {
         rtiAmbassador = rtiAmbassador2Use;
     }
 
-    public static RTIambassador getRtiAmbassador() {
+    public static RTIambassador getRtiAmbassador() throws RprBuilderException {
         if (rtiAmbassador == null) {
             log.error("RPR Builder not initialized");
+            throw new RprBuilderException("RPR Builder not initialized");
         }
         return rtiAmbassador;
     }
