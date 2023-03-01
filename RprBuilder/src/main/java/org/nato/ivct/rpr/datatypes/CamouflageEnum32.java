@@ -14,11 +14,11 @@ limitations under the License. */
 
 package org.nato.ivct.rpr.datatypes;
 
-import hla.rti1516e.RtiFactoryFactory;
+import org.nato.ivct.rpr.Builder;
+
 import hla.rti1516e.encoding.DataElement;
 import hla.rti1516e.encoding.DecoderException;
 import hla.rti1516e.encoding.HLAinteger32BE;
-import hla.rti1516e.encoding.EncoderFactory;
 import hla.rti1516e.exceptions.RTIinternalError;
 
 /**
@@ -34,11 +34,9 @@ public enum CamouflageEnum32 {
     private final DataElement value;
     
     private CamouflageEnum32(int value) {
-        EncoderFactory encoderFactory;
         HLAinteger32BE de;
         try {
-            encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory();
-            de = encoderFactory.createHLAinteger32BE(value);
+            de = Builder.getEncoderFactory().createHLAinteger32BE(value);
         } catch (RTIinternalError e) {
             e.printStackTrace();
             de = null;
@@ -55,11 +53,9 @@ public enum CamouflageEnum32 {
     }
 
     public static CamouflageEnum32 decode(byte[] bytes) {
-        EncoderFactory encoderFactory;
         HLAinteger32BE de;
         try {
-            encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory();
-            de = encoderFactory.createHLAinteger32BE();
+            de = Builder.getEncoderFactory().createHLAinteger32BE();
             de.decode(bytes);
         } catch (RTIinternalError | DecoderException e) {
             e.printStackTrace();
