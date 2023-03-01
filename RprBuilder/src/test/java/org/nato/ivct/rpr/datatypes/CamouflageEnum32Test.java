@@ -21,4 +21,13 @@ public class CamouflageEnum32Test {
         CamouflageEnum32 camouflageForest = CamouflageEnum32.ForestCamouflage;
         assertFalse(camouflageDesert == camouflageForest);
     }
+
+    @Test
+    void testEncoding() {
+        CamouflageEnum32 camouflageDesert = CamouflageEnum32.DesertCamouflage;
+        byte[] bytes = camouflageDesert.getDataElement().toByteArray();
+        assert(bytes.length > 0);
+        CamouflageEnum32 camouflageReceived = CamouflageEnum32.decode(bytes);
+        assertTrue(camouflageDesert == camouflageDesert);
+    }
 }

@@ -16,6 +16,7 @@ package org.nato.ivct.rpr.datatypes;
 
 import hla.rti1516e.RtiFactoryFactory;
 import hla.rti1516e.encoding.DataElement;
+import hla.rti1516e.encoding.DecoderException;
 import hla.rti1516e.encoding.HLAinteger32BE;
 import hla.rti1516e.encoding.EncoderFactory;
 import hla.rti1516e.exceptions.RTIinternalError;
@@ -47,5 +48,30 @@ public enum CamouflageEnum32 {
     
     public int getValue() {
         return ((HLAinteger32BE) value).getValue();
-    }    
+    }
+
+    public DataElement getDataElement() {
+        return value;
+    }
+
+    public static CamouflageEnum32 decode(byte[] bytes) {
+        EncoderFactory encoderFactory;
+        HLAinteger32BE de;
+        try {
+            encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory();
+            de = encoderFactory.createHLAinteger32BE();
+            de.decode(bytes);
+        } catch (RTIinternalError | DecoderException e) {
+            e.printStackTrace();
+            de = null;
+        }
+        switch (de.getValue()) {
+            case 0: return UniformPaintScheme;
+            case 1: return DesertCamouflage;
+            case 2: return WinterCamouflage;
+            case 3: return ForestCamouflage;
+            case 4: return GenericCamouflage;
+            default: return null;
+        }
+    }
 }
