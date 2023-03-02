@@ -19,7 +19,6 @@ import org.nato.ivct.rpr.Builder;
 import hla.rti1516e.encoding.DataElement;
 import hla.rti1516e.encoding.DecoderException;
 import hla.rti1516e.encoding.HLAinteger32BE;
-import hla.rti1516e.exceptions.RTIinternalError;
 
 /**
  * Camouflage type (see RPR-Enumerations_v2.0.xml)
@@ -31,27 +30,13 @@ public enum CamouflageEnum32 {
     ForestCamouflage(3),
     GenericCamouflage(4);
 
-    private final DataElement value;
+    private final HLAinteger32BE value;
     
-    private CamouflageEnum32(int value) throws ExceptionInInitializerError {
-        HLAinteger32BE de;
-        try {
-            de = Builder.getEncoderFactory().createHLAinteger32BE(value);
-            this.value = de;
-        } catch (RTIinternalError e) {
-            throw new ExceptionInInitializerError(e);
-        }
+    private CamouflageEnum32(int value) {
+        this.value = Builder.getEncoderFactory().createHLAinteger32BE(value);
     }
     
-    public int getValue() {
-        return ((HLAinteger32BE) value).getValue();
-    }
-
-    public DataElement getDataElement() {
-        return value;
-    }
-
-    public static CamouflageEnum32 decode(byte[] bytes) throws RTIinternalError, DecoderException {
+    public static CamouflageEnum32 decode(byte[] bytes) throws DecoderException  {
         HLAinteger32BE de = Builder.getEncoderFactory().createHLAinteger32BE();
         de.decode(bytes);
         switch (de.getValue()) {
@@ -63,4 +48,13 @@ public enum CamouflageEnum32 {
             default: return null;
         }
     }
+
+    public int getValue() {
+        return value.getValue();
+    }
+
+    public DataElement getDataElement() {
+        return value;
+    }
+
 }

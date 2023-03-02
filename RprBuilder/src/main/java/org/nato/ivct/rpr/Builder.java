@@ -42,9 +42,13 @@ public class Builder {
         return rtiAmbassador;
     }
 
-    public static EncoderFactory getEncoderFactory() throws RTIinternalError {
+    public static EncoderFactory getEncoderFactory() throws ExceptionInInitializerError {
         if (encoderFactory == null) {
-            encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory();
+            try {
+                encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory();
+            } catch (RTIinternalError e) {
+                throw new ExceptionInInitializerError(e);
+            }
         }
         return encoderFactory;
     }
