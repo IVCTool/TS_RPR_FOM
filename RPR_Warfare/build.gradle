@@ -1,0 +1,10 @@
+
+plugins {
+    id 'rpr.library-conventions'
+}
+
+dependencies {
+    implementation project(':RprBuilder')
+}
+group = 'org.nato.ivct.rpr.warfare'
+version = '0.1-SNAPSHOT'

@@ -74,13 +74,19 @@ public class HLAobjectRoot {
         rtiAmbassador = rtiAmbassador2Use;
     }
     
-    public HLAobjectRoot() throws Exception {
-        if (rtiAmbassador == null) { throw new Exception("HLAobjectRoot not initialized"); } 
-        if (thisClassHandle == null) { thisClassHandle = rtiAmbassador.getObjectClassHandle(getHlaClassName()); }
-        if (knownAttributeHandles == null) { knownAttributeHandles = new HashMap<>(); }
-        thisObjectHandle = null; // undefined until object is registered
-        this.attributeValues = rtiAmbassador.getAttributeHandleValueMapFactory().create(0);
-        encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory();
+    public HLAobjectRoot() throws RprBuilderException {
+        if (rtiAmbassador == null) { throw new RprBuilderException("HLAobjectRoot not initialized"); } 
+        if (thisClassHandle == null) { 
+            try {
+                thisClassHandle = rtiAmbassador.getObjectClassHandle(getHlaClassName());
+                if (knownAttributeHandles == null) { knownAttributeHandles = new HashMap<>(); }
+                thisObjectHandle = null; // undefined until object is registered
+                this.attributeValues = rtiAmbassador.getAttributeHandleValueMapFactory().create(0);
+                encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory();
+            } catch (Exception e) {
+                throw new RprBuilderException("unhandled HLA exception", e);
+            }
+        }
         log.trace("created {} object created", this);
     }
 
