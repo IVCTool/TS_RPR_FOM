@@ -60,7 +60,7 @@ public class AircraftApp extends NullFederateAmbassador {
     private String rtiHost = "localhost";
 	private String federationName = "TestFederation";
 	private String federateName = "RefFedAircraft";
-	private int nrOfCycles = 400;
+	private int nrOfCycles = 4000;
 	private RTIambassador rtiAmbassador;
 
 	public static void main(final String[] args) {

@@ -95,8 +95,8 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 			
 			//   Debug tests			
 			try {
-				   System.out.println("1 rtiAmbassador.getObjectInstanceName: " +  rtiAmbassador.getObjectInstanceName(theObject) );
-				   System.out.println("1 rtiAmbassador.getObjectClassName: "    +  rtiAmbassador.getObjectClassName(theObjectClass ) );
+				   System.out.println("discoverObjectInstance rtiAmbassador.getObjectInstanceName: " +  rtiAmbassador.getObjectInstanceName(theObject) );
+				   System.out.println("discoverObjectInstance rtiAmbassador.getObjectClassName: "    +  rtiAmbassador.getObjectClassName(theObjectClass ) );
 				} catch ( ObjectInstanceNotKnown |  FederateNotExecutionMember | NotConnected | RTIinternalError | InvalidObjectClassHandle  e ) {
 					logger.error("discoverObjectInstance received Exception", e  ); 
 			    }
@@ -120,43 +120,38 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 		}
 
 		
+		@Override		
+        public void reflectAttributeValues(ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes,
+                byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport,
+                LogicalTime theTime, OrderType receivedOrdering, MessageRetractionHandle retractionHandle,
+                SupplementalReflectInfo reflectInfo) throws FederateInternalError {
+            logger.trace("reflectAttributeValues with retractionHandle");
+            reflectAttributeValues(theObject, theAttributes, userSuppliedTag, sentOrdering, theTransport, reflectInfo);
+        }
+		
 		@Override
-		public void reflectAttributeValues(ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes,
-			byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport,
-			LogicalTime theTime, OrderType receivedOrdering, MessageRetractionHandle retractionHandle,
-			SupplementalReflectInfo reflectInfo)
-			throws FederateInternalError {
-			logger.trace("reflectAttributeValues with MessageRetractionHandle, ");
-			reflectAttributeValues(theObject, theAttributes, userSuppliedTag, sentOrdering, theTransport, reflectInfo);			
-		}	
+        public void reflectAttributeValues(ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes,
+                byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport,
+                LogicalTime theTime, OrderType receivedOrdering, SupplementalReflectInfo reflectInfo)
+                throws FederateInternalError {
+            logger.trace("reflectAttributeValues with reflectInfo");
+            reflectAttributeValues(theObject, theAttributes, userSuppliedTag, sentOrdering, theTransport, reflectInfo);
+        }		
 		
 		
 		@Override
-		public void reflectAttributeValues(ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes,
-			byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport,
-			LogicalTime theTime, OrderType receivedOrdering, SupplementalReflectInfo reflectInfo)
-			throws FederateInternalError {
-			logger.trace("reflectAttributeValues with LogicalTime ");
-			reflectAttributeValues(theObject, theAttributes, userSuppliedTag, sentOrdering, theTransport, reflectInfo);
-	    }
-		
-		@Override
-		public void reflectAttributeValues(ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes,
-			byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport,
-			SupplementalReflectInfo reflectInfo)
-			throws FederateInternalError {
+        public void reflectAttributeValues(ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes,
+                byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport,
+                SupplementalReflectInfo reflectInfo) throws FederateInternalError {
+        	
 			logger.trace("reflectAttributeValues without  LogicalTime,  MessageRetractionHandle  ");
+			
+			System.out.println("######## reflectAttributeValues hat was bekommen  ObjectInstanceHandle: " +theObject ); // Debug
+			
 		}
 
 
 	
-		
-		
-		
-		
-		
-		
-		
 		
 		
 	}
@@ -181,9 +176,6 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 			rtiFactory = RtiFactoryFactory.getRtiFactory();
 			rtiAmbassador = rtiFactory.getRtiAmbassador();
 			tcAmbassador = new TestCaseAmbassador();
-			
-			
-			
 
 			ArrayList<URL> fomList = new FomFiles()
 			.addRPR_BASE().addRPR_Enumerations().addRPR_Foundation()
@@ -210,6 +202,7 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 		
 	@Override
 	protected void performTest(Logger logger) throws TcInconclusiveIf, TcFailedIf {
+		
 		Aircraft.initialize(rtiAmbassador);
 		
 		try {
@@ -217,8 +210,11 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 			
 			this._objectInstanceHandle=aircraft.getObjectHandle();
 			
-			//aircraft.addSubscribe(BaseEntity.Attributes.EntityIdentifier);
+		    // for testing
+			aircraft.addSubscribe(BaseEntity.Attributes.EntityIdentifier);
+			aircraft.addSubscribe(BaseEntity.Attributes.EntityType);			
 			aircraft.addSubscribe(BaseEntity.Attributes.Spatial);
+			
 			aircraft.addSubscribe(PhysicalEntity.Attributes.CamouflageType);
 			aircraft.addSubscribe(PhysicalEntity.Attributes.DamageState);
 			aircraft.addSubscribe(PhysicalEntity.Attributes.EngineSmokeOn);
