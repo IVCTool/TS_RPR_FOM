@@ -16,6 +16,8 @@ package org.nato.ivct.rpr.entity;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.nato.ivct.rpr.Aircraft;
 import org.nato.ivct.rpr.BaseEntity;
@@ -27,6 +29,7 @@ import org.slf4j.Logger;
 import de.fraunhofer.iosb.tc_lib_if.AbstractTestCaseIf;
 import de.fraunhofer.iosb.tc_lib_if.TcFailedIf;
 import de.fraunhofer.iosb.tc_lib_if.TcInconclusiveIf;
+import hla.rti1516e.AttributeHandle;
 import hla.rti1516e.AttributeHandleValueMap;
 import hla.rti1516e.CallbackModel;
 import hla.rti1516e.FederateAmbassador;
@@ -78,20 +81,20 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 	ObjectClassHandle _objectClassHandle;
 	
 	Aircraft aircraft;
+	boolean seenEnough = false;  // to customize later
 	
 	
 	
 
 	class TestCaseAmbassador extends NullFederateAmbassador {
-		
 		@Override
 		public void discoverObjectInstance(
 				ObjectInstanceHandle theObject,
 				ObjectClassHandle theObjectClass,
 				String objectName) throws FederateInternalError {
 			logger.trace("discoverObjectInstance {}", theObject);
-			System.out.println("######### ich habe was bekommen ObjectInstanceHandle: " +theObject  );	// Debug			
-			System.out.println("######### ich habe was bekommen ObjectClassHandle: " +theObjectClass ); // Debug			
+			System.out.println("# discoverObjectInstance hat was bekommen ObjectInstanceHandle: " +theObject  );	// Debug
+			System.out.println("# discoverObjectInstance hat was bekommen ObjectClassHandle: " +theObjectClass ); // Debug
 			
 			//   Debug tests			
 			try {
@@ -112,11 +115,13 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 		}
 
 		@Override
-		public void discoverObjectInstance(ObjectInstanceHandle theObject, ObjectClassHandle theObjectClass,
-				String objectName, FederateHandle producingFederate) throws FederateInternalError {
+		public void discoverObjectInstance(
+				ObjectInstanceHandle  theObject,
+				ObjectClassHandle theObjectClass,
+				String objectName,
+				FederateHandle producingFederate) throws FederateInternalError {
 			logger.trace("discoverObjectInstance {} with producingFederate {}", theObject, producingFederate);
 			discoverObjectInstance(theObject, theObjectClass, objectName);
-			;
 		}
 
 		
@@ -131,7 +136,7 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 		
 		@Override
         public void reflectAttributeValues(ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes,
-                byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport,
+        		byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport,
                 LogicalTime theTime, OrderType receivedOrdering, SupplementalReflectInfo reflectInfo)
                 throws FederateInternalError {
             logger.trace("reflectAttributeValues with reflectInfo");
@@ -140,20 +145,34 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 		
 		
 		@Override
-        public void reflectAttributeValues(ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes,
-                byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport,
-                SupplementalReflectInfo reflectInfo) throws FederateInternalError {
-        	
+        public void reflectAttributeValues(ObjectInstanceHandle theObject,
+        		AttributeHandleValueMap theAttributes,
+                byte[] userSuppliedTag,
+                OrderType sentOrdering,
+                TransportationTypeHandle theTransport,
+                SupplementalReflectInfo reflectInfo) throws FederateInternalError {        	
 			logger.trace("reflectAttributeValues without  LogicalTime,  MessageRetractionHandle  ");
 			
+			try {
 			System.out.println("######## reflectAttributeValues hat was bekommen  ObjectInstanceHandle: " +theObject ); // Debug
+			System.out.println("######## mit Namen ObjectInstanceName:  " +  rtiAmbassador.getObjectInstanceName(theObject) );
+			System.out.println("######## und AttributHandleCalueMap the Attributes:  "+ theAttributes );
+			System.out.println("#######  theAttributes.size "+theAttributes.size() );	
+			// es sind im Moment nur 3 Attribute enthalten, da nur 3 veraendert werden	
 			
-		}
-
-
-	
-		
-		
+			// Was sind die Name n der Attribute ?			
+			/* System.out.println("########  AttributNamen ? " + rtiAmbassador.getAttributeName(theObject,theAttributes) );
+			
+			//  wie kann man die einzelnen Attribute sehen ?
+			for (Map.Entry<theAttributes) { 
+			}
+			*/
+			
+			
+			} catch (ObjectInstanceNotKnown | FederateNotExecutionMember | NotConnected | RTIinternalError    e)
+			{ };
+			
+		}	
 	}
 	
 
@@ -178,12 +197,13 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 			tcAmbassador = new TestCaseAmbassador();
 
 			ArrayList<URL> fomList = new FomFiles()
-			.addRPR_BASE().addRPR_Enumerations().addRPR_Foundation()
-			.addRPR_Physical().addRPR_Switches().get();
+			.addRPR_BASE()
+			.addRPR_Enumerations()
+			.addRPR_Foundation()
+			.addRPR_Physical()
+			.addRPR_Switches().get();
 
 			rtiAmbassador.connect(tcAmbassador, CallbackModel.HLA_IMMEDIATE);
-
-			// rtiAmbassador.createFederationExecution(federationName, fomList.toArray(new URL[fomList.size()]));
 			try {
 			  rtiAmbassador.createFederationExecution(federationName, fomList.toArray(new URL[fomList.size()]) );
 		    } catch (FederationExecutionAlreadyExists ignored) { }
@@ -228,8 +248,18 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 			aircraft.addSubscribe(PhysicalEntity.Attributes.TrailingEffectsCode);
 			
 			aircraft.subscribe();
+				
 		} catch (Exception e) {
 			throw new TcInconclusiveIf(e.getMessage());
+		}
+		
+		while (!seenEnough) {
+			
+			
+			
+			
+			
+			
 		}
 		
 		// Irgendwie muss doch was zu sehen sein	
