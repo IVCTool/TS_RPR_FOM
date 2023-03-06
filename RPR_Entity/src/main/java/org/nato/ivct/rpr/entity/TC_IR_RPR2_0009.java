@@ -67,14 +67,13 @@ import hla.rti1516e.exceptions.SaveInProgress;
 import hla.rti1516e.exceptions.UnsupportedCallbackModel;
 
 /**
- * Interoperability Requirement :   IR-RPR2-0012
- *
- * SuT shall not update non-applicable PhysicalEntity Attributes 
- * as specified in Domain Appropriateness table in SISO-STD-001-2015."
+ * Interoperability Requirement:  IR-RPR2-0009
+ * 	"SuT shall in CS specify the use of Articulated Parts for all published
+ *   and subscribedBaseEntity.PhysicalEntity and subclasses."
  */
 
 
-public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
+public class TC_IR_RPR2_0009 extends AbstractTestCaseIf {
 	RTIambassador rtiAmbassador = null;
 	FederateAmbassador tcAmbassador = null;
 	Logger logger = null;
@@ -143,10 +142,9 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 	@Override
 	protected void logTestPurpose(Logger logger) {
 	 String msg = "Test Case Purpose: " ;
-	        msg += "The test case verifies that the SuT do not update non-applicable PhysicalEntity Attributes ";
-	        msg += "as specified in Domain Appropriateness table in SISO-STD-001-2015.";
+	        msg += "SuT shall in CS specify the use of Articulated Parts for all published " ;
+	        msg += "and subscribedBaseEntity.PhysicalEntity and subclasses.";
 		logger .info(msg);
-		
 		this.logger = logger;
 
 
@@ -190,7 +188,7 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 	@Override
 	protected void performTest(Logger logger) throws TcInconclusiveIf, TcFailedIf {
 		logger.info("perform test {}", this.getClass().getName());
-		Aircraft.initialize(rtiAmbassador);  //to adjust
+		Aircraft.initialize(rtiAmbassador);  //to adjust  // umschieben in Preamble
 
 		try {
 			// aircraft = new Aircraft();    //to adjust

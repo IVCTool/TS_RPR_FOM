@@ -67,14 +67,16 @@ import hla.rti1516e.exceptions.SaveInProgress;
 import hla.rti1516e.exceptions.UnsupportedCallbackModel;
 
 /**
- * Interoperability Requirement :   IR-RPR2-0012
+ * Interoperability Requirement :   IR-RPR2-0014
  *
- * SuT shall not update non-applicable PhysicalEntity Attributes 
- * as specified in Domain Appropriateness table in SISO-STD-001-2015."
+ * SuT updates of instance attribute Spatial shall, for BaseEntity.PhysicalEntity and subclasses,
+ * include valid Dead-Reckoning parameters for supported algorithms as specified in CS.
+ * 
+ * 
  */
 
 
-public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
+public class TC_IR_RPR2_0014 extends AbstractTestCaseIf {
 	RTIambassador rtiAmbassador = null;
 	FederateAmbassador tcAmbassador = null;
 	Logger logger = null;
@@ -143,13 +145,11 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 	@Override
 	protected void logTestPurpose(Logger logger) {
 	 String msg = "Test Case Purpose: " ;
-	        msg += "The test case verifies that the SuT do not update non-applicable PhysicalEntity Attributes ";
-	        msg += "as specified in Domain Appropriateness table in SISO-STD-001-2015.";
+	        msg += "SuT updates of instance attribute Spatial shall, for BaseEntity.PhysicalEntity and subclasses, ";
+	        msg += "include valid Dead-Reckoning parameters for supported algorithms as specified in CS.";
 		logger .info(msg);
 		
 		this.logger = logger;
-
-
 	}
 
 	@Override
