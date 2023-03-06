@@ -75,7 +75,10 @@ public class HLAobjectRoot {
     }
     
     public HLAobjectRoot() throws RprBuilderException {
-        if (rtiAmbassador == null) { throw new RprBuilderException("HLAobjectRoot not initialized"); } 
+        if (rtiAmbassador == null) {
+            rtiAmbassador = OmtBuilder.getRtiAmbassador();
+            if (rtiAmbassador == null) throw new RprBuilderException("HLAobjectRoot not initialized"); 
+        } 
         if (thisClassHandle == null) { 
             try {
                 thisClassHandle = rtiAmbassador.getObjectClassHandle(getHlaClassName());

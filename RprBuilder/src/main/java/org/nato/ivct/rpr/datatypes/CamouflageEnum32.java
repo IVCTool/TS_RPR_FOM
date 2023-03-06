@@ -14,7 +14,7 @@ limitations under the License. */
 
 package org.nato.ivct.rpr.datatypes;
 
-import org.nato.ivct.rpr.Builder;
+import org.nato.ivct.rpr.OmtBuilder;
 
 import hla.rti1516e.encoding.DataElement;
 import hla.rti1516e.encoding.DecoderException;
@@ -33,11 +33,11 @@ public enum CamouflageEnum32 {
     private final HLAinteger32BE value;
     
     private CamouflageEnum32(int value) {
-        this.value = Builder.getEncoderFactory().createHLAinteger32BE(value);
+        this.value = OmtBuilder.getEncoderFactory().createHLAinteger32BE(value);
     }
     
     public static CamouflageEnum32 decode(byte[] bytes) throws DecoderException  {
-        HLAinteger32BE de = Builder.getEncoderFactory().createHLAinteger32BE();
+        HLAinteger32BE de = OmtBuilder.getEncoderFactory().createHLAinteger32BE();
         de.decode(bytes);
         switch (de.getValue()) {
             case 0: return UniformPaintScheme;

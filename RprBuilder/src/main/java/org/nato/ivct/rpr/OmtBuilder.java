@@ -25,8 +25,8 @@ import hla.rti1516e.exceptions.RTIinternalError;
 /**
  * RPR Builder Initialization
  */
-public class Builder {
-    private static final Logger log = LoggerFactory.getLogger(Builder.class);
+public class OmtBuilder {
+    private static final Logger log = LoggerFactory.getLogger(OmtBuilder.class);
     private static RTIambassador rtiAmbassador = null;
     private static EncoderFactory encoderFactory = null;
     
