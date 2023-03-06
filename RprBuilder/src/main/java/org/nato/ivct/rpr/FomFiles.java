@@ -49,6 +49,11 @@ public class FomFiles {
         return this;
     }
 
+    public FomFiles addRPR_Warfare() {
+        fomList.add(FomFiles.class.getResource("/RPR-FOM-v2.0/RPR-Warfare_v2.0.xml"));
+        return this;
+    }
+
     public ArrayList<URL> get() {
         return fomList;
     }

@@ -20,41 +20,38 @@ import hla.rti1516e.encoding.DataElement;
 import hla.rti1516e.encoding.DecoderException;
 import hla.rti1516e.encoding.HLAinteger32BE;
 
-/**
- * Camouflage type (see RPR-Enumerations_v2.0.xml)
- */
-public enum CamouflageEnum32 {
-    UniformPaintScheme(0),
-    DesertCamouflage(1),
-    WinterCamouflage(2),
-    ForestCamouflage(3),
-    GenericCamouflage(4);
-
+/** 
+ * Damaged appearance (see RPR-Enumerations_v2.0.xml)
+*/
+public enum DamageStatusEnum32 {
+    NoDamage(0),
+    SlightDamage(1),
+    ModerateDamage(2),
+    Destroyed(3);
+  
     private final HLAinteger32BE value;
-    
-    private CamouflageEnum32(int value) {
+ 
+    private DamageStatusEnum32(int value) {
         this.value = Builder.getEncoderFactory().createHLAinteger32BE(value);
     }
-    
-    public static CamouflageEnum32 decode(byte[] bytes) throws DecoderException  {
-        HLAinteger32BE de = Builder.getEncoderFactory().createHLAinteger32BE();
-        de.decode(bytes);
-        switch (de.getValue()) {
-            case 0: return UniformPaintScheme;
-            case 1: return DesertCamouflage;
-            case 2: return WinterCamouflage;
-            case 3: return ForestCamouflage;
-            case 4: return GenericCamouflage;
-            default: return null;
-        }
-    }
 
-    public int getValue() {
-        return value.getValue();
+    public static DamageStatusEnum32 decode (byte[] bytes) throws DecoderException {
+        HLAinteger32BE dataElement = Builder.getEncoderFactory().createHLAinteger32BE();
+        dataElement.decode(bytes);
+        switch (dataElement.getValue()) {
+            case 0: return NoDamage;
+            case 1: return SlightDamage;
+            case 2: return ModerateDamage;
+            case 3: return Destroyed;
+            default: throw new DecoderException("invalid enum value");
+        }
     }
 
     public DataElement getDataElement() {
         return value;
     }
 
+    public int getValue() {
+        return value.getValue();
+    }
 }

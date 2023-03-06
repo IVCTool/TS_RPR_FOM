@@ -2,15 +2,15 @@
 
 The Real-time Platform Reference Federation Object Model (RPR FOM) is a collection of object and interaction classes for the High Level Architecture (HLA), designed to link simulations of discrete physical entities into complex virtual world [RPR FOM 2.0](https://www.sisostds.org/DigitalLibrary.aspx?Command=Core_Download&EntryId=30822).
 
-The modules in the RPR FOM are structured into a list modules dedicated for different functional areas. All functional modules are based on three generic modules, building the common definitions. The base modules are:
+The modules in the RPR FOM are structured into a list of modules dedicated to different functional areas. All functional modules are based on three generic modules, building the common definitions. These base modules are:
 
 - Foundation
 - Switches
 - Enumeration
-- [Base](rpr-entity.md)
 
 The functional modules are:
 
+- [Entity](rpr-entity.md)
 - [Aggregate](rpr-aggregate.md)
 - [Communication](rpr-communication.md) 
 - Underwater Acoustics 

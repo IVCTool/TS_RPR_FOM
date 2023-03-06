@@ -18,7 +18,7 @@ package org.nato.ivct.rpr;
 
 public class Aircraft extends Platform {
 
-    public Aircraft() throws Exception {
+    public Aircraft() throws RprBuilderException {
         super();
     }
     

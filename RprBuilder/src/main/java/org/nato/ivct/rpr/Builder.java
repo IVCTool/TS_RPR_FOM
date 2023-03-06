@@ -34,16 +34,21 @@ public class Builder {
         rtiAmbassador = rtiAmbassador2Use;
     }
 
-    public static RTIambassador getRtiAmbassador() {
+    public static RTIambassador getRtiAmbassador() throws RprBuilderException {
         if (rtiAmbassador == null) {
             log.error("RPR Builder not initialized");
+            throw new RprBuilderException("RPR Builder not initialized");
         }
         return rtiAmbassador;
     }
 
-    public static EncoderFactory getEncoderFactory() throws RTIinternalError {
+    public static EncoderFactory getEncoderFactory() throws ExceptionInInitializerError {
         if (encoderFactory == null) {
-            encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory();
+            try {
+                encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory();
+            } catch (RTIinternalError e) {
+                throw new ExceptionInInitializerError(e);
+            }
         }
         return encoderFactory;
     }
