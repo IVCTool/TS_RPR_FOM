@@ -32,6 +32,10 @@ import org.nato.ivct.rpr.datatypes.EntityIdentifierStruct;
 import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
 import org.nato.ivct.rpr.datatypes.SpatialStaticStruct;
 import org.nato.ivct.rpr.datatypes.SpatialVariantStruct;
+import org.nato.ivct.rpr.objects.Aircraft;
+import org.nato.ivct.rpr.objects.HLAobjectRoot;
+import org.nato.ivct.rpr.objects.Munition;
+import org.nato.ivct.rpr.objects.BaseEntity;
 
 public class AircraftApp extends NullFederateAmbassador {
     

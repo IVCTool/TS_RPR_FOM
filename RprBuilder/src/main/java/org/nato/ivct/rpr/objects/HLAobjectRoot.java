@@ -14,11 +14,13 @@
     limitations under the License. 
  */
 
-package org.nato.ivct.rpr;
+package org.nato.ivct.rpr.objects;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import org.nato.ivct.rpr.OmtBuilder;
+import org.nato.ivct.rpr.RprBuilderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +77,10 @@ public class HLAobjectRoot {
     }
     
     public HLAobjectRoot() throws RprBuilderException {
-        if (rtiAmbassador == null) { throw new RprBuilderException("HLAobjectRoot not initialized"); } 
+        if (rtiAmbassador == null) {
+            rtiAmbassador = OmtBuilder.getRtiAmbassador();
+            if (rtiAmbassador == null) throw new RprBuilderException("HLAobjectRoot not initialized"); 
+        } 
         if (thisClassHandle == null) { 
             try {
                 thisClassHandle = rtiAmbassador.getObjectClassHandle(getHlaClassName());

@@ -14,7 +14,9 @@
     limitations under the License. 
  */
 
-package org.nato.ivct.rpr;
+package org.nato.ivct.rpr.objects;
+
+import org.nato.ivct.rpr.RprBuilderException;
 
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
 import hla.rti1516e.exceptions.InvalidObjectClassHandle;
