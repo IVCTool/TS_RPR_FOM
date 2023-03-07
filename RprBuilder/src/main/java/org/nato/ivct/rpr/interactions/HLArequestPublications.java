@@ -14,30 +14,25 @@ limitations under the License. */
 
 package org.nato.ivct.rpr.interactions;
 
-import org.nato.ivct.rpr.OmtBuilder;
 import org.nato.ivct.rpr.RprBuilderException;
 
-import hla.rti1516e.encoding.EncoderException;
-import hla.rti1516e.encoding.HLAoctet;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
-import hla.rti1516e.exceptions.InvalidInteractionClassHandle;
 import hla.rti1516e.exceptions.NameNotFound;
 import hla.rti1516e.exceptions.NotConnected;
 import hla.rti1516e.exceptions.RTIinternalError;
 
-public class HLAfederate extends HLAmanager {
+/** Request that the RTI send report interactions that contain the publication data of a
+    joined federate. It shall result in one interaction of class HLAmanager. HLAfederate.HLAreport.
+    HLAreportInteractionPublication and one interaction of class HLAmanager.HLAfederate.
+    HLAreport.HLAreportObjectClassPublication for each object class published. If the joined
+    federate is published to no object classes then one of class
+    HLAmanager.HLAfederate.HLAreport.HLAreportObjectClassPublication shall be sent as a NULL
+ */
+public class HLArequestPublications extends HLArequest {
 
-    public enum Attributes {
-        HLAfederate
-    }
-
-    public HLAfederate()
+    public HLArequestPublications()
             throws NameNotFound, FederateNotExecutionMember, NotConnected, RTIinternalError, RprBuilderException {
         super();
     }
     
-    public void setHLAfederate (byte value) throws NameNotFound, InvalidInteractionClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException, RprBuilderException {
-        HLAoctet de = OmtBuilder.getEncoderFactory().createHLAoctet(value);
-        setParameter(Attributes.HLAfederate.name(), de);
-    }
 }

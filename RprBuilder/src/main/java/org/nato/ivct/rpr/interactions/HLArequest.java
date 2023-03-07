@@ -12,19 +12,20 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-package org.nato.ivct.rpr.objects;
+package org.nato.ivct.rpr.interactions;
 
 import org.nato.ivct.rpr.RprBuilderException;
 
-public class HLAreportObject extends HLAfederateObject {
+import hla.rti1516e.exceptions.FederateNotExecutionMember;
+import hla.rti1516e.exceptions.NameNotFound;
+import hla.rti1516e.exceptions.NotConnected;
+import hla.rti1516e.exceptions.RTIinternalError;
 
-    public enum Attributes {
-        
-    }
+public class HLArequest extends HLAfederate {
 
-    public HLAreportObject() throws RprBuilderException {
+    public HLArequest()
+            throws NameNotFound, FederateNotExecutionMember, NotConnected, RTIinternalError, RprBuilderException {
         super();
-        //TODO Auto-generated constructor stub
     }
     
 }

@@ -75,7 +75,7 @@ import hla.rti1516e.exceptions.SaveInProgress;
  * Conditional shall have update
  * conditions as defined in the Table 6.
  */
-public class HLAfederateObject extends HLAmanagerObject {
+public class HLAfederate extends HLAmanager {
 
     public enum Attributes {
         HLAfederateHandle,
@@ -112,8 +112,8 @@ public class HLAfederateObject extends HLAmanagerObject {
         HLAconveyProducingFederate
     }
 
-    private static HLAfederateObject anchor;
-    private static HashMap<ObjectInstanceHandle, HLAfederateObject> knownObjects = new HashMap<>();
+    private static HLAfederate anchor;
+    public static HashMap<ObjectInstanceHandle, HLAfederate> knownObjects = new HashMap<>();
 
     private HLAoctet aHLAfederateHandle;
     private HLAunicodeString aHLAfederateName;
@@ -141,7 +141,7 @@ public class HLAfederateObject extends HLAmanagerObject {
         return aHLARTIversion.getValue();
     }
 
-    public HLAfederateObject() throws RprBuilderException {
+    public HLAfederate() throws RprBuilderException {
         super();
         aHLAfederateHandle = OmtBuilder.getEncoderFactory().createHLAoctet();
         aHLAfederateName= OmtBuilder.getEncoderFactory().createHLAunicodeString();
@@ -177,25 +177,25 @@ public class HLAfederateObject extends HLAmanagerObject {
     public static void addPub(Attributes attribute) throws RprBuilderException, NameNotFound, InvalidObjectClassHandle,
             FederateNotExecutionMember, NotConnected, RTIinternalError {
         if (anchor == null)
-            anchor = new HLAfederateObject();
+            anchor = new HLAfederate();
         anchor.addPubAttribute(attribute.name());
     }
 
     public static void addSub(Attributes attribute) throws RprBuilderException, NameNotFound, InvalidObjectClassHandle,
             FederateNotExecutionMember, NotConnected, RTIinternalError {
         if (anchor == null)
-            anchor = new HLAfederateObject();
+            anchor = new HLAfederate();
         anchor.addSubAttribute(attribute.name());
     }
 
     public static void sub() throws RprBuilderException, AttributeNotDefined, ObjectClassNotDefined, SaveInProgress,
             RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError {
         if (anchor == null)
-            anchor = new HLAfederateObject();
+            anchor = new HLAfederate();
         anchor.subscribe();
     }
 
-    public static HLAfederateObject discover(ObjectInstanceHandle theObject, ObjectClassHandle theObjectClass)
+    public static HLAfederate discover(ObjectInstanceHandle theObject, ObjectClassHandle theObjectClass)
             throws InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError,
             RprBuilderException {
         String receivedClass = OmtBuilder.getRtiAmbassador().getObjectClassName(theObjectClass);
@@ -205,11 +205,11 @@ public class HLAfederateObject extends HLAmanagerObject {
         return null;
     }
 
-    public static HLAfederateObject get(ObjectInstanceHandle theObject) throws RprBuilderException {
-        HLAfederateObject localRef = null;
+    public static HLAfederate get(ObjectInstanceHandle theObject) throws RprBuilderException {
+        HLAfederate localRef = null;
         localRef = knownObjects.get(theObject);
         if (localRef == null) {
-            localRef = new HLAfederateObject();
+            localRef = new HLAfederate();
             localRef.setObjectHandle(theObject);
             knownObjects.put(theObject, localRef);
         }

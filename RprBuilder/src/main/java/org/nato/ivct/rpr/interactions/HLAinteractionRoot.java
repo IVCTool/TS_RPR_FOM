@@ -43,7 +43,7 @@ public class HLAinteractionRoot extends HLAroot {
     protected static final Logger log = LoggerFactory.getLogger(HLAinteractionRoot.class);
 
     private InteractionClassHandle interactionClassHandle = null;
-    private static HashMap<String,ParameterHandle> knownParameterHandles = null;  // known attribute handles
+    private static HashMap<String,ParameterHandle> knownParameterHandles = new HashMap<>();  // known attribute handles
     private ParameterHandleValueMap parameters = null;
 
     public HLAinteractionRoot() throws NameNotFound, FederateNotExecutionMember, NotConnected, RTIinternalError, RprBuilderException {
@@ -71,9 +71,13 @@ public class HLAinteractionRoot extends HLAroot {
         OmtBuilder.getRtiAmbassador().subscribeInteractionClass(interactionClassHandle);
     }
 
+    public void publish() throws InteractionClassNotDefined, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError, RprBuilderException {
+        OmtBuilder.getRtiAmbassador().publishInteractionClass(interactionClassHandle);
+    }
+
     public ParameterHandle getParameterHandle(String name) throws NameNotFound, InvalidInteractionClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, RprBuilderException {
         ParameterHandle handle = knownParameterHandles.get(name);
-        if (name == null) {
+        if (handle == null) {
             handle = OmtBuilder.getRtiAmbassador().getParameterHandle(interactionClassHandle, name);
         }
         return handle;

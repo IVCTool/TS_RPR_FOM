@@ -34,7 +34,6 @@ public class HLAreportInteractionPublication extends HLAreport {
     public HLAreportInteractionPublication()
             throws NameNotFound, FederateNotExecutionMember, NotConnected, RTIinternalError, RprBuilderException {
         super();
-        //TODO Auto-generated constructor stub
     }
     
     public void decode(ParameterHandleValueMap values) {

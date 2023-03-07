@@ -14,30 +14,34 @@ limitations under the License. */
 
 package org.nato.ivct.rpr.interactions;
 
-import org.nato.ivct.rpr.OmtBuilder;
 import org.nato.ivct.rpr.RprBuilderException;
 
-import hla.rti1516e.encoding.EncoderException;
-import hla.rti1516e.encoding.HLAoctet;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
-import hla.rti1516e.exceptions.InvalidInteractionClassHandle;
 import hla.rti1516e.exceptions.NameNotFound;
 import hla.rti1516e.exceptions.NotConnected;
 import hla.rti1516e.exceptions.RTIinternalError;
 
-public class HLAfederate extends HLAmanager {
+
+/** The interaction shall be sent by the RTI in response to an interaction of class
+    HLAmanager.HLAfederate.HLArequest.HLArequestSubscriptions. It shall report the attributes of one
+    object class subscribed to by the joined federate. One of these interactions shall be sent for
+    each object class that is subscribed by the joined federate. This information shall reflect
+    related DDM usage. If joined federate has no subscribed object classes, then a single
+    interaction shall be sent as a NULL response with the HLAnumberOfClasses parameter having a
+    value of 0.
+ */
+public class HLAreportObjectClassSubscription extends HLAreport {
 
     public enum Attributes {
-        HLAfederate
+        HLAnumberOfClasses,
+        HLAobjectClass,
+        HLAactive,
+        HLAmaxUpdateRate,
+        HLAattributeList
     }
-
-    public HLAfederate()
+    public HLAreportObjectClassSubscription()
             throws NameNotFound, FederateNotExecutionMember, NotConnected, RTIinternalError, RprBuilderException {
         super();
     }
     
-    public void setHLAfederate (byte value) throws NameNotFound, InvalidInteractionClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException, RprBuilderException {
-        HLAoctet de = OmtBuilder.getEncoderFactory().createHLAoctet(value);
-        setParameter(Attributes.HLAfederate.name(), de);
-    }
 }
