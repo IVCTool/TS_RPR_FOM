@@ -14,11 +14,13 @@
     limitations under the License. 
  */
 
-package org.nato.ivct.rpr;
+package org.nato.ivct.rpr.objects;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import org.nato.ivct.rpr.OmtBuilder;
+import org.nato.ivct.rpr.RprBuilderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

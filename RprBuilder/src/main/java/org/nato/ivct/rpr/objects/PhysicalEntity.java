@@ -14,7 +14,9 @@
     limitations under the License. 
  */
 
-package org.nato.ivct.rpr;
+ package org.nato.ivct.rpr.objects;
+
+import org.nato.ivct.rpr.RprBuilderException;
 
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
 import hla.rti1516e.exceptions.InvalidObjectClassHandle;
@@ -22,20 +24,42 @@ import hla.rti1516e.exceptions.NameNotFound;
 import hla.rti1516e.exceptions.NotConnected;
 import hla.rti1516e.exceptions.RTIinternalError;
 
-public class Munition extends PhysicalEntity{
-    
+public class PhysicalEntity extends BaseEntity {
+
     public enum Attributes {
-        LauncherFlashPresent
+        AcousticSignatureIndex,
+        AlternateEntityType,
+        ArticulatedParametersArray,
+        CamouflageType,
+        DamageState,
+        EngineSmokeOn,
+        FirePowerDisabled,
+        FlamesPresent,
+        ForceIdentifier,
+        HasAmmunitionSupplyCap,
+        HasFuelSupplyCap,
+        HasRecoveryCap,
+        HasRepairCap,
+        Immobilized,
+        InfraredSignatureIndex,
+        IsConcealed,
+        LiveEntityMeasuredSpeed,
+        Marking,
+        PowerPlantOn,
+        PropulsionSystemsData,
+        RadarCrossSectionSignatureIndex,
+        SmokePlumePresent,
+        TentDeployed,
+        TrailingEffectsCode,
+        VectoringNozzleSystemData        
     }
 
-    public Munition() throws RprBuilderException {
+    // TODO: create fields
+    
+    public PhysicalEntity() throws RprBuilderException {
         super();
     }
 
-
-    /**
-     * TODO: Discuss if the pub/sub methods shall be made type safe. In that case the following two methods shall be private.
-     */
     public void addSubscribe(Attributes attribute) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
         addSubAttribute(attribute.name());
     }
@@ -43,15 +67,6 @@ public class Munition extends PhysicalEntity{
         addPubAttribute(attribute.name()); 
     }
 
-    /*
-     * Type Safe pub/sub Methods
-     */
-    public void subscribeLauncherFlashPresent() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
-        addSubAttribute(Attributes.LauncherFlashPresent.name());
-    }
-    public void publishLauncherFlashPresent() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
-        addPubAttribute(Attributes.LauncherFlashPresent.name());
-    }
 
     // TODO: add remaining sub/pub helpers
 

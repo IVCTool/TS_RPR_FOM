@@ -12,17 +12,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-package org.nato.ivct.rpr;
+package org.nato.ivct.rpr.objects;
 
-public class HLAreport extends HLAfederate {
+import org.nato.ivct.rpr.RprBuilderException;
 
-    public enum Attributes {
-        
-    }
+public class HLAmanagerObject extends HLAobjectRoot {
 
-    public HLAreport() throws RprBuilderException {
-        super();
-        //TODO Auto-generated constructor stub
-    }
     
+    public HLAmanagerObject() throws RprBuilderException {
+        super();        
+    }
 }

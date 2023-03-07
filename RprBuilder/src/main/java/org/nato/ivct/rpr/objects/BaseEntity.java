@@ -14,10 +14,11 @@
     limitations under the License. 
  */
 
-package org.nato.ivct.rpr;
+package org.nato.ivct.rpr.objects;
 
 import java.util.Map.Entry;
 
+import org.nato.ivct.rpr.RprBuilderException;
 import org.nato.ivct.rpr.datatypes.EntityIdentifierStruct;
 import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
 import org.nato.ivct.rpr.datatypes.SpatialVariantStruct;
@@ -50,7 +51,7 @@ public class BaseEntity extends HLAobjectRoot {
     private SpatialVariantStruct aSpatial = null;
     // following are the not-yet typed attributes
     private HLAfixedRecord aIsPartOf = null;
-    private HLAvariantRecord aRelativeSpatical = null;
+    private HLAvariantRecord<HLAoctet> aRelativeSpatical = null;
     
     public BaseEntity() throws RprBuilderException {
         super();

@@ -14,7 +14,9 @@
     limitations under the License. 
  */
 
-package org.nato.ivct.rpr;
+package org.nato.ivct.rpr.objects;
+
+import org.nato.ivct.rpr.RprBuilderException;
 
 public class Aircraft extends Platform {
 

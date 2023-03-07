@@ -25,24 +25,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.Semaphore;
 
-import org.nato.ivct.rpr.BaseEntity;
 import org.nato.ivct.rpr.OmtBuilder;
 import org.nato.ivct.rpr.FomFiles;
-import org.nato.ivct.rpr.HLAfederate;
-import org.nato.ivct.rpr.PhysicalEntity;
 import org.nato.ivct.rpr.RprBuilderException;
-import org.nato.ivct.rpr.Munition;
+import org.nato.ivct.rpr.objects.BaseEntity;
+import org.nato.ivct.rpr.objects.HLAfederateObject;
+import org.nato.ivct.rpr.objects.Munition;
+import org.nato.ivct.rpr.objects.PhysicalEntity;
+
 import hla.rti1516e.AttributeHandle;
 import hla.rti1516e.AttributeHandleValueMap;
 import hla.rti1516e.CallbackModel;
 import hla.rti1516e.FederateAmbassador;
-import hla.rti1516e.FederateHandle;
 import hla.rti1516e.NullFederateAmbassador;
 import hla.rti1516e.ObjectClassHandle;
 import hla.rti1516e.ObjectInstanceHandle;
 import hla.rti1516e.OrderType;
 import hla.rti1516e.RTIambassador;
-import hla.rti1516e.ResignAction;
 import hla.rti1516e.RtiFactory;
 import hla.rti1516e.RtiFactoryFactory;
 import hla.rti1516e.TransportationTypeHandle;
@@ -57,18 +56,15 @@ import hla.rti1516e.exceptions.ErrorReadingFDD;
 import hla.rti1516e.exceptions.FederateAlreadyExecutionMember;
 import hla.rti1516e.exceptions.FederateInternalError;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
-import hla.rti1516e.exceptions.FederateOwnsAttributes;
 import hla.rti1516e.exceptions.FederationExecutionAlreadyExists;
 import hla.rti1516e.exceptions.FederationExecutionDoesNotExist;
 import hla.rti1516e.exceptions.InconsistentFDD;
 import hla.rti1516e.exceptions.InvalidLocalSettingsDesignator;
 import hla.rti1516e.exceptions.InvalidObjectClassHandle;
-import hla.rti1516e.exceptions.InvalidResignAction;
 import hla.rti1516e.exceptions.NameNotFound;
 import hla.rti1516e.exceptions.NotConnected;
 import hla.rti1516e.exceptions.ObjectClassNotDefined;
 import hla.rti1516e.exceptions.ObjectInstanceNotKnown;
-import hla.rti1516e.exceptions.OwnershipAcquisitionPending;
 import hla.rti1516e.exceptions.RTIinternalError;
 import hla.rti1516e.exceptions.RestoreInProgress;
 import hla.rti1516e.exceptions.SaveInProgress;
@@ -101,9 +97,9 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 			logger.trace("discoverObjectInstance {}", theObject);
 			try {
                 String receivedClass = rtiAmbassador.getObjectClassName(theObjectClass);
-				HLAfederate fed = HLAfederate.discover(theObject, theObjectClass);
+				HLAfederateObject fed = HLAfederateObject.discover(theObject, theObjectClass);
                 if (fed != null) {
-					logger.trace("discovered HLAfederate object : {}", theObject);
+					logger.trace("discovered HLAfederate object : {}({})", theObject, receivedClass);
 				} 
 			} catch (NotConnected | InvalidObjectClassHandle | FederateNotExecutionMember | RTIinternalError | RprBuilderException e) {
 				logger.warn("exception in discovered object instance: {}", e.getMessage());
@@ -116,7 +112,7 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
                 SupplementalReflectInfo reflectInfo) throws FederateInternalError {
             logger.trace("reflectAttributeValues without time");
 			try {
-				HLAfederate fed = HLAfederate.get(theObject);
+				HLAfederateObject fed = HLAfederateObject.get(theObject);
 				if (fed != null) {
 					fed.decode(theAttributes);
 					logger.trace("HLAfederate values: {}<{}>", fed.getHLAfederateName(), fed.getHLAfederateHandle());
@@ -176,12 +172,12 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
     protected void performTest(Logger logger) throws TcInconclusiveIf, TcFailedIf {
         logger.info("perform test {}", this.getClass().getName());
 		try {
-            HLAfederate.addSub(HLAfederate.Attributes.HLAfederateHandle);
-            HLAfederate.addSub(HLAfederate.Attributes.HLAfederateName);
-            HLAfederate.addSub(HLAfederate.Attributes.HLAfederateType);
-            HLAfederate.addSub(HLAfederate.Attributes.HLAfederateHost);
-            HLAfederate.addSub(HLAfederate.Attributes.HLARTIversion);
-			HLAfederate.sub();
+            HLAfederateObject.addSub(HLAfederateObject.Attributes.HLAfederateHandle);
+            HLAfederateObject.addSub(HLAfederateObject.Attributes.HLAfederateName);
+            HLAfederateObject.addSub(HLAfederateObject.Attributes.HLAfederateType);
+            HLAfederateObject.addSub(HLAfederateObject.Attributes.HLAfederateHost);
+            HLAfederateObject.addSub(HLAfederateObject.Attributes.HLARTIversion);
+			HLAfederateObject.sub();
 
 			PhysicalEntity.initialize(rtiAmbassador);
 			munitionProxy = new Munition();
