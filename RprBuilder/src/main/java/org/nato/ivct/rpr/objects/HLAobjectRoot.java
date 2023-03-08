@@ -75,7 +75,7 @@ public class HLAobjectRoot {
     public static void initialize(RTIambassador rtiAmbassador2Use) {
         rtiAmbassador = rtiAmbassador2Use;
     }
-    
+
     public HLAobjectRoot() throws RprBuilderException {
         if (rtiAmbassador == null) {
             rtiAmbassador = OmtBuilder.getRtiAmbassador();
@@ -132,6 +132,16 @@ public class HLAobjectRoot {
         }
         log.trace("added subscribe for {}->{}({})", this.getClass().getSimpleName(), attributeName, getAttributeHandle(attributeName));
     }
+
+    public AttributeHandleSet getSubscribedAttributes() throws FederateNotExecutionMember, NotConnected {
+        AttributeHandleSet attr = subscribedAttributes.get(this.getClass().getSimpleName());
+        if (attr == null) { 
+            attr = rtiAmbassador.getAttributeHandleSetFactory().create();
+            subscribedAttributes.put(this.getClass().getSimpleName(), attr);
+        }
+        return attr;        
+    }
+    
     
     protected void setAttributeValue(String attributeName, DataElement value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         attributeValues.put(getAttributeHandle(attributeName), value.toByteArray());

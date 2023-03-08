@@ -17,8 +17,8 @@ package org.nato.ivct.rpr.interactions;
 import org.nato.ivct.rpr.OmtBuilder;
 import org.nato.ivct.rpr.RprBuilderException;
 
+import hla.rti1516e.encoding.DataElement;
 import hla.rti1516e.encoding.EncoderException;
-import hla.rti1516e.encoding.HLAoctet;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
 import hla.rti1516e.exceptions.InvalidInteractionClassHandle;
 import hla.rti1516e.exceptions.NameNotFound;
@@ -36,8 +36,7 @@ public class HLAfederate extends HLAmanager {
         super();
     }
     
-    public void setHLAfederate (byte value) throws NameNotFound, InvalidInteractionClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException, RprBuilderException {
-        HLAoctet de = OmtBuilder.getEncoderFactory().createHLAoctet(value);
-        setParameter(Attributes.HLAfederate.name(), de);
+    public void setHLAfederate (byte[] value) throws NameNotFound, InvalidInteractionClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException, RprBuilderException {
+        setParameter(Attributes.HLAfederate.name(), value);
     }
 }

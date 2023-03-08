@@ -43,9 +43,20 @@ public class HLAinteractionRoot extends HLAroot {
     protected static final Logger log = LoggerFactory.getLogger(HLAinteractionRoot.class);
 
     private InteractionClassHandle interactionClassHandle = null;
+
+    public InteractionClassHandle getInteractionClassHandle() {
+        return interactionClassHandle;
+    }
+
+    /** Private Field **/
     private static HashMap<String,ParameterHandle> knownParameterHandles = new HashMap<>();  // known attribute handles
     private ParameterHandleValueMap parameters = null;
 
+
+    /**
+     * Root constructor for all derived interactions. Must be called
+     * within each subclass constructor (via 'super()')
+     */
     public HLAinteractionRoot() throws NameNotFound, FederateNotExecutionMember, NotConnected, RTIinternalError, RprBuilderException {
         if (interactionClassHandle == null) {
             interactionClassHandle = OmtBuilder.getRtiAmbassador().getInteractionClassHandle(getHlaClassName());
@@ -54,8 +65,8 @@ public class HLAinteractionRoot extends HLAroot {
         log.trace("interaction {} created", interactionClassHandle);
     }
 
-    protected void setParameter (String parameterName, DataElement value) throws NameNotFound, InvalidInteractionClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException, RprBuilderException {
-        parameters.put(getParameterHandle(parameterName), value.toByteArray());
+    protected void setParameter (String parameterName, byte[] value) throws NameNotFound, InvalidInteractionClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException, RprBuilderException {
+        parameters.put(getParameterHandle(parameterName), value);
         log.trace("set parameter {}->{} = {}", this.getHlaClassName(), parameterName, value.toString());
     }
 

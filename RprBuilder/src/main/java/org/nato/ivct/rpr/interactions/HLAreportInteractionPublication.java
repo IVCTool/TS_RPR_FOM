@@ -18,6 +18,7 @@ import java.util.Map.Entry;
 
 import org.nato.ivct.rpr.RprBuilderException;
 
+import hla.rti1516e.InteractionClassHandle;
 import hla.rti1516e.ParameterHandle;
 import hla.rti1516e.ParameterHandleValueMap;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
@@ -25,6 +26,13 @@ import hla.rti1516e.exceptions.NameNotFound;
 import hla.rti1516e.exceptions.NotConnected;
 import hla.rti1516e.exceptions.RTIinternalError;
 
+
+/** The interaction shall be sent by the RTI in response to an interaction of class
+    HLAmanager.HLAfederate.HLArequest.HLArequestPublications. It shall report the interaction
+    classes published by the joined federate. If the joined federate is published to no interaction
+    classes, then a single interaction shall be sent as a NULL response with the
+    HLAinteractionClassList parameter having an undefined value (i.e. 0 length array).
+ */
 public class HLAreportInteractionPublication extends HLAreport {
 
     public enum Attributes {
@@ -34,6 +42,19 @@ public class HLAreportInteractionPublication extends HLAreport {
     public HLAreportInteractionPublication()
             throws NameNotFound, FederateNotExecutionMember, NotConnected, RTIinternalError, RprBuilderException {
         super();
+    }
+
+    public static HLAreportInteractionPublication discover (InteractionClassHandle theInteractionClassHandle) {
+        HLAreportInteractionPublication candidate;
+        try {
+            candidate = new HLAreportInteractionPublication();
+            if (!candidate.getInteractionClassHandle().equals(theInteractionClassHandle)) {
+                candidate = null;
+            } 
+        } catch (NameNotFound | FederateNotExecutionMember | NotConnected | RTIinternalError | RprBuilderException e) {
+            candidate = null;
+        }
+        return candidate;
     }
     
     public void decode(ParameterHandleValueMap values) {

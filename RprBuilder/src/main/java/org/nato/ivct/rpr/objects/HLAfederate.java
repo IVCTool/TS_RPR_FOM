@@ -17,19 +17,19 @@ package org.nato.ivct.rpr.objects;
 import java.util.Map.Entry;
 import java.util.HashMap;
 
-import javax.accessibility.AccessibleHyperlink;
-
 import org.nato.ivct.rpr.OmtBuilder;
 import org.nato.ivct.rpr.RprBuilderException;
 
 import hla.rti1516e.AttributeHandle;
 import hla.rti1516e.AttributeHandleValueMap;
+import hla.rti1516e.FederateHandle;
+import hla.rti1516e.FederateHandleFactory;
 import hla.rti1516e.ObjectClassHandle;
 import hla.rti1516e.ObjectInstanceHandle;
 import hla.rti1516e.encoding.DecoderException;
-import hla.rti1516e.encoding.HLAoctet;
 import hla.rti1516e.encoding.HLAunicodeString;
 import hla.rti1516e.exceptions.AttributeNotDefined;
+import hla.rti1516e.exceptions.CouldNotDecode;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
 import hla.rti1516e.exceptions.InvalidObjectClassHandle;
 import hla.rti1516e.exceptions.NameNotFound;
@@ -115,14 +115,15 @@ public class HLAfederate extends HLAmanager {
     private static HLAfederate anchor;
     public static HashMap<ObjectInstanceHandle, HLAfederate> knownObjects = new HashMap<>();
 
-    private HLAoctet aHLAfederateHandle;
+    private FederateHandleFactory  aHLAfederateHandleFactory;
+    private byte[]  aHLAfederateHandle;
     private HLAunicodeString aHLAfederateName;
     private HLAunicodeString aHLAfederateType;
     private HLAunicodeString aHLAfederateHost;
     private HLAunicodeString aHLARTIversion;
 
-    public byte getHLAfederateHandle() {
-        return aHLAfederateHandle.getValue();
+    public byte[] getHLAfederateHandle() {
+        return aHLAfederateHandle;
     }
 
     public String getHLAfederateName() {
@@ -143,8 +144,14 @@ public class HLAfederate extends HLAmanager {
 
     public HLAfederate() throws RprBuilderException {
         super();
-        aHLAfederateHandle = OmtBuilder.getEncoderFactory().createHLAoctet();
-        aHLAfederateName= OmtBuilder.getEncoderFactory().createHLAunicodeString();
+        try {
+            aHLAfederateHandleFactory = OmtBuilder.getRtiAmbassador().getFederateHandleFactory();
+            aHLAfederateHandle = null;
+        } catch (FederateNotExecutionMember | NotConnected e) {
+            // TODO Auto-generated catch block
+            throw new RprBuilderException(e.getMessage());
+        }
+        aHLAfederateName = OmtBuilder.getEncoderFactory().createHLAunicodeString();
         aHLAfederateType = OmtBuilder.getEncoderFactory().createHLAunicodeString();
         aHLAfederateHost = OmtBuilder.getEncoderFactory().createHLAunicodeString();
         aHLARTIversion = OmtBuilder.getEncoderFactory().createHLAunicodeString();    
@@ -156,7 +163,7 @@ public class HLAfederate extends HLAmanager {
             Attributes attribute = Attributes.valueOf(getHandleString(attributeHandle));
             switch (attribute) {
                 case HLAfederateHandle:
-                    aHLAfederateHandle.decode(entry.getValue());
+                    aHLAfederateHandle = theAttributes.get(entry.getKey());
                     break;
                 case HLAfederateName:
                     aHLAfederateName.decode(entry.getValue());

@@ -14,8 +14,13 @@ limitations under the License. */
 
 package org.nato.ivct.rpr.interactions;
 
+import java.util.Map.Entry;
+
 import org.nato.ivct.rpr.RprBuilderException;
 
+import hla.rti1516e.InteractionClassHandle;
+import hla.rti1516e.ParameterHandle;
+import hla.rti1516e.ParameterHandleValueMap;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
 import hla.rti1516e.exceptions.NameNotFound;
 import hla.rti1516e.exceptions.NotConnected;
@@ -42,4 +47,24 @@ public class HLAreportObjectClassPublication extends HLAreport {
         super();
     }
     
+    public static HLAreportObjectClassPublication discover (InteractionClassHandle theInteractionClassHandle) {
+        HLAreportObjectClassPublication candidate;
+        try {
+            candidate = new HLAreportObjectClassPublication();
+            if (!candidate.getInteractionClassHandle().equals(theInteractionClassHandle)) {
+                candidate = null;
+            } 
+        } catch (NameNotFound | FederateNotExecutionMember | NotConnected | RTIinternalError | RprBuilderException e) {
+            candidate = null;
+        }
+        return candidate;
+    }
+    
+    public void decode(ParameterHandleValueMap values) {
+        for (Entry<ParameterHandle, byte[]> entry : values.entrySet()) {
+            log.trace("decode {} = {}", entry.getKey(), entry.getValue());
+            
+        }
+    }
+
 }
