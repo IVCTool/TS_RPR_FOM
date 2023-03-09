@@ -10,7 +10,7 @@ The modules in the RPR FOM are structured into a list of modules dedicated to di
 
 The functional modules are:
 
-- [Entity](rpr-entity.md)
+- [BaseEntity](rpr-entity.md)
 - [Aggregate](rpr-aggregate.md)
 - [Communication](rpr-communication.md) 
 - Underwater Acoustics 
