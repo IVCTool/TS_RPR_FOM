@@ -1,6 +1,6 @@
 # RPR FOM Communication Module Badge
 
-Interoperability Requirements for the RPR FOM Communication Module. 
+Interoperability Requirements for the RPR FOM Communication Module (see also [JSON definition file](badges/RPR-COM-2.0.json)). 
 
 ![RPR-COM-2.0.png](images/RPR-COM-2.0.png)
 
