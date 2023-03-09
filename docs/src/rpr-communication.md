@@ -2,7 +2,7 @@
 
 Interoperability Requirements for the RPR FOM Communication Module. 
 
-![RPR-DER-2.0.png](images/RPR-DER-2.0.png)
+![RPR-COM-2.0.png](images/RPR-COM-2.0.png)
 
 | Short&nbsp;Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Description |
 | ---------- | ----------- |
