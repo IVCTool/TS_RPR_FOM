@@ -1,6 +1,6 @@
 # RPR FOM Entity Module Badge
 
-Basic Interoperability Requirements for the RPR FOM Base and Physical Moduls. 
+Basic Interoperability Requirements for the RPR FOM Base and Physical Moduls (see also [JSON definition file](badges/RPR-ENTITY-2.0.json)). 
 
 ![RPR-ENTITY-2.0.png](images/RPR-ENTITY-2.0.png)
 
