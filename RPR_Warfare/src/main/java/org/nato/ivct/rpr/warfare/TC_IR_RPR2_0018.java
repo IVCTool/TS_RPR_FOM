@@ -168,7 +168,14 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 			// Test for HLAreportObjectClassPublication interaction
 			HLAreportObjectClassPublication classPubs = HLAreportObjectClassPublication.discover(interactionClass);
 			if (classPubs != null) {
-				classPubs.decode(theParameters);
+				try {
+					classPubs.decode(theParameters);
+					logger.trace("received report for objectClass={}, numberOfClasses={}", classPubs.getHLAobjectClass(), classPubs.getaHLAnumberOfClasses());
+				} catch (NameNotFound | InvalidInteractionClassHandle | FederateNotExecutionMember | NotConnected
+						| RTIinternalError | RprBuilderException | DecoderException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				return;
 			}
 			// HLAreportObjectClassSubscription
