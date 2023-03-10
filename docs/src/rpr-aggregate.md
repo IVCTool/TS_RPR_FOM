@@ -1,6 +1,6 @@
 # RPR FOM Aggregate Module Badge
 
-Interoperability Requirements for the RPR FOM Aggregate Module. 
+Interoperability Requirements for the RPR FOM Aggregate Module (see also [JSON definition file](badges/RPR-AGG-2.0.json)). 
 
 ![RPR-AGG-2.0.png](images/RPR-AGG-2.0.png)
 

@@ -1,6 +1,6 @@
 # RPR FOM Warfare Module Badge
 
-Interoperability Requirements for the RPR FOM Warfare Module. 
+Interoperability Requirements for the RPR FOM Warfare Module (see also [JSON definition file](badges/RPR-WARFARE-2.0.json)). 
 
 ![RPR-WARFARE-2.0.png](images/RPR-WARFARE-2.0.png)
 
