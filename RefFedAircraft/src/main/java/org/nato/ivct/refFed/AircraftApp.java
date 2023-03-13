@@ -37,6 +37,7 @@ import org.nato.ivct.rpr.objects.Aircraft;
 import org.nato.ivct.rpr.objects.HLAobjectRoot;
 import org.nato.ivct.rpr.objects.Munition;
 import org.nato.ivct.rpr.objects.BaseEntity;
+import org.nato.ivct.rpr.objects.PhysicalEntity;
 
 public class AircraftApp extends NullFederateAmbassador {
     

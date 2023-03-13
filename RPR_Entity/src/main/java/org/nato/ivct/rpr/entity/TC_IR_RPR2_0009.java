@@ -19,10 +19,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import java.util.concurrent.Semaphore;
+import org.nato.ivct.rpr.objects.Aircraft;
+import org.nato.ivct.rpr.objects.BaseEntity;
+import org.nato.ivct.rpr.objects.PhysicalEntity;
 
-import org.nato.ivct.rpr.Aircraft;
-import org.nato.ivct.rpr.BaseEntity;
-import org.nato.ivct.rpr.PhysicalEntity;
+
 import org.nato.ivct.rpr.FomFiles;
 import org.slf4j.Logger;
 

@@ -20,9 +20,9 @@ import java.util.HashMap;
 
 import java.util.concurrent.Semaphore;
 
-import org.nato.ivct.rpr.Aircraft;
-import org.nato.ivct.rpr.BaseEntity;
-import org.nato.ivct.rpr.PhysicalEntity;
+import org.nato.ivct.rpr.objects.Aircraft;
+import org.nato.ivct.rpr.objects.BaseEntity;
+import org.nato.ivct.rpr.objects.PhysicalEntity;
 import org.nato.ivct.rpr.FomFiles;
 import org.slf4j.Logger;
 
@@ -71,6 +71,23 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
  *
  * SuT shall not update non-applicable PhysicalEntity Attributes 
  * as specified in Domain Appropriateness table in SISO-STD-001-2015."
+ */
+
+/*  * Table 7 Domain Appropriateness for PhysicalEntity Attributes 
+ * e.g 
+ * Attribute Name       Aircraft  AmphibiousVehicle  GroundVehicle  Spacecraft
+ * ----------------------------------------------------------------------------
+ * CamouflageType         Yes
+ * DamageState            Yes
+ * EngineSmoke            Yes
+ * FirePowerDisabled      
+ * FlamesPresent          Yes
+ * Immobilized            Yes
+ * IsConcealed                     
+ * PowerPlantOn           Yes
+ * SmokePlumePresent      Yes
+ * TentDeployed           
+ * TrailingEffectsCode    Yes
  */
 
 
