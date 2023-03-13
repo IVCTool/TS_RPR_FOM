@@ -1,6 +1,6 @@
 # RPR FOM Distributed Emission Regeneration Module Badge
 
-Interoperability Requirements for the RPR FOM Distributed Emission Regeneration Module. Badge short name **RPR-DER-2.0**, current version 0.1.
+Interoperability Requirements for the RPR FOM Distributed Emission Regeneration Module. Badge short name **RPR-DER-2.0**, current version 0.1 (see also [JSON definition file](badges/RPR-DER-2.0.json)).
 
 ![RPR-DER-2.0](images/RPR-DER-2.0.png)
 

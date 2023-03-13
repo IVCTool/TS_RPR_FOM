@@ -1,6 +1,6 @@
 # RPR FOM Physical Module Badge
 
-Interoperability Requirements for the RPR FOM Physical Module. 
+Interoperability Requirements for the RPR FOM Physical Module (see also [JSON definition file](badges/RPR-PHY-2.0.json)). 
 
 ![RPR-PHY-2.0.png](images/RPR-PHY-2.0.png)
 

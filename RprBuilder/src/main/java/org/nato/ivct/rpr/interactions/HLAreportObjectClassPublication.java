@@ -14,9 +14,21 @@ limitations under the License. */
 
 package org.nato.ivct.rpr.interactions;
 
+import java.util.Map.Entry;
+
+import org.nato.ivct.rpr.OmtBuilder;
 import org.nato.ivct.rpr.RprBuilderException;
 
+import hla.rti1516e.InteractionClassHandle;
+import hla.rti1516e.ParameterHandle;
+import hla.rti1516e.ParameterHandleValueMap;
+import hla.rti1516e.encoding.DataElement;
+import hla.rti1516e.encoding.DataElementFactory;
+import hla.rti1516e.encoding.DecoderException;
+import hla.rti1516e.encoding.HLAinteger32BE;
+import hla.rti1516e.encoding.HLAvariableArray;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
+import hla.rti1516e.exceptions.InvalidInteractionClassHandle;
 import hla.rti1516e.exceptions.NameNotFound;
 import hla.rti1516e.exceptions.NotConnected;
 import hla.rti1516e.exceptions.RTIinternalError;
@@ -37,9 +49,48 @@ public class HLAreportObjectClassPublication extends HLAreport {
         HLAattributeList
     }
 
+    private HLAinteger32BE aHLAnumberOfClasses;
+    public int getaHLAnumberOfClasses() {
+        return aHLAnumberOfClasses.getValue();
+    }
+
+    private byte[] aHLAobjectClass;
+    public byte [] getHLAobjectClass() {
+        return aHLAobjectClass;
+    }
+
+    private byte[] aHLAattributeList;
+    public byte [] getHLAattributeList() {
+        return aHLAattributeList;
+    }
+
     public HLAreportObjectClassPublication()
             throws NameNotFound, FederateNotExecutionMember, NotConnected, RTIinternalError, RprBuilderException {
         super();
+        aHLAnumberOfClasses = OmtBuilder.getEncoderFactory().createHLAinteger32BE();
     }
     
+    public static HLAreportObjectClassPublication discover (InteractionClassHandle theInteractionClassHandle) {
+        HLAreportObjectClassPublication candidate;
+        try {
+            candidate = new HLAreportObjectClassPublication();
+            if (!candidate.getInteractionClassHandle().equals(theInteractionClassHandle)) {
+                candidate = null;
+            } 
+        } catch (NameNotFound | FederateNotExecutionMember | NotConnected | RTIinternalError | RprBuilderException e) {
+            candidate = null;
+        }
+        return candidate;
+    }
+    
+    public void decode(ParameterHandleValueMap values) throws NameNotFound, InvalidInteractionClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, RprBuilderException, DecoderException {
+        for (Entry<ParameterHandle, byte[]> entry : values.entrySet()) {
+            log.trace("decode {} = {}", entry.getKey(), entry.getValue());            
+        }
+        aHLAnumberOfClasses.decode(values.get(getParameterHandle(Attributes.HLAnumberOfClasses.name())));
+        int i = aHLAnumberOfClasses.getValue();
+        aHLAobjectClass = values.get(getParameterHandle(Attributes.HLAobjectClass.name()));
+        aHLAattributeList = values.get(getParameterHandle(Attributes.HLAattributeList.name()));
+    }
+
 }

@@ -16,6 +16,7 @@ package org.nato.ivct.refFed;
 
 import hla.rti1516e.CallbackModel;
 import hla.rti1516e.FederateAmbassador;
+import hla.rti1516e.FederateHandle;
 import hla.rti1516e.NullFederateAmbassador;
 import hla.rti1516e.RTIambassador;
 import hla.rti1516e.RtiFactory;
@@ -66,6 +67,7 @@ public class AircraftApp extends NullFederateAmbassador {
 	private String federateName = "RefFedAircraft";
 	private int nrOfCycles = 4000;
 	private RTIambassador rtiAmbassador;
+	private FederateHandle fedHandle;
 
 	public static void main(final String[] args) {
 		AircraftApp aircraft = new AircraftApp(args);
@@ -156,7 +158,7 @@ public class AircraftApp extends NullFederateAmbassador {
 			try {
 				rtiAmbassador.createFederationExecution(this.federationName, fomList.toArray(new URL[fomList.size()]));
 			} catch (FederationExecutionAlreadyExists ignored) { }
-			rtiAmbassador.joinFederationExecution(this.federateName, this.federationName, fomList.toArray(new URL[fomList.size()]));
+			fedHandle = rtiAmbassador.joinFederationExecution(this.federateName, this.federationName, fomList.toArray(new URL[fomList.size()]));
 
             HLAobjectRoot.initialize(rtiAmbassador);
             Aircraft aircraft = new Aircraft();
