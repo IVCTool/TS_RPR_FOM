@@ -17,13 +17,13 @@ package org.nato.ivct.rpr.entity;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import java.util.concurrent.Semaphore;
 
+import org.nato.ivct.rpr.FomFiles;
 import org.nato.ivct.rpr.objects.Aircraft;
 import org.nato.ivct.rpr.objects.BaseEntity;
 import org.nato.ivct.rpr.objects.PhysicalEntity;
-import org.nato.ivct.rpr.FomFiles;
+import org.nato.ivct.rpr.objects.Platform;
 import org.slf4j.Logger;
 
 import de.fraunhofer.iosb.tc_lib_if.AbstractTestCaseIf;
@@ -44,8 +44,8 @@ import hla.rti1516e.RTIambassador;
 import hla.rti1516e.RtiFactory;
 import hla.rti1516e.RtiFactoryFactory;
 import hla.rti1516e.TransportationTypeHandle;
-
 import hla.rti1516e.exceptions.AlreadyConnected;
+import hla.rti1516e.exceptions.AttributeNotDefined;
 import hla.rti1516e.exceptions.CallNotAllowedFromWithinCallback;
 import hla.rti1516e.exceptions.ConnectionFailed;
 import hla.rti1516e.exceptions.CouldNotCreateLogicalTimeFactory;
@@ -57,6 +57,7 @@ import hla.rti1516e.exceptions.FederateNotExecutionMember;
 import hla.rti1516e.exceptions.FederationExecutionAlreadyExists;
 import hla.rti1516e.exceptions.FederationExecutionDoesNotExist;
 import hla.rti1516e.exceptions.InconsistentFDD;
+import hla.rti1516e.exceptions.InvalidAttributeHandle;
 import hla.rti1516e.exceptions.InvalidLocalSettingsDesignator;
 import hla.rti1516e.exceptions.InvalidObjectClassHandle;
 import hla.rti1516e.exceptions.NotConnected;
@@ -98,19 +99,52 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 	
 	Semaphore semaphore = new Semaphore(0);
 	
-	HashMap<AttributeHandle,byte[]> _attributHandleValues  = new HashMap<>() ;
+	HashMap<ObjectInstanceHandle,AttributeHandleValueMap> known_oInstance_AttrValueMap = new HashMap<>();
 	
-	Aircraft aircraft;
+	HashMap<AttributeHandle,byte[]> _attributeHandleValues  = new HashMap<>() ;
+	
+	ObjectClassHandle temp_objectClassHandle;
+	HashMap<ObjectInstanceHandle, PhysicalEntity> knownPhysicalEntitys = new HashMap<>();
+	
+	String toTestPlatformName="";
+	Platform toTestPlatform;
+	//Aircraft aircraft;
+	
+	
+    public TC_IR_RPR2_0012() {
+		
+	}
+	
+    public TC_IR_RPR2_0012(String  _testPlatformNameString) {
+    	toTestPlatformName=_testPlatformNameString;
+	}
+    
 
 
 	class TestCaseAmbassador extends NullFederateAmbassador {
+		
 		@Override
 		public void discoverObjectInstance(
 				ObjectInstanceHandle theObject,
 				ObjectClassHandle theObjectClass,
 				String objectName) throws FederateInternalError {
+			
+			System.out.println(""); // Debug
 			logger.trace("discoverObjectInstance {}", theObject);
-			//semaphore.release(1);
+			// semaphore.release(1);
+
+			try {
+				// we only want to observe selected ObjectInstances
+				if (toTestPlatform.getHlaClassName().equals(rtiAmbassador.getObjectClassName(theObjectClass))) {
+
+					temp_objectClassHandle = theObjectClass;
+					logger.info("rti-ObjectClassName in discoverObjectInstance:  " + rtiAmbassador.getObjectClassName(theObjectClass)); // Debug
+
+				}
+
+			} catch (Exception e) {
+				logger.error("discoverObjectInstance received Exception", e);
+			}
 		}
 
 		@Override
@@ -149,9 +183,40 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
                 byte[] userSuppliedTag,
                 OrderType sentOrdering,
                 TransportationTypeHandle theTransport,
-                SupplementalReflectInfo reflectInfo) throws FederateInternalError {        	
+                SupplementalReflectInfo reflectInfo) throws FederateInternalError {
+			
+			System.out.println(""); // Debug
 			logger.trace("reflectAttributeValues without  LogicalTime,  MessageRetractionHandle  ");
 			//semaphore.release(1);
+			
+			try {
+			
+			// we have to store the incoming Information to analyse it later
+			System.out.println("# ---------   Testing and Debugging --------------------------------"); 	
+			logger.info("reflectAttributeValues: Amount of transmitted  attributes: " +theAttributes.size());	
+		    System.out.println("# reflectAttributeValues: got  ObjectInstanceHandle  theObject: " +theObject ); // Debug			    
+		    System.out.println("# reflectAttributeValues: rti-objectInstanceName of theObject:  \t" + rtiAmbassador.getObjectInstanceName(theObject));  // Debug
+		    
+		    System.out.println("\n# reflectAttributeValues:   AttributHandleValueMap theAttributes:  "+ theAttributes);  // Debug
+		    System.out.println("#reflectAttributeValues:  the Keys in AttributHandleValueMap  : " + theAttributes.keySet() );
+		    
+		    // we need the Names of the Attributes 
+		 	System.out.println("# reflectAttributeValues: Names of received Attributes ");
+		 		for ( AttributeHandle a : theAttributes.keySet() ) {
+		 			System.out.println(rtiAmbassador.getAttributeName(temp_objectClassHandle, a) );
+		 		}
+		    
+			System.out.println("\n# reflectAttributeValues: getHlaClassName der zu bearbeitenden Klasse   \t" + toTestPlatform.getHlaClassName()); // Debug			
+			System.out.println("# reflectAttributeValues: rti-ObjectKlassenName of with discoverObjectInstance received temp_objectClassHandle \t" + rtiAmbassador.getObjectClassName(temp_objectClassHandle));  // Debug
+
+			
+			
+			} catch ( FederateNotExecutionMember | NotConnected | RTIinternalError | AttributeNotDefined | InvalidAttributeHandle | InvalidObjectClassHandle | ObjectInstanceNotKnown  e) 
+			{ 	};
+			
+			// (ObjectInstanceNotKnown | FederateNotExecutionMember | NotConnected | RTIinternalError | AttributeNotDefined | InvalidAttributeHandle | InvalidObjectClassHandle    e
+			
+			
 		}
 		
 	}
@@ -207,15 +272,55 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 	@Override
 	protected void performTest(Logger logger) throws TcInconclusiveIf, TcFailedIf {
 		logger.info("perform test {}", this.getClass().getName());
-		Aircraft.initialize(rtiAmbassador);  //to adjust
+		//Aircraft.initialize(rtiAmbassador);  //to adjust
+		PhysicalEntity.initialize(rtiAmbassador);
 
 		try {
+			switch (toTestPlatformName){
+			  case "Aircraft": 
+				  toTestPlatform = new Aircraft();
+			   //Anweisung1   toTestEntity
+			    break;			   
+			  case "AmphibiousVehicle":
+				  //toTestPlatform = new AmphibiousVehicle();
+			    break;			    
+			  case "GroundVehicle":
+				  //toTestPlatform = new GroundVehicle();
+				    break;				    
+			  case "Spacecraft":
+				  //toTestPlatform = new Spacecraft();
+				    break;				    
+			  default :
+				  logger.info(" to Test Type  unknown, we assume Aircraft ");
+				  toTestPlatform = new Aircraft();
+			}
+			
 			// aircraft = new Aircraft();    //to adjust
 			// aircraft.addSubscribe(BaseEntity.Attributes.EntityIdentifier);   //to adjust
 			// aircraft.subscribe();         //to adjust
+			
+			toTestPlatform.addSubscribe(BaseEntity.Attributes.EntityIdentifier);
+			toTestPlatform.addSubscribe(BaseEntity.Attributes.EntityType);			
+			toTestPlatform.addSubscribe(BaseEntity.Attributes.Spatial);
+			
+			toTestPlatform.addSubscribe(PhysicalEntity.Attributes.CamouflageType);
+			toTestPlatform.addSubscribe(PhysicalEntity.Attributes.DamageState);
+			toTestPlatform.addSubscribe(PhysicalEntity.Attributes.EngineSmokeOn);
+			toTestPlatform.addSubscribe(PhysicalEntity.Attributes.FirePowerDisabled);
+			toTestPlatform.addSubscribe(PhysicalEntity.Attributes.FlamesPresent);
+			toTestPlatform.addSubscribe(PhysicalEntity.Attributes.Immobilized);
+			toTestPlatform.addSubscribe(PhysicalEntity.Attributes.IsConcealed);
+			toTestPlatform.addSubscribe(PhysicalEntity.Attributes.PowerPlantOn);
+			toTestPlatform.addSubscribe(PhysicalEntity.Attributes.SmokePlumePresent);
+			toTestPlatform.addSubscribe(PhysicalEntity.Attributes.TentDeployed);
+			toTestPlatform.addSubscribe(PhysicalEntity.Attributes.TrailingEffectsCode);
+			
+			toTestPlatform.subscribe();
 
 			boolean seenEnough = false;
 			while (!seenEnough) {
+				
+				//
 				// the Test ......
 			}
 
