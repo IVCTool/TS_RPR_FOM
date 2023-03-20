@@ -209,6 +209,8 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 			System.out.println("\n# reflectAttributeValues: getHlaClassName der zu bearbeitenden Klasse   \t" + toTestPlatform.getHlaClassName()); // Debug			
 			System.out.println("# reflectAttributeValues: rti-ObjectKlassenName of with discoverObjectInstance received temp_objectClassHandle \t" + rtiAmbassador.getObjectClassName(temp_objectClassHandle));  // Debug
 
+			// testing some other
+			//rtiAmbassador.get
 			
 			
 			} catch ( FederateNotExecutionMember | NotConnected | RTIinternalError | AttributeNotDefined | InvalidAttributeHandle | InvalidObjectClassHandle | ObjectInstanceNotKnown  e) 

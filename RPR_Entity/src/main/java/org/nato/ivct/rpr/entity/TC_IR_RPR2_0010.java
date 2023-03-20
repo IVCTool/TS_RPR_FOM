@@ -74,7 +74,7 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
  */
 
 
-public class TC_IR_RPR2_0009 extends AbstractTestCaseIf {
+public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
 	RTIambassador rtiAmbassador = null;
 	FederateAmbassador tcAmbassador = null;
 	Logger logger = null;
