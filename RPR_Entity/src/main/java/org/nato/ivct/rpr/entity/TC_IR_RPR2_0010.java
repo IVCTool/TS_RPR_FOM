@@ -22,8 +22,7 @@ import java.util.concurrent.Semaphore;
 import org.nato.ivct.rpr.objects.Aircraft;
 import org.nato.ivct.rpr.objects.BaseEntity;
 import org.nato.ivct.rpr.objects.PhysicalEntity;
-
-
+import org.nato.ivct.rpr.objects.Platform;
 import org.nato.ivct.rpr.FomFiles;
 import org.slf4j.Logger;
 
@@ -67,12 +66,50 @@ import hla.rti1516e.exceptions.RestoreInProgress;
 import hla.rti1516e.exceptions.SaveInProgress;
 import hla.rti1516e.exceptions.UnsupportedCallbackModel;
 
-/**
- * Interoperability Requirement:  IR-RPR2-0009
- * 	"SuT shall in CS specify the use of Articulated Parts for all published
- *   and subscribedBaseEntity.PhysicalEntity and subclasses."
- */
 
+
+
+
+
+/**
+ * Interoperability Requirement:  IR-RPR2-0010
+ * 
+ * SuT shall in CS specify the use of Dead-Reckoning algorithms for all published
+ *  and subscribed BaseEntity.PhysicalEntity and subclasses.
+ *   
+ *   
+ *   -------------------------------------------
+ *  SISO-STD-001-2015, Standard for Guidance, Rationale, and Interoperability Modalities
+ * for the Real-time Platform Reference Federation Object Model  S 26
+ *
+ * The basic architecture of DIS specified the use of a dead reckoning mechanism for
+ * reducing communication processing (section 1.3.1.f of IEEE Std 1278.1TM-1995 [6]).
+ * 
+ * The RPR FOM has adopted this mechanism for the same purpose.
+ * For each registered object instance, the use of dead reckoning requires that
+ * a federate maintain a dead reckoning model in addition to its own internal model.
+ *
+ * The dead reckoning model shall follow one of the prescribed dead reckoning
+ * algorithms defined by DIS 1995 and enumerated in the RPR FOM.
+ * 
+ * Dead Reckoning shall be applied to all object instances that are derived
+ * from the BaseEntity object class.
+ * 
+ * A federate shall issue a Spatial attribute update whenever the differences
+ * in position or orientation between its internal model and its dead reckoning
+ *  model have exceeded established thresholds.  
+ *  
+ *  in rPR-Base_v2.0.xml is defined:
+ *  <fixedRecordData notes="RPRnoteBase15">
+ *    <name>SpatialFPStruct</name>
+ *    <encoding>HLAfixedRecord</encoding>
+ *    <semantics>Spatial structure for Dead Reckoning Algorithm FPW (2) and FPB (6).</semantics>
+ *      <field> ....
+ *      
+                
+ *  
+ *  
+ */
 
 public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
 	RTIambassador rtiAmbassador = null;
@@ -83,8 +120,19 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
 	
 	HashMap<AttributeHandle,byte[]> _attributHandleValues  = new HashMap<>() ;
 	
-	Aircraft aircraft;       // to be adjusted
-
+	String toTestEntityIdentifier="";
+	BaseEntity toTestEntity;
+	
+	
+	 public TC_IR_RPR2_0010() {
+			
+		}
+		
+	    public TC_IR_RPR2_0010(String  _toTestEntityName) {
+	    	toTestEntityIdentifier=_toTestEntityName;
+		}
+	
+	
 
 	class TestCaseAmbassador extends NullFederateAmbassador {
 		@Override
@@ -107,7 +155,7 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
 		}
 
 		
-		// We have somehow to get Informations about the CS/FOM  from the SUT
+		// We have to get Informations from the RTI  about Details  what the SUT specify in the CS/FOM
 		
 	}
 	
@@ -115,18 +163,17 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
 	@Override
 	protected void logTestPurpose(Logger logger) {
 	 String msg = "Test Case Purpose: " ;
-	        msg += "SuT shall in CS specify the use of Articulated Parts for all published " ;
-	        msg += "and subscribedBaseEntity.PhysicalEntity and subclasses.";
+	        msg += "SuT shall in CS specify the use of Dead-Reckoning algorithms for all published " ;
+	        msg += "and subscribed BaseEntity.PhysicalEntity and subclasses.";
 		logger .info(msg);
 		this.logger = logger;
-
-
 	}
 
 	@Override
 	protected void preambleAction(Logger logger) throws TcInconclusiveIf {
 		RtiFactory rtiFactory;
 		logger.info("preamble action for test {}", this.getClass().getName());
+				
 
 		try {
 			rtiFactory = RtiFactoryFactory.getRtiFactory();
@@ -166,9 +213,29 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
 
 		try {
 			
-			// aircraft = new Aircraft();    //to adjust
-			// aircraft.addSubscribe(BaseEntity.Attributes.EntityIdentifier);   //to adjust
-			// aircraft.subscribe();         //to adjust
+			switch (toTestEntityIdentifier){
+			  case "Aircraft": 
+				  toTestEntity = new Aircraft();
+			   //Anweisung1   toTestEntity
+			    break;			   
+			  case "AmphibiousVehicle":
+				  //toTestPlatform = new AmphibiousVehicle();
+			    break;			    
+			  case "GroundVehicle":
+				  //toTestPlatform = new GroundVehicle();
+				    break;				    
+			  case "Spacecraft":
+				  //toTestPlatform = new Spacecraft();
+				    break;				    
+			  default :
+				  logger.info(" to Test Type  unknown, we assume Aircraft ");
+				  toTestEntity = new Aircraft();
+			}
+			
+			toTestEntity.addSubscribe(BaseEntity.Attributes.EntityIdentifier);  // to be adjusted
+			// ...
+			
+			toTestEntity.subscribe();
 
 			boolean seenEnough = false;
 			while (!seenEnough) {

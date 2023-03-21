@@ -24,6 +24,7 @@ import org.nato.ivct.rpr.objects.Aircraft;
 import org.nato.ivct.rpr.objects.BaseEntity;
 import org.nato.ivct.rpr.objects.PhysicalEntity;
 import org.nato.ivct.rpr.objects.Platform;
+import org.nato.ivct.rpr.objects.HLAobjectRoot;
 import org.slf4j.Logger;
 
 import de.fraunhofer.iosb.tc_lib_if.AbstractTestCaseIf;
@@ -119,7 +120,6 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
     	toTestPlatformName=_testPlatformNameString;
 	}
     
-
 
 	class TestCaseAmbassador extends NullFederateAmbassador {
 		
@@ -275,6 +275,7 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 	protected void performTest(Logger logger) throws TcInconclusiveIf, TcFailedIf {
 		logger.info("perform test {}", this.getClass().getName());
 		//Aircraft.initialize(rtiAmbassador);  //to adjust
+		
 		PhysicalEntity.initialize(rtiAmbassador);
 
 		try {
