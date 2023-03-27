@@ -19,10 +19,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import java.util.concurrent.Semaphore;
+
 import org.nato.ivct.rpr.objects.Aircraft;
 import org.nato.ivct.rpr.objects.BaseEntity;
 import org.nato.ivct.rpr.objects.PhysicalEntity;
-import org.nato.ivct.rpr.objects.Platform;
+
+
 import org.nato.ivct.rpr.FomFiles;
 import org.slf4j.Logger;
 
@@ -66,74 +68,65 @@ import hla.rti1516e.exceptions.RestoreInProgress;
 import hla.rti1516e.exceptions.SaveInProgress;
 import hla.rti1516e.exceptions.UnsupportedCallbackModel;
 
-
-
-
-
-
 /**
- * Interoperability Requirement:  IR-RPR2-0010
- * 
- * SuT shall in CS specify the use of Dead-Reckoning algorithms for all published
- *  and subscribed BaseEntity.PhysicalEntity and subclasses.
- *   
- *   
- *   -------------------------------------------
- *  SISO-STD-001-2015, Standard for Guidance, Rationale, and Interoperability Modalities
- * for the Real-time Platform Reference Federation Object Model  S 26
+ * Interoperability Requirement :  R-RPR2-0013
  *
- * The basic architecture of DIS specified the use of a dead reckoning mechanism for
- * reducing communication processing (section 1.3.1.f of IEEE Std 1278.1TM-1995 [6]).
+ * SuT updates of instance attributes shall, for BaseEntity.PhysicalEntity and subclasses,
+ * be valid according to SISO-STD-001-2015 and SISO-STD-001.1-2015.
  * 
- * The RPR FOM has adopted this mechanism for the same purpose.
- * For each registered object instance, the use of dead reckoning requires that
- * a federate maintain a dead reckoning model in addition to its own internal model.
- *
- * The dead reckoning model shall follow one of the prescribed dead reckoning
- * algorithms defined by DIS 1995 and enumerated in the RPR FOM.
  * 
- * Dead Reckoning shall be applied to all object instances that are derived
- * from the BaseEntity object class.
+ *   in SISO-STD-001  P. 44  Table 6   "PhysicalEntity Attributes"  they are listed
+ *   AcousticSignatureIndex   AlternateEntityType   ArticulatedParametersArray
+ *   CamouflageType    DamageState  EngineSmokeOn
+ *   FirePowerDisabled  FlamesPresent  ForceIdentifier  
+ *   HasAmmunitionSupplyCap  HasFuelSupplyCap  HasRecoveryCap  HasRepairCap
+ *   Immobilized  InfraredSignatureIndex   IsConcealed  LiveEntityMeasuredSpeed
+ *   Marking   PowerPlantOn  PropulsionSystemsData  RadarCrossSectionSignatureIndex
+ *   SmokePlumePresent    TentDeployed   TrailingEffectsCode   VectoringNozzleSystemData
  * 
- * A federate shall issue a Spatial attribute update whenever the differences
- * in position or orientation between its internal model and its dead reckoning
- *  model have exceeded established thresholds.  
- *  
- *  in rPR-Base_v2.0.xml is defined:
- *  <fixedRecordData notes="RPRnoteBase15">
- *    <name>SpatialFPStruct</name>
- *    <encoding>HLAfixedRecord</encoding>
- *    <semantics>Spatial structure for Dead Reckoning Algorithm FPW (2) and FPB (6).</semantics>
- *      <field> ....
- *      
-                
- *  
- *  
+ *   the Attributes for SubClasses of PhysicalEntity 
+ *   
+ *   Plattform :   16 Attributes
+ *   
+ *     Aircraft              attributless
+ *     AmphibiousVehicle    attributless
+ *     GroundVehicle        attributless
+ *     MultiDomainPlatform  attributless
+ *     Spacecraft            attributless
+ *     SubmersibleVessel     attributless
+ *     SurfaceVessel         attributless
+ *     
+ *   ########################### here may be a lot of  attributes to test
+ *   Lifeform :            5 attributes
+ *      Human               attributless
+ *      NonHuman            attributless
+ *   
+ *   CulturalFeature       3 Attributes
+ *     
+ *   Munition              LauncherFlashPresent
+ *   
+ *   Expendables           no attributes
+ *   
+ *   Radio                attributless
+ *   
+ *   Sensor                5 attributes
+ *   
+ *   Sensor Supplies     has no attributes  
+ *   
  */
 
-public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
+
+public class TC_IR_RPR2_0013 extends AbstractTestCaseIf {
+	
 	RTIambassador rtiAmbassador = null;
 	FederateAmbassador tcAmbassador = null;
-	Logger logger = null;
+	Logger logger = null;	
+	Semaphore physicalEntityDiscovered = new Semaphore(0);	
+	HashMap<ObjectInstanceHandle, PhysicalEntity> knownPhysicalEntitys = new HashMap<>();
 	
-	Semaphore semaphore = new Semaphore(0);
+    PhysicalEntity phyEntity;
+	private FederateHandle sutHandle;
 	
-	HashMap<AttributeHandle,byte[]> _attributHandleValues  = new HashMap<>() ;
-	
-	String toTestEntityIdentifier="";
-	BaseEntity toTestEntity;
-	
-	
-	 public TC_IR_RPR2_0010() {
-			
-		}
-		
-	    public TC_IR_RPR2_0010(String  _toTestEntityName) {
-	    	toTestEntityIdentifier=_toTestEntityName;
-		}
-	
-	
-
 	class TestCaseAmbassador extends NullFederateAmbassador {
 		@Override
 		public void discoverObjectInstance(
@@ -142,20 +135,6 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
 				String objectName) throws FederateInternalError {
 			logger.trace("discoverObjectInstance {}", theObject);
 			//semaphore.release(1);
-			
-			try {
-				// we only want to observe selected ObjectInstances
-				if (toTestEntity.getHlaClassName().equals(rtiAmbassador.getObjectClassName(theObjectClass))) {
-					logger.info("discoverObjectInstance rtiAmbassador.getObjectInstanceName: " +  rtiAmbassador.getObjectInstanceName(theObject) ); // Debug
-					logger.info("discoverObjectInstance rtiAmbassador.getObjectClassName: " + rtiAmbassador.getObjectClassName(theObjectClass)); // Debug
-				}
-
-			} catch (Exception e) {
-				logger.error("discoverObjectInstance received Exception", e);
-			}
-			
-			
-			
 		}
 
 		@Override
@@ -167,18 +146,14 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
 			logger.trace("discoverObjectInstance {} with producingFederate {}", theObject, producingFederate);
 			discoverObjectInstance(theObject, theObjectClass, objectName);
 		}
-
-		
-		// We have to get Informations from the RTI  about Details  what the SUT specify in the CS/FOM
-		
 	}
 	
 
 	@Override
 	protected void logTestPurpose(Logger logger) {
 	 String msg = "Test Case Purpose: " ;
-	        msg += "SuT shall in CS specify the use of Dead-Reckoning algorithms for all published " ;
-	        msg += "and subscribed BaseEntity.PhysicalEntity and subclasses.";
+	        msg += "SuT updates of instance attributes shall, for BaseEntity.PhysicalEntity and subclasses, ";
+	        msg += "be valid according to SISO-STD-001-2015 and SISO-STD-001.1-2015. ";
 		logger .info(msg);
 		this.logger = logger;
 	}
@@ -187,7 +162,6 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
 	protected void preambleAction(Logger logger) throws TcInconclusiveIf {
 		RtiFactory rtiFactory;
 		logger.info("preamble action for test {}", this.getClass().getName());
-				
 
 		try {
 			rtiFactory = RtiFactoryFactory.getRtiFactory();
@@ -222,37 +196,15 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
 	@Override
 	protected void performTest(Logger logger) throws TcInconclusiveIf, TcFailedIf {
 		logger.info("perform test {}", this.getClass().getName());
-		
-		BaseEntity.initialize(rtiAmbassador);     //to adjust  //  move to Preamble ?
+		PhysicalEntity.initialize(rtiAmbassador);  //to adjust
 
 		try {
+			phyEntity = new PhysicalEntity();
+			phyEntity.addSubscribe(BaseEntity.Attributes.EntityIdentifier);
+			phyEntity.subscribe();
 			
-			switch (toTestEntityIdentifier){
-			  case "Aircraft":                                    //to adjust 
-				  toTestEntity = new Aircraft();
-			   //Anweisung1   toTestEntity
-			    break;			   
-			  case "AmphibiousVehicle":
-				  //toTestPlatform = new AmphibiousVehicle();
-			    break;			    
-			  case "GroundVehicle":
-				  //toTestPlatform = new GroundVehicle();
-				    break;				    
-			  case "Spacecraft":
-				  //toTestPlatform = new Spacecraft();
-				    break;				    
-			  default :
-				  logger.info(" to Test Type  unknown, we assume Aircraft ");
-				  toTestEntity = new Aircraft();
-			}
-			
-			toTestEntity.addSubscribe(BaseEntity.Attributes.EntityIdentifier);  // to be adjusted
-			// ...
-			
-			toTestEntity.subscribe();
-
-			boolean seenEnough = false;
-			while (!seenEnough) {
+			boolean gotEnoughAtttributes = false;
+			while (! gotEnoughAtttributes) {
 				// the Test ......
 			}
 

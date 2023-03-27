@@ -21,6 +21,7 @@ import java.util.concurrent.Semaphore;
 
 import org.nato.ivct.rpr.FomFiles;
 import org.nato.ivct.rpr.objects.Aircraft;
+import org.nato.ivct.rpr.objects.AmphibiousVehicle;
 import org.nato.ivct.rpr.objects.BaseEntity;
 import org.nato.ivct.rpr.objects.PhysicalEntity;
 import org.nato.ivct.rpr.objects.Platform;
@@ -100,11 +101,12 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 	
 	Semaphore semaphore = new Semaphore(0);
 	
-	HashMap<ObjectInstanceHandle,AttributeHandleValueMap> known_oInstance_AttrValueMap = new HashMap<>();
+	HashMap<ObjectInstanceHandle,AttributeHandleValueMap> known_Instance_AttrValueMap = new HashMap<>();
 	
 	HashMap<AttributeHandle,byte[]> _attributeHandleValues  = new HashMap<>() ;
 	
 	ObjectClassHandle temp_objectClassHandle;
+	
 	HashMap<ObjectInstanceHandle, PhysicalEntity> knownPhysicalEntitys = new HashMap<>();
 	
 	String toTestPlatformName="";
@@ -139,7 +141,6 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 
 					temp_objectClassHandle = theObjectClass;
 					logger.info("rti-ObjectClassName in discoverObjectInstance:  " + rtiAmbassador.getObjectClassName(theObjectClass)); // Debug
-
 				}
 
 			} catch (Exception e) {
@@ -192,7 +193,7 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 			try {
 			
 			// we have to store the incoming Information to analyse it later
-			System.out.println("# ---------   Testing and Debugging --------------------------------"); 	
+			System.out.println("\n# ---------   Testing and Debugging --------------------------------"); 	
 			logger.info("reflectAttributeValues: Amount of transmitted  attributes: " +theAttributes.size());	
 		    System.out.println("# reflectAttributeValues: got  ObjectInstanceHandle  theObject: " +theObject ); // Debug			    
 		    System.out.println("# reflectAttributeValues: rti-objectInstanceName of theObject:  \t" + rtiAmbassador.getObjectInstanceName(theObject));  // Debug
@@ -206,11 +207,18 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 		 			System.out.println(rtiAmbassador.getAttributeName(temp_objectClassHandle, a) );
 		 		}
 		    
-			System.out.println("\n# reflectAttributeValues: getHlaClassName der zu bearbeitenden Klasse   \t" + toTestPlatform.getHlaClassName()); // Debug			
+			System.out.println("# reflectAttributeValues: getHlaClassName toBe tested Entity   \t" + toTestPlatform.getHlaClassName()); // Debug			
 			System.out.println("# reflectAttributeValues: rti-ObjectKlassenName of with discoverObjectInstance received temp_objectClassHandle \t" + rtiAmbassador.getObjectClassName(temp_objectClassHandle));  // Debug
 
 			// testing some other
 			//rtiAmbassador.get
+			
+			if (toTestPlatform.getHlaClassName().equals(rtiAmbassador.getObjectClassName(temp_objectClassHandle))) {					
+				System.out.println("# class names are equal, do here something"); // Debug
+				
+				// eg.  write the Informations to    known_Instance_AttrValueMap
+			}
+			
 			
 			
 			} catch ( FederateNotExecutionMember | NotConnected | RTIinternalError | AttributeNotDefined | InvalidAttributeHandle | InvalidObjectClassHandle | ObjectInstanceNotKnown  e) 
@@ -229,11 +237,8 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 	 String msg = "Test Case Purpose: " ;
 	        msg += "The test case verifies that the SuT do not update non-applicable PhysicalEntity Attributes ";
 	        msg += "as specified in Domain Appropriateness table in SISO-STD-001-2015.";
-		logger .info(msg);
-		
+		logger .info(msg);		
 		this.logger = logger;
-
-
 	}
 
 	@Override
@@ -276,7 +281,7 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 		logger.info("perform test {}", this.getClass().getName());
 		//Aircraft.initialize(rtiAmbassador);  //to adjust
 		
-		PhysicalEntity.initialize(rtiAmbassador);
+		Platform.initialize(rtiAmbassador);
 
 		try {
 			switch (toTestPlatformName){
@@ -285,7 +290,7 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 			   //Anweisung1   toTestEntity
 			    break;			   
 			  case "AmphibiousVehicle":
-				  //toTestPlatform = new AmphibiousVehicle();
+				  toTestPlatform = new AmphibiousVehicle();
 			    break;			    
 			  case "GroundVehicle":
 				  //toTestPlatform = new GroundVehicle();
