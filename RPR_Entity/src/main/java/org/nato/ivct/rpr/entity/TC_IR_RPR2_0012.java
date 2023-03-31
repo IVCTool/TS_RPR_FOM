@@ -91,6 +91,24 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
  * SmokePlumePresent      Yes
  * TentDeployed           
  * TrailingEffectsCode    Yes
+ * 
+ * 
+ * eg. camouflageType
+ * 
+ * <name>CamouflageType</name>
+   <dataType>CamouflageEnum32</dataType>
+   <updateType>Conditional</updateType>
+   <updateCondition>On change</updateCondition>
+   <ownership>DivestAcquire</ownership>
+   <sharing>PublishSubscribe</sharing>
+ * 
+ *    How to encode  CamouflageEnum32
+ *    --> org.nato.ivct.rpr.datatypes.CamouflageEnum32.java   getValue ....
+ *    
+ *    DamageState  <dataType>DamageStatusEnum32</dataType>  
+ *    
+ *    EngineSmokeOn <dataType>RPRboolean</dataType>
+ *    
  */
 
 
