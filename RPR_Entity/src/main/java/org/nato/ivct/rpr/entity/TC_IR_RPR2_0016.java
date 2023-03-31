@@ -36,16 +36,14 @@ import hla.rti1516e.AttributeHandleValueMap;
 import hla.rti1516e.CallbackModel;
 import hla.rti1516e.FederateAmbassador;
 import hla.rti1516e.FederateHandle;
-import hla.rti1516e.LogicalTime;
-import hla.rti1516e.MessageRetractionHandle;
 import hla.rti1516e.NullFederateAmbassador;
 import hla.rti1516e.ObjectClassHandle;
 import hla.rti1516e.ObjectInstanceHandle;
-import hla.rti1516e.OrderType;
+
 import hla.rti1516e.RTIambassador;
 import hla.rti1516e.RtiFactory;
 import hla.rti1516e.RtiFactoryFactory;
-import hla.rti1516e.TransportationTypeHandle;
+
 
 import hla.rti1516e.exceptions.AlreadyConnected;
 import hla.rti1516e.exceptions.CallNotAllowedFromWithinCallback;
@@ -55,75 +53,31 @@ import hla.rti1516e.exceptions.CouldNotOpenFDD;
 import hla.rti1516e.exceptions.ErrorReadingFDD;
 import hla.rti1516e.exceptions.FederateAlreadyExecutionMember;
 import hla.rti1516e.exceptions.FederateInternalError;
-import hla.rti1516e.exceptions.FederateNotExecutionMember;
+
 import hla.rti1516e.exceptions.FederationExecutionAlreadyExists;
 import hla.rti1516e.exceptions.FederationExecutionDoesNotExist;
 import hla.rti1516e.exceptions.InconsistentFDD;
 import hla.rti1516e.exceptions.InvalidLocalSettingsDesignator;
-import hla.rti1516e.exceptions.InvalidObjectClassHandle;
+
 import hla.rti1516e.exceptions.NotConnected;
-import hla.rti1516e.exceptions.ObjectInstanceNotKnown;
+
 import hla.rti1516e.exceptions.RTIinternalError;
 import hla.rti1516e.exceptions.RestoreInProgress;
 import hla.rti1516e.exceptions.SaveInProgress;
 import hla.rti1516e.exceptions.UnsupportedCallbackModel;
 
 /**
- * Interoperability Requirement :  R-RPR2-0013
+ * Interoperability Requirement :  IR-RPR2-0016
+ * 
+ * SuT shall not rely on updates of optional attributes on instances of BaseEntity.
+ * PhysicalEntity and subclasses.
  *
- * SuT updates of instance attributes shall, for BaseEntity.PhysicalEntity and subclasses,
- * be valid according to SISO-STD-001-2015 and SISO-STD-001.1-2015.
- * 
- * What  does "be valid"   mean,  it exist or has a  Default Value  ?
- * 
- * 
- *   in SISO-STD-001  P. 44  Table 6   "PhysicalEntity Attributes"  they are listed
- *   
- *   "PhysicalEntity Attributes"   Table 6:
- *   AcousticSignatureIndex   AlternateEntityType   ArticulatedParametersArray
- *   CamouflageType    DamageState  EngineSmokeOn
- *   FirePowerDisabled  FlamesPresent  ForceIdentifier  
- *   HasAmmunitionSupplyCap  HasFuelSupplyCap  HasRecoveryCap  HasRepairCap
- *   Immobilized  InfraredSignatureIndex   IsConcealed  LiveEntityMeasuredSpeed
- *   Marking   PowerPlantOn  PropulsionSystemsData  RadarCrossSectionSignatureIndex
- *   SmokePlumePresent    TentDeployed   TrailingEffectsCode   VectoringNozzleSystemData
- * 
- * 
- *   the Attributes for SubClasses of PhysicalEntity 
- * 
- *   ########################### here may be a lot of  attributes to test
- *   
- *   Plattform :   16 Attributes         Table 8
- *   
- *     Aircraft              attributless
- *     AmphibiousVehicle    attributless
- *     GroundVehicle        attributless
- *     MultiDomainPlatform  attributless
- *     Spacecraft            attributless
- *     SubmersibleVessel     attributless
- *     SurfaceVessel         attributless
- *     
- * 
- *   Lifeform :            5 attributes      Table 10
- *      Human               attributless
- *      NonHuman            attributless
- *   
- *   CulturalFeature       3 Attributes      Table 11
- *     
- *   Munition              LauncherFlashPresent
- *   
- *   Expendables           no attributes
- *   
- *   Radio                attributless
- *   
- *   Sensor                5 attributes
- *   
- *   Sensor Supplies     has no attributes  
- *   
+ *
+ *  send a update of a optional atttributes and test if Sut  reply
  */
 
 
-public class TC_IR_RPR2_0013 extends AbstractTestCaseIf {
+public class TC_IR_RPR2_0016 extends AbstractTestCaseIf {
 	
 	RTIambassador rtiAmbassador = null;
 	FederateAmbassador tcAmbassador = null;
@@ -160,8 +114,8 @@ public class TC_IR_RPR2_0013 extends AbstractTestCaseIf {
 	@Override
 	protected void logTestPurpose(Logger logger) {
 	 String msg = "Test Case Purpose: " ;
-	        msg += "SuT updates of instance attributes shall, for BaseEntity.PhysicalEntity and subclasses, ";
-	        msg += "be valid according to SISO-STD-001-2015 and SISO-STD-001.1-2015. ";
+	        msg += "SuT shall not rely on updates of optional attributes on instances of BaseEntity. ";
+	        msg += "PhysicalEntity and subclasses. ";
 		logger .info(msg);
 		this.logger = logger;
 	}

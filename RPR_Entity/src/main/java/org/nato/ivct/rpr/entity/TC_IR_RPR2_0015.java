@@ -36,16 +36,14 @@ import hla.rti1516e.AttributeHandleValueMap;
 import hla.rti1516e.CallbackModel;
 import hla.rti1516e.FederateAmbassador;
 import hla.rti1516e.FederateHandle;
-import hla.rti1516e.LogicalTime;
-import hla.rti1516e.MessageRetractionHandle;
 import hla.rti1516e.NullFederateAmbassador;
 import hla.rti1516e.ObjectClassHandle;
 import hla.rti1516e.ObjectInstanceHandle;
-import hla.rti1516e.OrderType;
+
 import hla.rti1516e.RTIambassador;
 import hla.rti1516e.RtiFactory;
 import hla.rti1516e.RtiFactoryFactory;
-import hla.rti1516e.TransportationTypeHandle;
+
 
 import hla.rti1516e.exceptions.AlreadyConnected;
 import hla.rti1516e.exceptions.CallNotAllowedFromWithinCallback;
@@ -55,46 +53,39 @@ import hla.rti1516e.exceptions.CouldNotOpenFDD;
 import hla.rti1516e.exceptions.ErrorReadingFDD;
 import hla.rti1516e.exceptions.FederateAlreadyExecutionMember;
 import hla.rti1516e.exceptions.FederateInternalError;
-import hla.rti1516e.exceptions.FederateNotExecutionMember;
+
 import hla.rti1516e.exceptions.FederationExecutionAlreadyExists;
 import hla.rti1516e.exceptions.FederationExecutionDoesNotExist;
 import hla.rti1516e.exceptions.InconsistentFDD;
 import hla.rti1516e.exceptions.InvalidLocalSettingsDesignator;
-import hla.rti1516e.exceptions.InvalidObjectClassHandle;
+
 import hla.rti1516e.exceptions.NotConnected;
-import hla.rti1516e.exceptions.ObjectInstanceNotKnown;
+
 import hla.rti1516e.exceptions.RTIinternalError;
 import hla.rti1516e.exceptions.RestoreInProgress;
 import hla.rti1516e.exceptions.SaveInProgress;
 import hla.rti1516e.exceptions.UnsupportedCallbackModel;
 
 /**
- * Interoperability Requirement :  R-RPR2-0013
+ * Interoperability Requirement :  IR-RPR2-0015
  *
- * SuT updates of instance attributes shall, for BaseEntity.PhysicalEntity and subclasses,
- * be valid according to SISO-STD-001-2015 and SISO-STD-001.1-2015.
+ * SuT shall assume default values for optional attributes on instances of 
+ * BaseEntity.PhysicalEntity  and subclasses according to SISO-STD-001-2015."
  * 
- * What  does "be valid"   mean,  it exist or has a  Default Value  ?
- * 
- * 
- *   in SISO-STD-001  P. 44  Table 6   "PhysicalEntity Attributes"  they are listed
- *   
- *   "PhysicalEntity Attributes"   Table 6:
- *   AcousticSignatureIndex   AlternateEntityType   ArticulatedParametersArray
- *   CamouflageType    DamageState  EngineSmokeOn
- *   FirePowerDisabled  FlamesPresent  ForceIdentifier  
- *   HasAmmunitionSupplyCap  HasFuelSupplyCap  HasRecoveryCap  HasRepairCap
- *   Immobilized  InfraredSignatureIndex   IsConcealed  LiveEntityMeasuredSpeed
- *   Marking   PowerPlantOn  PropulsionSystemsData  RadarCrossSectionSignatureIndex
- *   SmokePlumePresent    TentDeployed   TrailingEffectsCode   VectoringNozzleSystemData
- * 
- * 
- *   the Attributes for SubClasses of PhysicalEntity 
- * 
- *   ########################### here may be a lot of  attributes to test
- *   
- *   Plattform :   16 Attributes         Table 8
- *   
+ *  look at IR-RPR2-0013  IR-RPR-PHY-0001   for similitudes
+ *  
+ *  
+ *  "optional"  seems to be a Attribut, 
+ *  if in SISO-STD-001-2015 not declared as (not optional) ?
+ *  ( like in  Table 4  BaseEntity Attributes:   EntityIdentifier, EntityType, Spatial )
+ *  
+ *  so we have to test all these Attributes for  PhysicalEntity and subclasses
+ *  if Sut assume default values  
+ *  
+ *  again  
+ *  PhysicalEntity Attributes  P. 44  Table 6    25 attributes     all Optional
+ *  
+ *  Plattform :                       Table 8    16 Attributes     all Optional *  
  *     Aircraft              attributless
  *     AmphibiousVehicle    attributless
  *     GroundVehicle        attributless
@@ -102,28 +93,26 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
  *     Spacecraft            attributless
  *     SubmersibleVessel     attributless
  *     SurfaceVessel         attributless
- *     
- * 
- *   Lifeform :            5 attributes      Table 10
+ *   
+ *  Lifeform :                        Table 10   5 attributes      all Optional  
  *      Human               attributless
  *      NonHuman            attributless
  *   
- *   CulturalFeature       3 Attributes      Table 11
+ *   CulturalFeature                   Table 11   3 Attributes      all Optional
  *     
- *   Munition              LauncherFlashPresent
+ *   Munition                          Table 12 LauncherFlashPresent   optional
  *   
  *   Expendables           no attributes
  *   
- *   Radio                attributless
+ *   Radio                  attributless
  *   
- *   Sensor                5 attributes
+ *   Sensor                           Table 13   5 attributes   all Optional
  *   
  *   Sensor Supplies     has no attributes  
- *   
  */
 
 
-public class TC_IR_RPR2_0013 extends AbstractTestCaseIf {
+public class TC_IR_RPR2_0015 extends AbstractTestCaseIf {
 	
 	RTIambassador rtiAmbassador = null;
 	FederateAmbassador tcAmbassador = null;
@@ -160,8 +149,9 @@ public class TC_IR_RPR2_0013 extends AbstractTestCaseIf {
 	@Override
 	protected void logTestPurpose(Logger logger) {
 	 String msg = "Test Case Purpose: " ;
-	        msg += "SuT updates of instance attributes shall, for BaseEntity.PhysicalEntity and subclasses, ";
-	        msg += "be valid according to SISO-STD-001-2015 and SISO-STD-001.1-2015. ";
+	        msg += "SuT shall assume default values for optional attributes on instances of ";
+	        msg += "BaseEntity.PhysicalEntity  and subclasses according to SISO-STD-001-2015.";
+	        
 		logger .info(msg);
 		this.logger = logger;
 	}

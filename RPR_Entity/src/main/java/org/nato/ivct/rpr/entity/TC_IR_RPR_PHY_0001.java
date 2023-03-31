@@ -94,10 +94,7 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
  *   Marking   PowerPlantOn  PropulsionSystemsData  RadarCrossSectionSignatureIndex
  *   SmokePlumePresent    TentDeployed   TrailingEffectsCode   VectoringNozzleSystemData
  *          
- *   
- *   
- *   
- *  
+ * 
  */
 
 public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
@@ -310,36 +307,7 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
 			phyEntity.addSubscribe(PhysicalEntity.Attributes.TrailingEffectsCode);
 			phyEntity.addSubscribe(PhysicalEntity.Attributes.VectoringNozzleSystemData);
 			
-            /*
-			 * phyEntity.addSubscribe(PhysicalEntity.Attributes.AcousticSignatureIndex  
-			 * phyEntity.addSubscribe(PhysicalEntity.Attributes.AlternateEntityType
-			 * phyEntity.addSubscribe(PhysicalEntity.Attributes.ArticulatedParametersArray
-			 *                                                      CamouflageType
-			 *                                                      DamageState
-			 *                                                      EngineSmokeOn
-			 *                                                      FirePowerDisabled
-			 *                                                      FlamesPresent
-			 * phyEntity.addSubscribe(PhysicalEntity.Attributes.ForceIdentifier);  
-			 * phyEntity.addSubscribe(PhysicalEntity.Attributes.HasAmmunitionSupplyCap);
-			 *  phyEntity.addSubscribe(PhysicalEntity.Attributes.HasFuelSupplyCap);
-			 * phyEntity.addSubscribe(PhysicalEntity.Attributes.HasRecoveryCap);
-			 * phyEntity.addSubscribe(PhysicalEntity.Attributes.HasRepairCap);
-			 *                                                    Immobilized    
-			 *  phyEntity.addSubscribe(PhysicalEntity.Attributes.InfraredSignatureIndex); 
-			 *                                                     IsConcealed  			 *   
-			 *  phyEntity.addSubscribe(PhysicalEntity.Attributes.LiveEntityMeasuredSpeed);
-			 *  phyEntity.addSubscribe(PhysicalEntity.Attributes.Marking);    
-			 *                                                     PowerPlantOn   
-			 *   phyEntity.addSubscribe(PhysicalEntity.Attributes.PropulsionSystemsData);
-			 *   phyEntity.addSubscribe(PhysicalEntity.Attributes.RadarCrossSectionSignatureIndex);
-			 *                                                       SmokePlumePresent    
-			 *                                                      TentDeployed 
-			 *                                                        TrailingEffectsCode   
-			 *  phyEntity.addSubscribe(PhysicalEntity.Attributes.VectoringNozzleSystemData);
-			*/
-			
 			phyEntity.subscribe();
-			
 			
 			// temp_objectClassHandle
 			
