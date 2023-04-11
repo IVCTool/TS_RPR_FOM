@@ -122,7 +122,7 @@ public class TC_IR_RPR2_0008 extends AbstractTestCaseIf {
 		try {
 			PhysicalEntity phyEntity = knownPhysicalEntitys.get(theObject);
 			sutHandle = rtiAmbassador.getFederateHandle(getSutFederateName());
-			if ((sutHandle == theFederate) &&  (phyEntity != null)){
+			if ((sutHandle.equals(theFederate)) && (phyEntity != null)) {
 				phyEntityFromSutFound = true;
 				physicalEntityDiscovered.release(1);
 				return true;
@@ -150,11 +150,11 @@ public class TC_IR_RPR2_0008 extends AbstractTestCaseIf {
 			rtiAmbassador = rtiFactory.getRtiAmbassador();
 			tcAmbassador = new TestCaseAmbassador();
 			ArrayList<URL> fomList = new FomFiles()
-            .addRPR_BASE()
-            .addRPR_Enumerations()
-            .addRPR_Foundation()
-            .addRPR_Physical()
-            .addRPR_Switches()
+            .addTmpRPR_BASE()
+            .addTmpRPR_Enumerations()
+            .addTmpRPR_Foundation()
+            .addTmpRPR_Physical()
+            .addTmpRPR_Switches()
             .get();
 			
 			rtiAmbassador.connect(tcAmbassador, CallbackModel.HLA_IMMEDIATE);
