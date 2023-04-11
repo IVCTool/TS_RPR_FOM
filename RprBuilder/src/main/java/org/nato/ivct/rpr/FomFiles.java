@@ -146,8 +146,14 @@ public class FomFiles {
         return this;
     }
 
+    // this method will be replaced by getArray
+    @Deprecated
     public ArrayList<URL> get() {
         return fomList;
+    }
+    
+    public URL[] getArray() {
+        return fomList.toArray(new URL[fomList.size()]);
     }
     
 }

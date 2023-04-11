@@ -157,20 +157,20 @@ public class TC_IR_RPR2_0017 extends AbstractTestCaseIf {
 			rtiFactory = RtiFactoryFactory.getRtiFactory();
 			rtiAmbassador = rtiFactory.getRtiAmbassador();
 			tcAmbassador = new TestCaseAmbassador();
-			ArrayList<URL> fomList = new FomFiles()
+			URL[] fomList = new FomFiles()
             .addTmpRPR_BASE()
             .addTmpRPR_Enumerations()
             .addTmpRPR_Foundation()
             .addTmpRPR_Physical()
             .addTmpRPR_Switches()
             .addTmpRPR_Warfare()
-            .get();
+            .getArray();
 			
 			rtiAmbassador.connect(tcAmbassador, CallbackModel.HLA_IMMEDIATE);
 			try {
-				rtiAmbassador.createFederationExecution(federationName, fomList.toArray(new URL[fomList.size()]));
+				rtiAmbassador.createFederationExecution(federationName, fomList);
 			} catch (FederationExecutionAlreadyExists ignored) { }
-			rtiAmbassador.joinFederationExecution(this.getClass().getSimpleName(), federationName, fomList.toArray(new URL[fomList.size()]));
+			rtiAmbassador.joinFederationExecution(this.getClass().getSimpleName(), federationName, fomList);
 		} catch (RTIinternalError | ConnectionFailed | InvalidLocalSettingsDesignator | UnsupportedCallbackModel 
 				| AlreadyConnected | CallNotAllowedFromWithinCallback | CouldNotCreateLogicalTimeFactory 
 				| FederationExecutionDoesNotExist | InconsistentFDD | ErrorReadingFDD | CouldNotOpenFDD 

@@ -221,20 +221,20 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 			tcAmbassador = new TestCaseAmbassador();
 
 			// Loading FOM modules as temp file to comply to MAK RTI
-			ArrayList<URL> fomList = new FomFiles()
+			URL[] fomList = new FomFiles()
 				.addTmpRPR_BASE()
 				.addTmpRPR_Enumerations()
 				.addTmpRPR_Foundation()
 				.addTmpRPR_Physical()
 				.addTmpRPR_Switches()
 				.addTmpRPR_Warfare()
-				.get();
+				.getArray();
 
 			rtiAmbassador.connect(tcAmbassador, CallbackModel.HLA_IMMEDIATE);
 			try {
-				rtiAmbassador.createFederationExecution(federationName, fomList.toArray(new URL[fomList.size()]));
+				rtiAmbassador.createFederationExecution(federationName, fomList);
 			} catch (FederationExecutionAlreadyExists ignored) { }
-			federateHandle = rtiAmbassador.joinFederationExecution(this.getClass().getSimpleName(), federationName, fomList.toArray(new URL[fomList.size()]));
+			federateHandle = rtiAmbassador.joinFederationExecution(this.getClass().getSimpleName(), federationName, fomList);
             OmtBuilder.initialize(rtiAmbassador);
 		} catch (RTIinternalError | ConnectionFailed | InvalidLocalSettingsDesignator | UnsupportedCallbackModel 
 				| AlreadyConnected | CallNotAllowedFromWithinCallback | CouldNotCreateLogicalTimeFactory 
