@@ -160,24 +160,6 @@ public class AircraftApp extends NullFederateAmbassador {
 				.addTmpRPR_Physical()
 				.get();
 
-			// ArrayList<URL> fomList;
-			// fomList = new FomFiles()
-			// .addFomFile("C:/Projekte/IVCT/TS_RPR_FOM/RPR-FOM-v2.0/RPR-Base_v2.0.xml")
-			// .addFomFile("C:/Projekte/IVCT/TS_RPR_FOM/RPR-FOM-v2.0/RPR-Switches_v2.0.xml")
-			// .addFomFile("C:/Projekte/IVCT/TS_RPR_FOM/RPR-FOM-v2.0/RPR-Enumerations_v2.0.xml")
-			// .addFomFile("C:/Projekte/IVCT/TS_RPR_FOM/RPR-FOM-v2.0/RPR-Foundation_v2.0.xml")
-			// .addFomFile("C:/Projekte/IVCT/TS_RPR_FOM/RPR-FOM-v2.0/RPR-Warfare_v2.0.xml")
-			// .addFomFile("C:/Projekte/IVCT/TS_RPR_FOM/RPR-FOM-v2.0/RPR-Physical_v2.0.xml")
-			// .get();
-
-			/**
-			 * Fix to avoid FOM merging (issue with MAK RTI)
-			 ArrayList<URL> fomList = new ArrayList<>();
-			 File merged = new File("C:/Projekte/IVCT/TS_RPR_FOM/RPR-FOM-v2.0/RPR_FOM_v2_merged.xml");
-			 fomList.add(merged.toURI().toURL());
-			 */
-
-
 			rtiAmbassador.connect(nullAmbassador, CallbackModel.HLA_IMMEDIATE);
 			try {
 				rtiAmbassador.createFederationExecution(this.federationName, fomList.toArray(new URL[fomList.size()]));
