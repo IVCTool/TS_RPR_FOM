@@ -2,6 +2,11 @@ package org.nato.ivct.rpr.entity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.fraunhofer.iosb.tc_lib_if.IVCT_Verdict;
+
+import static org.junit.Assert.assertTrue;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import hla.rti1516e.RTIambassador;
@@ -19,7 +24,9 @@ public class TC_IR_RPR2_0008Test {
         tc.setSutFederateName("Flyer1");
         tc.setFederationName("TestFederation");
         tc.setSkipOperatorMsg(true);
-        tc.execute(log);
+        IVCT_Verdict result = tc.execute(log);
+        assertTrue(result.verdict == IVCT_Verdict.Verdict.PASSED);
+
     }
 
     @Disabled

@@ -4,6 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.fraunhofer.iosb.tc_lib_if.AbstractTestCaseIf;
+import de.fraunhofer.iosb.tc_lib_if.IVCT_Verdict;
+
+import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -31,7 +34,8 @@ public class TC_IR_RPR2_0018Test {
         // overwrite default parameters
         tc.setTcParam(SUT_PARAMETER);
         // run the test case
-        tc.execute(log);
+        IVCT_Verdict result = tc.execute(log);
+        assertTrue(result.verdict == IVCT_Verdict.Verdict.PASSED);
     }
 
 }
