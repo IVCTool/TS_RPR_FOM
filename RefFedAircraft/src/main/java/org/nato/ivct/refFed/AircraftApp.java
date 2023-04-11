@@ -22,6 +22,8 @@ import hla.rti1516e.RTIambassador;
 import hla.rti1516e.RtiFactory;
 import hla.rti1516e.RtiFactoryFactory;
 import hla.rti1516e.exceptions.FederationExecutionAlreadyExists;
+
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -64,7 +66,8 @@ public class AircraftApp extends NullFederateAmbassador {
 	private boolean provoke(CmdLineOptions optionId) { return options.get(optionId).enabled; }
     private String rtiHost = "localhost";
 	private String federationName = "TestFederation";
-	private String federateName = "RefFedAircraft";
+	private String federateName = "Aircraft";
+	private String federateType = "RefFed";
 	private int nrOfCycles = 400;
 	private RTIambassador rtiAmbassador;
 	private FederateHandle fedHandle;
@@ -146,19 +149,40 @@ public class AircraftApp extends NullFederateAmbassador {
 			RtiFactory rtiFactory = RtiFactoryFactory.getRtiFactory();
 			rtiAmbassador = rtiFactory.getRtiAmbassador();
 			FederateAmbassador nullAmbassador = new NullFederateAmbassador();
+			
+			// That should be the normal normal loading procedure
 			ArrayList<URL> fomList = new FomFiles()
-				.addRPR_BASE()
-				.addRPR_Enumerations()
-				.addRPR_Foundation()
-				.addRPR_Physical()
-				.addRPR_Switches()
-				.addRPR_Warfare()
+				.addTmpRPR_BASE()
+				.addTmpRPR_Switches()
+				.addTmpRPR_Enumerations()
+				.addTmpRPR_Foundation()
+				.addTmpRPR_Warfare()
+				.addTmpRPR_Physical()
 				.get();
+
+			// ArrayList<URL> fomList;
+			// fomList = new FomFiles()
+			// .addFomFile("C:/Projekte/IVCT/TS_RPR_FOM/RPR-FOM-v2.0/RPR-Base_v2.0.xml")
+			// .addFomFile("C:/Projekte/IVCT/TS_RPR_FOM/RPR-FOM-v2.0/RPR-Switches_v2.0.xml")
+			// .addFomFile("C:/Projekte/IVCT/TS_RPR_FOM/RPR-FOM-v2.0/RPR-Enumerations_v2.0.xml")
+			// .addFomFile("C:/Projekte/IVCT/TS_RPR_FOM/RPR-FOM-v2.0/RPR-Foundation_v2.0.xml")
+			// .addFomFile("C:/Projekte/IVCT/TS_RPR_FOM/RPR-FOM-v2.0/RPR-Warfare_v2.0.xml")
+			// .addFomFile("C:/Projekte/IVCT/TS_RPR_FOM/RPR-FOM-v2.0/RPR-Physical_v2.0.xml")
+			// .get();
+
+			/**
+			 * Fix to avoid FOM merging (issue with MAK RTI)
+			 ArrayList<URL> fomList = new ArrayList<>();
+			 File merged = new File("C:/Projekte/IVCT/TS_RPR_FOM/RPR-FOM-v2.0/RPR_FOM_v2_merged.xml");
+			 fomList.add(merged.toURI().toURL());
+			 */
+
+
 			rtiAmbassador.connect(nullAmbassador, CallbackModel.HLA_IMMEDIATE);
 			try {
 				rtiAmbassador.createFederationExecution(this.federationName, fomList.toArray(new URL[fomList.size()]));
 			} catch (FederationExecutionAlreadyExists ignored) { }
-			fedHandle = rtiAmbassador.joinFederationExecution(this.federateName, this.federationName, fomList.toArray(new URL[fomList.size()]));
+			fedHandle = rtiAmbassador.joinFederationExecution(this.federateName, this.federateType, this.federationName, fomList.toArray(new URL[fomList.size()]));
 
             HLAobjectRoot.initialize(rtiAmbassador);
             Aircraft aircraft = new Aircraft();

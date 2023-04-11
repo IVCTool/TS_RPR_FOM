@@ -8,7 +8,6 @@ import de.fraunhofer.iosb.tc_lib_if.AbstractTestCaseIf;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.Test;
 import hla.rti1516e.RTIambassador;
@@ -26,13 +25,12 @@ public class TC_IR_RPR2_0018Test {
     void testPerformTest() throws FileNotFoundException, IOException, ParseException {
         RPR_Warfare_TestSuite ts = new RPR_Warfare_TestSuite();
         AbstractTestCaseIf tc = ts.getTestCase("org.nato.ivct.rpr.warfare.TC_IR_RPR2_0018");
-        // JSONObject p = ts.getParameterTemplate();
-
         tc.setSutFederateName(SUT_FEDERATE_NAME);
         tc.setFederationName(SUT_FEDERATION_NAME);
         tc.setSkipOperatorMsg(true);
         // overwrite default parameters
         tc.setTcParam(SUT_PARAMETER);
+        // run the test case
         tc.execute(log);
     }
 

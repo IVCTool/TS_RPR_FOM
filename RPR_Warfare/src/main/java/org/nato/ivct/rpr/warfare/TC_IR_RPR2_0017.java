@@ -128,7 +128,7 @@ public class TC_IR_RPR2_0017 extends AbstractTestCaseIf {
 		try {
 			Munition aMunition = knownMunitionEntities.get(theObject);
 			sutHandle = rtiAmbassador.getFederateHandle(getSutFederateName());
-			if ((sutHandle == theFederate) &&  (aMunition != null)){
+			if ((sutHandle.equals(theFederate)) &&  (aMunition != null)){
 				munitionFromSutFound = true;
 				munitionDiscovered.release(1);
 				return true;
@@ -158,12 +158,12 @@ public class TC_IR_RPR2_0017 extends AbstractTestCaseIf {
 			rtiAmbassador = rtiFactory.getRtiAmbassador();
 			tcAmbassador = new TestCaseAmbassador();
 			ArrayList<URL> fomList = new FomFiles()
-            .addRPR_BASE()
-            .addRPR_Enumerations()
-            .addRPR_Foundation()
-            .addRPR_Physical()
-            .addRPR_Switches()
-            .addRPR_Warfare()
+            .addTmpRPR_BASE()
+            .addTmpRPR_Enumerations()
+            .addTmpRPR_Foundation()
+            .addTmpRPR_Physical()
+            .addTmpRPR_Switches()
+            .addTmpRPR_Warfare()
             .get();
 			
 			rtiAmbassador.connect(tcAmbassador, CallbackModel.HLA_IMMEDIATE);

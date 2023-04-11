@@ -141,6 +141,7 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 					fed.decode(theAttributes);
 					logger.trace("HLAfederate values: {}<{}>", fed.getHLAfederateName(), fed.getHLAfederateHandle());
 					if (fed.getHLAfederateName().equalsIgnoreCase(getSutFederateName())) {
+						// TODO: check if received handle belongs to SuT
 						// fed.getHLAfederateHandle();
 						// sutDiscovered = true;
 						federateDiscovered.release(1);
@@ -162,6 +163,7 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 				reportPubs.decode(theParameters);
 				receivedHLAreportInteractionPublication = true;
 				logger.trace("received HLAreportInteractionPublication report for Class={}, HlaClassName={}", reportPubs.getClass(), reportPubs.getHlaClassName());
+				federateDiscovered.release(1);
 				return;
 			}
 			// Test for HLAreportInteractionSubscription interaction
@@ -170,6 +172,7 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 				reportSubs.decode(theParameters);
 				receivedHLAreportInteractionSubscription = true;
 				logger.trace("received HLAreportInteractionSubscription report for Class={}, HlaClassName={}", reportSubs.getClass(), reportSubs.getHlaClassName());
+				federateDiscovered.release(1);
 				return;
 			}
 			// Test for HLAreportObjectClassPublication interaction
@@ -184,6 +187,7 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				federateDiscovered.release(1);
 				return;
 			}
 			// Test for HLAreportObjectClassSubscription interaction
@@ -192,6 +196,7 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 				classSubs.decode(theParameters);
 				receivedHLAreportObjectClassSubscription = true;
 				logger.trace("received HLAreportObjectClassSubscription report for Class={}, HlaClassName={}", classSubs.getClass(), classSubs.getHlaClassName());
+				federateDiscovered.release(1);
 				return;
 			}
 		}
@@ -214,15 +219,17 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 			rtiFactory = RtiFactoryFactory.getRtiFactory();
 			rtiAmbassador = rtiFactory.getRtiAmbassador();
 			tcAmbassador = new TestCaseAmbassador();
+
+			// Loading FOM modules as temp file to comply to MAK RTI
 			ArrayList<URL> fomList = new FomFiles()
-            .addRPR_BASE()
-            .addRPR_Enumerations()
-            .addRPR_Foundation()
-            .addRPR_Physical()
-            .addRPR_Switches()
-            .addRPR_Warfare()
-            .get();
-			
+				.addTmpRPR_BASE()
+				.addTmpRPR_Enumerations()
+				.addTmpRPR_Foundation()
+				.addTmpRPR_Physical()
+				.addTmpRPR_Switches()
+				.addTmpRPR_Warfare()
+				.get();
+
 			rtiAmbassador.connect(tcAmbassador, CallbackModel.HLA_IMMEDIATE);
 			try {
 				rtiAmbassador.createFederationExecution(federationName, fomList.toArray(new URL[fomList.size()]));
@@ -268,7 +275,7 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 
 		Thread t = new Thread (() -> {
 			// wait until object is discovered and check if SuT owns it
-			while (! sutDiscovered) {
+			while (! receivedHLAreportInteractionPublication && ! receivedHLAreportInteractionSubscription && ! receivedHLAreportObjectClassPublication && ! receivedHLAreportObjectClassSubscription ) {
 				try {
 					federateDiscovered.acquire();
 
@@ -292,12 +299,6 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 						AttributeHandle entityIdentifierHandle;
 						entityIdentifierHandle = aMunition.getAttributeHandle(BaseEntity.Attributes.EntityIdentifier.name());
 						rtiAmbassador.queryAttributeOwnership(objectHandle, entityIdentifierHandle);
-					}
-					// test if all reports are received
-					if (receivedHLAreportInteractionPublication && receivedHLAreportInteractionSubscription && receivedHLAreportObjectClassPublication && receivedHLAreportObjectClassSubscription) {
-						sutDiscovered = true;
-						federateDiscovered.release(1);
-
 					}
 				} catch (InterruptedException | NameNotFound | InvalidObjectClassHandle | FederateNotExecutionMember | NotConnected | RTIinternalError | AttributeNotDefined | ObjectInstanceNotKnown | SaveInProgress | RestoreInProgress e) {
 					e.printStackTrace();

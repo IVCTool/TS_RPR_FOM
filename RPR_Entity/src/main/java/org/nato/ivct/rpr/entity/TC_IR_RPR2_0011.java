@@ -218,7 +218,7 @@ public class TC_IR_RPR2_0011 extends AbstractTestCaseIf {
 		try {
 			PhysicalEntity phyEntity = knownPhysicalEntitys.get(theObject);
 			sutHandle = rtiAmbassador.getFederateHandle(getSutFederateName());
-			if ((sutHandle == theFederate) &&  (phyEntity != null)){
+			if ((sutHandle.equals(theFederate)) &&  (phyEntity != null)){
 				phyEntityFromSutFound = true;
 				physicalEntityDiscovered.release(1);
 				return true;
