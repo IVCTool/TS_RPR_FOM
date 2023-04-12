@@ -14,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import java.net.URL;
-import java.util.ArrayList;
 import hla.rti1516e.AttributeHandle;
 import hla.rti1516e.CallbackModel;
 import hla.rti1516e.FederateAmbassador;
@@ -57,17 +56,17 @@ public class BaseEntityTest {
         RtiFactory rtiFactory = RtiFactoryFactory.getRtiFactory();
         rtiAmbassador = rtiFactory.getRtiAmbassador();
         FederateAmbassador nullAmbassador = new NullFederateAmbassador();
-        ArrayList<URL> fomList = new FomFiles()
+        URL[] fomList = new FomFiles()
             .addRPR_BASE()
             .addRPR_Enumerations()
             .addRPR_Foundation()
             .addRPR_Physical()
             .addRPR_Switches()
-            .get();
+            .getArray();
 
         rtiAmbassador.connect(nullAmbassador, CallbackModel.HLA_IMMEDIATE);
         try {
-            rtiAmbassador.createFederationExecution("TestFederation", fomList.toArray(new URL[fomList.size()]));
+            rtiAmbassador.createFederationExecution("TestFederation", fomList);
         } catch (FederationExecutionAlreadyExists ignored) { }
         rtiAmbassador.joinFederationExecution("BaseEntityTest", "UnitTest", "TestFederation");
         HLAobjectRoot.initialize(rtiAmbassador);

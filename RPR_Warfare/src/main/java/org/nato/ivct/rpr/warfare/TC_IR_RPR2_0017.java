@@ -16,7 +16,6 @@ limitations under the License. */
 package org.nato.ivct.rpr.warfare;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.Semaphore;
 

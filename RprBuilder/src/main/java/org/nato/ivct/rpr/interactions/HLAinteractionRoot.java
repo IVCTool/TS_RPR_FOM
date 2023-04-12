@@ -23,7 +23,6 @@ import java.util.HashMap;
 
 import hla.rti1516e.ParameterHandle;
 import hla.rti1516e.ParameterHandleValueMap;
-import hla.rti1516e.encoding.DataElement;
 import hla.rti1516e.encoding.EncoderException;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
 import hla.rti1516e.exceptions.FederateServiceInvocationsAreBeingReportedViaMOM;

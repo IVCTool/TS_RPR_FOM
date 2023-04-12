@@ -19,17 +19,17 @@ import java.util.HashMap;
 
 import org.nato.ivct.rpr.OmtBuilder;
 import org.nato.ivct.rpr.RprBuilderException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import hla.rti1516e.AttributeHandle;
 import hla.rti1516e.AttributeHandleValueMap;
-import hla.rti1516e.FederateHandle;
 import hla.rti1516e.FederateHandleFactory;
 import hla.rti1516e.ObjectClassHandle;
 import hla.rti1516e.ObjectInstanceHandle;
 import hla.rti1516e.encoding.DecoderException;
 import hla.rti1516e.encoding.HLAunicodeString;
 import hla.rti1516e.exceptions.AttributeNotDefined;
-import hla.rti1516e.exceptions.CouldNotDecode;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
 import hla.rti1516e.exceptions.InvalidObjectClassHandle;
 import hla.rti1516e.exceptions.NameNotFound;
@@ -112,6 +112,7 @@ public class HLAfederate extends HLAmanager {
         HLAconveyProducingFederate
     }
 
+    private static final Logger log = LoggerFactory.getLogger(HLAfederate.class);
     private static HLAfederate anchor;
     public static HashMap<ObjectInstanceHandle, HLAfederate> knownObjects = new HashMap<>();
 
@@ -177,6 +178,8 @@ public class HLAfederate extends HLAmanager {
                 case HLARTIversion:
                     aHLARTIversion.decode(entry.getValue());
                     break;
+                default:
+                    log.warn("Attribute {} not implemented", attribute);
             }
         }
     }

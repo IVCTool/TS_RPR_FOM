@@ -15,7 +15,6 @@ limitations under the License. */
 package org.nato.ivct.rpr.entity;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.Semaphore;
 
@@ -85,7 +84,7 @@ public class TC_IR_RPR2_0011 extends AbstractTestCaseIf {
     Semaphore receivedEntityIdentifier = new Semaphore(0);
     Semaphore receivedEntityType = new Semaphore(0);
     Semaphore receivedSpatial = new Semaphore(0);
-    HashMap<ObjectInstanceHandle, PhysicalEntity> knownPhysicalEntitys = new HashMap<>();
+    HashMap<ObjectInstanceHandle, PhysicalEntity> knownPhysicalEntities = new HashMap<>();
     HashMap<ObjectInstanceHandle, BaseEntity> knownEntities = new HashMap<>();
     PhysicalEntity phyEntity;
     BaseEntity entity;
@@ -105,7 +104,7 @@ public class TC_IR_RPR2_0011 extends AbstractTestCaseIf {
                     // create the helper object
                     PhysicalEntity obj = new PhysicalEntity();
                     obj.setObjectHandle(theObject);
-                    knownPhysicalEntitys.put(theObject, obj);
+                    knownPhysicalEntities.put(theObject, obj);
                     physicalEntityDiscovered.release(1);
                 } else if (receivedClass.equals(entity.getHlaClassName())) {
                     BaseEntity newEntity = new BaseEntity();
@@ -159,7 +158,7 @@ public class TC_IR_RPR2_0011 extends AbstractTestCaseIf {
                 byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport,
                 SupplementalReflectInfo reflectInfo) throws FederateInternalError {
             logger.trace("reflectAttributeValues without time");
-            PhysicalEntity phyEntity = knownPhysicalEntitys.get(theObject);
+            PhysicalEntity phyEntity = knownPhysicalEntities.get(theObject);
             if (phyEntity != null) {
                 phyEntity.clear();
                 try {
@@ -216,7 +215,7 @@ public class TC_IR_RPR2_0011 extends AbstractTestCaseIf {
     
 	private boolean testSutHandle(FederateHandle theFederate, ObjectInstanceHandle theObject) {
 		try {
-			PhysicalEntity phyEntity = knownPhysicalEntitys.get(theObject);
+			PhysicalEntity phyEntity = knownPhysicalEntities.get(theObject);
 			sutHandle = rtiAmbassador.getFederateHandle(getSutFederateName());
 			if ((sutHandle.equals(theFederate)) &&  (phyEntity != null)){
 				phyEntityFromSutFound = true;
@@ -285,13 +284,13 @@ public class TC_IR_RPR2_0011 extends AbstractTestCaseIf {
 			// wait until physical entity object is discovered and check if SuT owns it
             while (!phyEntityFromSutFound) {
 				physicalEntityDiscovered.acquire();
-				for (PhysicalEntity aPhysicalEntity : knownPhysicalEntitys.values()) {
+				for (PhysicalEntity aPhysicalEntity : knownPhysicalEntities.values()) {
 					ObjectInstanceHandle objectHandle = aPhysicalEntity.getObjectHandle();
 					AttributeHandle entityIdentifierHandle = aPhysicalEntity.getAttributeHandle(BaseEntity.Attributes.EntityIdentifier.name());
 					rtiAmbassador.queryAttributeOwnership(objectHandle, entityIdentifierHandle);
 				}
             }
-            for (PhysicalEntity phyEnt : knownPhysicalEntitys.values()) {
+            for (PhysicalEntity phyEnt : knownPhysicalEntities.values()) {
                 logger.trace("received entity identifier {}({}): EntityNumber={}, FederateIdentifier[SiteID={}, ApplicationID={}]",
                     phyEnt.getHlaClassName(), phyEnt.getObjectHandle(), 
                     phyEnt.getEntityIdentifier().getEntityNumber(),

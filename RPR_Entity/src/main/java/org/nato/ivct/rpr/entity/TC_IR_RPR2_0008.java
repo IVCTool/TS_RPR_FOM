@@ -16,7 +16,6 @@ limitations under the License. */
 package org.nato.ivct.rpr.entity;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.Semaphore;
 
@@ -73,7 +72,7 @@ public class TC_IR_RPR2_0008 extends AbstractTestCaseIf {
 	FederateAmbassador tcAmbassador = null;
     Logger logger = null;
 	Semaphore physicalEntityDiscovered = new Semaphore(0);
-    HashMap<ObjectInstanceHandle, PhysicalEntity> knownPhysicalEntitys = new HashMap<>();
+    HashMap<ObjectInstanceHandle, PhysicalEntity> knownPhysicalEntities = new HashMap<>();
     PhysicalEntity phyEntity;
 	private FederateHandle sutHandle;
 	boolean phyEntityFromSutFound = false;
@@ -92,7 +91,7 @@ public class TC_IR_RPR2_0008 extends AbstractTestCaseIf {
 					// create the helper object
                     PhysicalEntity obj = new PhysicalEntity();
                     obj.setObjectHandle(theObject);
-                    knownPhysicalEntitys.put(theObject, obj);
+                    knownPhysicalEntities.put(theObject, obj);
                 } 
 			} catch (Exception e) {
 				logger.warn("discovered object instance, but federate {} is not connected", getSutFederateName());
@@ -120,7 +119,7 @@ public class TC_IR_RPR2_0008 extends AbstractTestCaseIf {
 
 	private boolean testSutHandle(FederateHandle theFederate, ObjectInstanceHandle theObject) {
 		try {
-			PhysicalEntity phyEntity = knownPhysicalEntitys.get(theObject);
+			PhysicalEntity phyEntity = knownPhysicalEntities.get(theObject);
 			sutHandle = rtiAmbassador.getFederateHandle(getSutFederateName());
 			if ((sutHandle.equals(theFederate)) && (phyEntity != null)) {
 				phyEntityFromSutFound = true;
@@ -181,7 +180,7 @@ public class TC_IR_RPR2_0008 extends AbstractTestCaseIf {
 			// wait until object is discovered and check if SuT owns it
 			while (! phyEntityFromSutFound) {
 				physicalEntityDiscovered.acquire();
-				for (PhysicalEntity aPhysicalEntity : knownPhysicalEntitys.values()) {
+				for (PhysicalEntity aPhysicalEntity : knownPhysicalEntities.values()) {
 					ObjectInstanceHandle objectHandle = aPhysicalEntity.getObjectHandle();
 					AttributeHandle entityIdentifierHandle = aPhysicalEntity.getAttributeHandle(BaseEntity.Attributes.EntityIdentifier.name());
 					rtiAmbassador.queryAttributeOwnership(objectHandle, entityIdentifierHandle);

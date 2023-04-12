@@ -23,9 +23,7 @@ import hla.rti1516e.RtiFactory;
 import hla.rti1516e.RtiFactoryFactory;
 import hla.rti1516e.exceptions.FederationExecutionAlreadyExists;
 
-import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.slf4j.LoggerFactory;
@@ -151,20 +149,20 @@ public class AircraftApp extends NullFederateAmbassador {
 			FederateAmbassador nullAmbassador = new NullFederateAmbassador();
 			
 			// That should be the normal normal loading procedure
-			ArrayList<URL> fomList = new FomFiles()
+			URL[] fomList = new FomFiles()
 				.addTmpRPR_BASE()
 				.addTmpRPR_Switches()
 				.addTmpRPR_Enumerations()
 				.addTmpRPR_Foundation()
 				.addTmpRPR_Warfare()
 				.addTmpRPR_Physical()
-				.get();
+				.getArray();
 
 			rtiAmbassador.connect(nullAmbassador, CallbackModel.HLA_IMMEDIATE);
 			try {
-				rtiAmbassador.createFederationExecution(this.federationName, fomList.toArray(new URL[fomList.size()]));
+				rtiAmbassador.createFederationExecution(this.federationName, fomList);
 			} catch (FederationExecutionAlreadyExists ignored) { }
-			fedHandle = rtiAmbassador.joinFederationExecution(this.federateName, this.federateType, this.federationName, fomList.toArray(new URL[fomList.size()]));
+			fedHandle = rtiAmbassador.joinFederationExecution(this.federateName, this.federateType, this.federationName, fomList);
 
             HLAobjectRoot.initialize(rtiAmbassador);
             Aircraft aircraft = new Aircraft();
