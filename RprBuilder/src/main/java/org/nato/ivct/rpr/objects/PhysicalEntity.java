@@ -17,7 +17,15 @@
  package org.nato.ivct.rpr.objects;
 
 import org.nato.ivct.rpr.RprBuilderException;
+import org.nato.ivct.rpr.datatypes.EntityIdentifierStruct;
+import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
+import org.nato.ivct.rpr.datatypes.PhysicalEntityStruct;
+import org.nato.ivct.rpr.datatypes.SpatialVariantStruct;
+import org.nato.ivct.rpr.datatypes.SpatialRVStruct.AttributeName;
+import org.nato.ivct.rpr.objects.BaseEntity.Attributes;
 
+import hla.rti1516e.encoding.EncoderException;
+import hla.rti1516e.encoding.HLAboolean;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
 import hla.rti1516e.exceptions.InvalidObjectClassHandle;
 import hla.rti1516e.exceptions.NameNotFound;
@@ -25,7 +33,7 @@ import hla.rti1516e.exceptions.NotConnected;
 import hla.rti1516e.exceptions.RTIinternalError;
 
 public class PhysicalEntity extends BaseEntity {
-
+	
     public enum Attributes {
         AcousticSignatureIndex,
         AlternateEntityType,
@@ -54,8 +62,17 @@ public class PhysicalEntity extends BaseEntity {
         VectoringNozzleSystemData        
     }
 
+    
+    
     // TODO: create fields
     
+    // new by brf    
+    private PhysicalEntityStruct aFirePowerDisabledStr = null;                 
+    private PhysicalEntityStruct aIsConcealedStr = null;
+    private PhysicalEntityStruct aTentDeployedStr = null ;
+    
+    
+ 
     public PhysicalEntity() throws RprBuilderException {
         super();
     }
@@ -67,9 +84,68 @@ public class PhysicalEntity extends BaseEntity {
         addPubAttribute(attribute.name()); 
     }
 
+   
+   
+    // to add  the Struct buildung out of  AircraftApp should be here ######
+    
+    public PhysicalEntityStruct getFirePowerDisabledStr()throws RTIinternalError {
+    	if (aFirePowerDisabledStr == null) {
+    		aFirePowerDisabledStr =  new PhysicalEntityStruct();    		
+    	}
+    	return aFirePowerDisabledStr;
+    }  
+    public void activateFirePowerD(PhysicalEntityStruct value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+    	aFirePowerDisabledStr = value;
+        setAttributeValue(Attributes.FirePowerDisabled.name(), value.getDataElement());
+    }
+    
+    public PhysicalEntityStruct getIsconcealedStr()throws RTIinternalError {
+    	if (aIsConcealedStr == null) {
+    		aIsConcealedStr =  new PhysicalEntityStruct();    		
+    	}
+    	return aIsConcealedStr;
+    }
+    public void activateIsConcealed(PhysicalEntityStruct value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+    	aIsConcealedStr = value;
+    	setAttributeValue(Attributes.IsConcealed.name(), value.getDataElement());
+    }    
+    
+    
+    public PhysicalEntityStruct getTentDeployedStr()throws RTIinternalError {
+    	if (aTentDeployedStr == null) {
+    		aTentDeployedStr =  new PhysicalEntityStruct();    		
+    	}
+    	return aTentDeployedStr;
+    }    
+    public void activateTendDeployed(PhysicalEntityStruct value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+    	aFirePowerDisabledStr = value;
+        setAttributeValue(Attributes.TentDeployed.name(), value.getDataElement());
+    }    
 
+    
+    
+    
+    
+    // end of added by brf
+    
+    
+    
+    
     // TODO: add remaining sub/pub helpers
 
     // TODO: add attribute setter and getter
+    
+
+    
+    // isConcealed
+    
+    // TentDeployd
+    
+    
+    //CamouflageType ....
+    
+    
+    
+    
 }
 

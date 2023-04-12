@@ -21,6 +21,9 @@ import hla.rti1516e.NullFederateAmbassador;
 import hla.rti1516e.RTIambassador;
 import hla.rti1516e.RtiFactory;
 import hla.rti1516e.RtiFactoryFactory;
+import hla.rti1516e.encoding.DataElement;
+import hla.rti1516e.encoding.EncoderFactory;
+import hla.rti1516e.encoding.HLAboolean;
 import hla.rti1516e.exceptions.FederationExecutionAlreadyExists;
 import java.net.URL;
 import java.util.ArrayList;
@@ -31,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import org.nato.ivct.rpr.*;
 import org.nato.ivct.rpr.datatypes.EntityIdentifierStruct;
 import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
+import org.nato.ivct.rpr.datatypes.PhysicalEntityStruct;
 import org.nato.ivct.rpr.datatypes.SpatialStaticStruct;
 import org.nato.ivct.rpr.datatypes.SpatialVariantStruct;
 import org.nato.ivct.rpr.objects.Aircraft;
@@ -38,6 +42,7 @@ import org.nato.ivct.rpr.objects.HLAobjectRoot;
 import org.nato.ivct.rpr.objects.Munition;
 import org.nato.ivct.rpr.objects.BaseEntity;
 import org.nato.ivct.rpr.objects.PhysicalEntity;
+import org.nato.ivct.rpr.objects.PhysicalEntity.Attributes;
 
 public class AircraftApp extends NullFederateAmbassador {
     
@@ -178,9 +183,30 @@ public class AircraftApp extends NullFederateAmbassador {
             aircraft.addPublish(PhysicalEntity.Attributes.SmokePlumePresent);
             aircraft.addPublish(PhysicalEntity.Attributes.TentDeployed);
             aircraft.addPublish(PhysicalEntity.Attributes.TrailingEffectsCode);
-                        
+            
             aircraft.register();
 
+          
+            // --- added by brf
+          //PhysicalEntityStruct firePowerDisabledStr = new PhysicalEntityStruct();              
+            PhysicalEntityStruct firePowerDisabledStr = aircraft.getFirePowerDisabledStr();
+            firePowerDisabledStr.setFirePowerDisabled(true);            
+            aircraft.activateFirePowerD(firePowerDisabledStr);
+          
+            //PhysicalEntityStruct IsConcealedStr = new PhysicalEntityStruct();
+            PhysicalEntityStruct IsConcealedStr = aircraft.getIsconcealedStr();
+            IsConcealedStr.setIsConcealed(false);            
+            aircraft.activateIsConcealed(IsConcealedStr);
+            
+            //PhysicalEntityStruct TentDeployedStr = new PhysicalEntityStruct();
+            PhysicalEntityStruct TentDeployedStr = aircraft.getTentDeployedStr();           
+            TentDeployedStr.setTentDeployed(false);            
+            aircraft.activateTendDeployed(TentDeployedStr);
+            
+            // end of  added by brf
+            
+                        
+        
 			Munition munitionProxy = new Munition();
             munitionProxy.addPublish(BaseEntity.Attributes.EntityIdentifier);
 			munitionProxy.publishLauncherFlashPresent();
@@ -192,6 +218,7 @@ public class AircraftApp extends NullFederateAmbassador {
             entityIdentifier.getFederateIdentifier().setApplicationID((short) 2);
             entityIdentifier.getFederateIdentifier().setSiteID((short) 3);
 			aircraft.setEntityIdentifier(entityIdentifier);
+			
 			EntityTypeStruct entityType = aircraft.getEntityType();
             entityType.setEntityKind((byte) 0xa);
             entityType.setDomain((byte) 0xb);

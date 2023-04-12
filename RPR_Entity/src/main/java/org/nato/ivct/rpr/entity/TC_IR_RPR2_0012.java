@@ -93,22 +93,29 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
  * TrailingEffectsCode    Yes
  * 
  * 
- * eg. camouflageType
+ * so we have to test if special Attributes will be updated
+ * FirePowerDisabled
+ * IsConcealed
+ * TentDeployed
  * 
- * <name>CamouflageType</name>
-   <dataType>CamouflageEnum32</dataType>
-   <updateType>Conditional</updateType>
-   <updateCondition>On change</updateCondition>
-   <ownership>DivestAcquire</ownership>
-   <sharing>PublishSubscribe</sharing>
+ *  <name>FirePowerDisabled</name>
+    <dataType>RPRboolean</dataType>
+    
+     <name>IsConcealed</name>
+     <dataType>RPRboolean</dataType>
+     
+     <name>TentDeployed</name>
+     <dataType>RPRboolean</dataType>
  * 
- *    How to encode  CamouflageEnum32
- *    --> org.nato.ivct.rpr.datatypes.CamouflageEnum32.java   getValue ....
+ *    How to decode encode RPRboolean
  *    
- *    DamageState  <dataType>DamageStatusEnum32</dataType>  
  *    
- *    EngineSmokeOn <dataType>RPRboolean</dataType>
+ *    so we have to check if the Classname of the Attributes received by reflectAttributeValues 
+ *    are the same as the testclass
  *    
+ *    then get the attributes of the List 
+ *    and check if it#s one of the 'special' Attributes
+ *     
  */
 
 
@@ -211,10 +218,11 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 			try {
 			
 			// we have to store the incoming Information to analyse it later
-			System.out.println("\n# ---------   Testing and Debugging --------------------------------"); 	
-			logger.info("reflectAttributeValues: Amount of transmitted  attributes: " +theAttributes.size());	
+			System.out.println("\n# ---------   Testing and Debugging --------------------------------"); 
+			//logger.info("reflectAttributeValues: Amount of transmitted  attributes: " +theAttributes.size());	
+			System.out.println("# reflectAttributeValues: Amount of transmitted  attributes: " +theAttributes.size());	
 		    System.out.println("# reflectAttributeValues: got  ObjectInstanceHandle  theObject: " +theObject ); // Debug			    
-		    System.out.println("# reflectAttributeValues: rti-objectInstanceName of theObject:  \t" + rtiAmbassador.getObjectInstanceName(theObject));  // Debug
+		    System.out.println("# reflectAttributeValues: rti-objectInstanceName of theObject: " + rtiAmbassador.getObjectInstanceName(theObject));  // Debug
 		    
 		    System.out.println("\n# reflectAttributeValues:   AttributHandleValueMap theAttributes:  "+ theAttributes);  // Debug
 		    System.out.println("#reflectAttributeValues:  the Keys in AttributHandleValueMap  : " + theAttributes.keySet() );
