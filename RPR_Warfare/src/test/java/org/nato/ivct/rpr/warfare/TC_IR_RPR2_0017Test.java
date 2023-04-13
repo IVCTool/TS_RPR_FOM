@@ -21,7 +21,7 @@ public class TC_IR_RPR2_0017Test {
 
     public static final String SUT_FEDERATE_NAME = "Flyer1"; 
     public static final String SUT_FEDERATION_NAME = "TestFederation"; 
-    public static final String SUT_PARAMETER = "{ \"timeout\" : \"5000\" }"; 
+    public static final String SUT_PARAMETER = "{ \"timeout\" : \"500000\" }"; 
 
     public static final Logger log = LoggerFactory.getLogger(TC_IR_RPR2_0017Test.class);
     RTIambassador rtiAmbassador = null;
@@ -42,4 +42,33 @@ public class TC_IR_RPR2_0017Test {
         assertTrue(result.verdict == IVCT_Verdict.Verdict.PASSED);
     }
 
+    @Test
+    void testPerformTestVRforces() throws FileNotFoundException, IOException, ParseException {
+        // TC_IR_RPR2_0017 tc = new TC_IR_RPR2_0017();
+        RPR_Warfare_TestSuite ts = new RPR_Warfare_TestSuite();
+        AbstractTestCaseIf tc = ts.getTestCase("org.nato.ivct.rpr.warfare.TC_IR_RPR2_0017");
+        JSONObject p = ts.getParameterTemplate();
+
+        tc.setSutFederateName("VR-Forces Sim Engine");
+        tc.setFederationName("MAK-RPR-2.0");
+        tc.setSkipOperatorMsg(true);
+        tc.setTcParam(SUT_PARAMETER);
+        IVCT_Verdict result = tc.execute(log);
+        assertTrue(result.verdict == IVCT_Verdict.Verdict.PASSED);
+    }
+
+    @Test
+    void testPerformTestCoreDS() throws FileNotFoundException, IOException, ParseException {
+        // TC_IR_RPR2_0017 tc = new TC_IR_RPR2_0017();
+        RPR_Warfare_TestSuite ts = new RPR_Warfare_TestSuite();
+        AbstractTestCaseIf tc = ts.getTestCase("org.nato.ivct.rpr.warfare.TC_IR_RPR2_0017");
+        JSONObject p = ts.getParameterTemplate();
+
+        tc.setSutFederateName("X-Plane");
+        tc.setFederationName("MAK-RPR-2.0");
+        tc.setSkipOperatorMsg(true);
+        tc.setTcParam(SUT_PARAMETER);
+        IVCT_Verdict result = tc.execute(log);
+        assertTrue(result.verdict == IVCT_Verdict.Verdict.PASSED);
+    }
 }

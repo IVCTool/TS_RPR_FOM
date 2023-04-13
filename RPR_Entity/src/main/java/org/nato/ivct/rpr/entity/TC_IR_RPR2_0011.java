@@ -136,6 +136,12 @@ public class TC_IR_RPR2_0011 extends AbstractTestCaseIf {
 		}
 
         @Override
+        public void attributeIsNotOwned(ObjectInstanceHandle arg0, AttributeHandle arg1) throws FederateInternalError {
+            // TODO Auto-generated method stub
+            super.attributeIsNotOwned(arg0, arg1);
+        }
+
+        @Override
         public void reflectAttributeValues(ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes,
                 byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport,
                 LogicalTime theTime, OrderType receivedOrdering, MessageRetractionHandle retractionHandle,

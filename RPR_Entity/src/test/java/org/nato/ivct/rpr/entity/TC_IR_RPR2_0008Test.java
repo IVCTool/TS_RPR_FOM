@@ -38,4 +38,24 @@ public class TC_IR_RPR2_0008Test {
         tc.setSkipOperatorMsg(true);
         tc.execute(log);
     }
+
+    @Test
+    void testPerformTestCoreDS() {
+        TC_IR_RPR2_0008 tc = new TC_IR_RPR2_0008();
+        tc.setSutFederateName("X-Plane");
+        tc.setFederationName("MAK-RPR-2.0");
+        tc.setSkipOperatorMsg(true);
+        IVCT_Verdict result = tc.execute(log);
+        assertTrue(result.verdict == IVCT_Verdict.Verdict.PASSED);
+    }
+
+    @Test
+    void testPerformTestVRforces() {
+        TC_IR_RPR2_0008 tc = new TC_IR_RPR2_0008();
+        tc.setSutFederateName("Federate27");
+        tc.setFederationName("MAK-RPR-2.0");
+        tc.setSkipOperatorMsg(true);
+        IVCT_Verdict result = tc.execute(log);
+        assertTrue(result.verdict == IVCT_Verdict.Verdict.PASSED);
+    }
 }

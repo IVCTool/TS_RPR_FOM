@@ -17,6 +17,16 @@ public class TC_IR_RPR2_0011Test {
     RTIambassador rtiAmbassador = null;
     
     @Test
+    void testPerformTestCoreDS() {
+        TC_IR_RPR2_0011 tc = new TC_IR_RPR2_0011();
+        tc.setSutFederateName("X-Plane");
+        tc.setFederationName("MAK-RPR-2.0");
+        tc.setSkipOperatorMsg(true);
+        IVCT_Verdict result = tc.execute(log);
+        assertTrue(result.verdict == IVCT_Verdict.Verdict.PASSED);
+    }
+
+    @Test
     void testPerformTest() {
         TC_IR_RPR2_0011 tc = new TC_IR_RPR2_0011();
         tc.setSutFederateName("Flyer1");
