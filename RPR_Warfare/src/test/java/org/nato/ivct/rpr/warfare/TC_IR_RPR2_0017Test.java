@@ -13,6 +13,7 @@ import java.io.IOException;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import hla.rti1516e.RTIambassador;
 
@@ -28,7 +29,8 @@ public class TC_IR_RPR2_0017Test {
 
   
     @Test
-    void testPerformTest() throws FileNotFoundException, IOException, ParseException {
+    @Tag("RefFedAircraft")
+    void testRefFedAircraft() throws FileNotFoundException, IOException, ParseException {
         // TC_IR_RPR2_0017 tc = new TC_IR_RPR2_0017();
         RPR_Warfare_TestSuite ts = new RPR_Warfare_TestSuite();
         AbstractTestCaseIf tc = ts.getTestCase("org.nato.ivct.rpr.warfare.TC_IR_RPR2_0017");
@@ -43,7 +45,8 @@ public class TC_IR_RPR2_0017Test {
     }
 
     @Test
-    void testPerformTestVRforces() throws FileNotFoundException, IOException, ParseException {
+    @Tag("VRforces")
+    void testVRforces() throws FileNotFoundException, IOException, ParseException {
         // TC_IR_RPR2_0017 tc = new TC_IR_RPR2_0017();
         RPR_Warfare_TestSuite ts = new RPR_Warfare_TestSuite();
         AbstractTestCaseIf tc = ts.getTestCase("org.nato.ivct.rpr.warfare.TC_IR_RPR2_0017");
@@ -58,7 +61,8 @@ public class TC_IR_RPR2_0017Test {
     }
 
     @Test
-    void testPerformTestCoreDS() throws FileNotFoundException, IOException, ParseException {
+    @Tag("CoreDS")
+    void testCoreDS() throws FileNotFoundException, IOException, ParseException {
         // TC_IR_RPR2_0017 tc = new TC_IR_RPR2_0017();
         RPR_Warfare_TestSuite ts = new RPR_Warfare_TestSuite();
         AbstractTestCaseIf tc = ts.getTestCase("org.nato.ivct.rpr.warfare.TC_IR_RPR2_0017");

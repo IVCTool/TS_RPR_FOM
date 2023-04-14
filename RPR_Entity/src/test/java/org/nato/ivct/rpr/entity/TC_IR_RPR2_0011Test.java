@@ -17,7 +17,7 @@ public class TC_IR_RPR2_0011Test {
     RTIambassador rtiAmbassador = null;
     
     @Test
-    void testPerformTestCoreDS() {
+    void testCoreDS() {
         TC_IR_RPR2_0011 tc = new TC_IR_RPR2_0011();
         tc.setSutFederateName("X-Plane");
         tc.setFederationName("MAK-RPR-2.0");
@@ -27,7 +27,7 @@ public class TC_IR_RPR2_0011Test {
     }
 
     @Test
-    void testPerformTest() {
+    void testRefFedAircraft() {
         TC_IR_RPR2_0011 tc = new TC_IR_RPR2_0011();
         tc.setSutFederateName("Flyer1");
         tc.setFederationName("TestFederation");
@@ -48,7 +48,7 @@ public class TC_IR_RPR2_0011Test {
 
     @Test
     @Disabled
-    void testPerformTestHologate() {
+    void testHologate() {
         TC_IR_RPR2_0011 tc = new TC_IR_RPR2_0011();
         tc.setSutFederateName("Hologate");
         tc.setFederationName("HologateFederation");

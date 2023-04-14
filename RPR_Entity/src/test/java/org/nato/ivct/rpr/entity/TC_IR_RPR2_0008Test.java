@@ -19,7 +19,7 @@ public class TC_IR_RPR2_0008Test {
 
   
     @Test
-    void testPerformTest() {
+    void testRefFedAircraft() {
         TC_IR_RPR2_0008 tc = new TC_IR_RPR2_0008();
         tc.setSutFederateName("Flyer1");
         tc.setFederationName("TestFederation");
@@ -31,7 +31,7 @@ public class TC_IR_RPR2_0008Test {
 
     @Disabled
     @Test
-    void testPerformTestHologate() {
+    void testHologate() {
         TC_IR_RPR2_0008 tc = new TC_IR_RPR2_0008();
         tc.setSutFederateName("Hologate");
         tc.setFederationName("HologateFederation");
@@ -40,7 +40,7 @@ public class TC_IR_RPR2_0008Test {
     }
 
     @Test
-    void testPerformTestCoreDS() {
+    void testCoreDS() {
         TC_IR_RPR2_0008 tc = new TC_IR_RPR2_0008();
         tc.setSutFederateName("X-Plane");
         tc.setFederationName("MAK-RPR-2.0");
@@ -50,7 +50,7 @@ public class TC_IR_RPR2_0008Test {
     }
 
     @Test
-    void testPerformTestVRforces() {
+    void testVRforces() {
         TC_IR_RPR2_0008 tc = new TC_IR_RPR2_0008();
         tc.setSutFederateName("Federate27");
         tc.setFederationName("MAK-RPR-2.0");

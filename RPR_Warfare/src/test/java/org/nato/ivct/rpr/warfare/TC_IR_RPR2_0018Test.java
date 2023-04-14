@@ -25,7 +25,7 @@ public class TC_IR_RPR2_0018Test {
     RTIambassador rtiAmbassador = null;
     
     @Test
-    void testPerformTest() throws FileNotFoundException, IOException, ParseException {
+    void testRefFedAircraft() throws FileNotFoundException, IOException, ParseException {
         RPR_Warfare_TestSuite ts = new RPR_Warfare_TestSuite();
         AbstractTestCaseIf tc = ts.getTestCase("org.nato.ivct.rpr.warfare.TC_IR_RPR2_0018");
         tc.setSutFederateName(SUT_FEDERATE_NAME);
