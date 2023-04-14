@@ -93,28 +93,31 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
  * TrailingEffectsCode    Yes
  * 
  * 
- * so we have to test if special Attributes will be updated
+ * so we have to test if special Attributes will be updated    for Aircraft  eg. 
  * FirePowerDisabled
  * IsConcealed
  * TentDeployed
  * 
- *  <name>FirePowerDisabled</name>
-    <dataType>RPRboolean</dataType>
-    
-     <name>IsConcealed</name>
-     <dataType>RPRboolean</dataType>
-     
-     <name>TentDeployed</name>
-     <dataType>RPRboolean</dataType>
+ *  <name>FirePowerDisabled</name>    <dataType>RPRboolean</dataType>    
+ *  <name>IsConcealed</name>          <dataType>RPRboolean</dataType>     
+ *  <name>TentDeployed</name>         <dataType>RPRboolean</dataType>
  * 
- *    How to decode encode RPRboolean
- *    
- *    
+ *    perhaps we need not to decode,  just see if they are updated 
+ *     
  *    so we have to check if the Classname of the Attributes received by reflectAttributeValues 
  *    are the same as the testclass
  *    
- *    then get the attributes of the List 
- *    and check if it#s one of the 'special' Attributes
+ *    then get the attributes of the List and check if it#s one of the 'special' Attributes
+ *    
+ *    Aircraft              FirePowerDisabled  IsConcealed    TentDeployed     
+ *    AmphibiousVehicle      -----
+ *    GroundVehicle          ----- 
+ *    Spacecraft             EngineSmokeON FirePowerDisabled  IsConcealed  TentDeployed  TrailingEffectsCode
+ *    SurfaceVessel          FirePowerDisabled   IsConcealed  TentDeployed
+ *    SubmersibleVessel      EngineSmokeON FirePowerDisabled  IsConcealed  TentDeployed  TrailingEffectsCode
+ *    ...  
+ *    
+ *    
  *     
  */
 
@@ -124,16 +127,24 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 	FederateAmbassador tcAmbassador = null;
 	Logger logger = null;
 	
-	Semaphore semaphore = new Semaphore(0);
+	//Semaphore semaphore = new Semaphore(0);
 	
-	HashMap<ObjectInstanceHandle,AttributeHandleValueMap> known_Instance_AttrValueMap = new HashMap<>();
+	//HashMap<ObjectInstanceHandle,AttributeHandleValueMap> known_Instance_AttrValueMap = new HashMap<>();	
+	//HashMap<AttributeHandle,byte[]> _attributeHandleValues  = new HashMap<>() ;	
+	//HashMap<String ,  ObjectInstanceHandle> knownObjectInstanceHandles = new HashMap<>();
 	
-	HashMap<AttributeHandle,byte[]> _attributeHandleValues  = new HashMap<>() ;
+	ObjectClassHandle temp_objectClassHandle = null;
+	ArrayList<String> attributNames = new ArrayList<String>();   
 	
-	ObjectClassHandle temp_objectClassHandle;
 	
-	HashMap<ObjectInstanceHandle, PhysicalEntity> knownPhysicalEntitys = new HashMap<>();
+    //  todo   complete  for all Physical Entities
+	String[] naListAircraft = new String[] {"FirePowerDisabled" , "IsConcealed" , "TentDeployed"};	
+	String[] naAmphibiousVehicle = new String[] {"-----------"};	
+	String[] naGroundVehicle = new String[] {"--------------"};	
+	String[] naSpacecraft = new String[] {"EngineSmokeON" , "FirePowerDisabled" , "IsConcealed" , "TentDeployed" ,"TrailingEffectsCode"};
+	String[] naSurfaceVessel = new String[] {"FirePowerDisabled" , "IsConcealed" , "TentDeployed"};
 	
+		
 	String toTestPlatformName="";
 	Platform toTestPlatform;
 	//Aircraft aircraft;
@@ -161,10 +172,13 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 			// semaphore.release(1);
 
 			try {
-				// we only want to observe selected ObjectInstances
+				// we only want to observe selected ObjectInstances  eg. aircraft
 				if (toTestPlatform.getHlaClassName().equals(rtiAmbassador.getObjectClassName(theObjectClass))) {
 
-					temp_objectClassHandle = theObjectClass;
+					temp_objectClassHandle = theObjectClass;     // Debug 
+					
+					//knownObjectInstanceHandles.put(rtiAmbassador.getObjectClassName(theObjectClass) , theObject) ;
+					
 					logger.info("rti-ObjectClassName in discoverObjectInstance:  " + rtiAmbassador.getObjectClassName(theObjectClass)); // Debug
 				}
 
@@ -236,13 +250,26 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 			System.out.println("# reflectAttributeValues: getHlaClassName toBe tested Entity   \t" + toTestPlatform.getHlaClassName()); // Debug			
 			System.out.println("# reflectAttributeValues: rti-ObjectKlassenName of with discoverObjectInstance received temp_objectClassHandle \t" + rtiAmbassador.getObjectClassName(temp_objectClassHandle));  // Debug
 
-			// testing some other
-			//rtiAmbassador.get
 			
 			if (toTestPlatform.getHlaClassName().equals(rtiAmbassador.getObjectClassName(temp_objectClassHandle))) {					
 				System.out.println("# class names are equal, do here something"); // Debug
 				
-				// eg.  write the Informations to    known_Instance_AttrValueMap
+				for ( AttributeHandle a : theAttributes.keySet() ) {		 			
+		 			 String tempAttributname = rtiAmbassador.getAttributeName(temp_objectClassHandle, a);
+		 			
+		 			if (! attributNames.contains(tempAttributname)) {
+		 				attributNames.add(tempAttributname);
+		 			}		 			
+		 		}
+				
+				/*  Debug 
+				System.out.println("# reflectAttributeValues: Names of in attributNames stored Attributes ");
+		 		for ( String s : attributNames  ) {
+		 			System.out.println(s) ;
+		 		}   */
+				
+				
+				
 			}
 			
 			
@@ -329,9 +356,6 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 				  toTestPlatform = new Aircraft();
 			}
 			
-			// aircraft = new Aircraft();    //to adjust
-			// aircraft.addSubscribe(BaseEntity.Attributes.EntityIdentifier);   //to adjust
-			// aircraft.subscribe();         //to adjust
 			
 			toTestPlatform.addSubscribe(BaseEntity.Attributes.EntityIdentifier);
 			toTestPlatform.addSubscribe(BaseEntity.Attributes.EntityType);			
@@ -352,11 +376,93 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 			toTestPlatform.subscribe();
 
 			boolean seenEnough = false;
-			while (!seenEnough) {
-				
-				//
+			while (!seenEnough) {		
+
 				// the Test ......
+
+				// We can get here the Names of the received Attributes.
+				for (int i = 0; i < 100; i++) {
+					System.out.println("#### performTest: Names of stored Attributes "); // Debug
+					System.out.println("toString of received Attributes gives: " + attributNames); // Debug
+					for (String s : attributNames) {
+						System.out.println(s);
+					}
+					
+				//-----------------------------------------------------					
+					
+					// So now we have to test which Platform should not sent which Attributes
+
+					// test this here and then add to the obove switch ....
+					String[] nonApTestList;
+					switch (toTestPlatformName) {
+					case "Aircraft":
+						nonApTestList = naListAircraft;
+						break;
+					case "AmphibiousVehicle":
+						nonApTestList = naAmphibiousVehicle;
+						break;
+					case "GroundVehicle":
+						nonApTestList = naGroundVehicle;
+						break;
+					case "Spacecraft":
+						nonApTestList = naSpacecraft;
+						break;
+					default:
+						logger.info(" non-applicable TestList unknown, we assume Aircraft ");
+						nonApTestList = naListAircraft;
+					}
+					
+					for (String nonAppAttribut : nonApTestList ) {
+						
+						for (String s : attributNames) {
+							System.out.println("AttributName of received Attributs is now: " + s);
+							System.out.println("non-applicable PhysicalEntity Attribute is now "+nonAppAttribut);							
+							System.out.println("---------------------------------------------------------\n");
+							
+							// Test if there is a match
+							
+							if (s.equals(nonAppAttribut)) {
+								System.out.println("We have a match off received Attributs " + s+ " with non-applicable Atttibut List " + nonAppAttribut);
+								System.out.println("AttributName of received Attributs is now: " + s);
+								logger.warn("################## Test failed ###################### ");
+								
+							}
+							
+						}
+						
+					}
+			  //---------------------------------------------------------
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					Thread.sleep(1000);
+				}
+
+				
+				
+				
+				
+				
 			}
+			
+			
 
 		} catch (Exception e) {
 			throw new TcInconclusiveIf(e.getMessage());
