@@ -9,7 +9,7 @@ dependencies {
 }
 
 application {
-    mainClass.set("org.nato.ivct.refFed.AircraftApp")
+    mainClass = 'org.nato.ivct.refFed.AircraftApp'
 }
 
 group = 'org.nato.ivct.refFed'
