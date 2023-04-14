@@ -7,8 +7,9 @@ plugins {
 
 // Java Version Compatibility
 java {
-    sourceCompatibility = "1.8"
-    targetCompatibility = "1.8"
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(9)
+    }
 }
 
 // Projects should use Maven Central for external dependencies
