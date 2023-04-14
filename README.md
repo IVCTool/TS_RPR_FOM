@@ -40,7 +40,7 @@ The *Aircraft* federate can be build and started with the gradle build command:
 
 ## IVCT Compliance
 
-The current test suite design uses the ServiceLoader interface feature of the IVCT framework. This is only available in the latest snapshot releases and not yet included in the production release. 
+The current test suite design uses the ServiceLoader interface feature of the IVCT framework. This is only available in the latest snapshot releases and not yet included in the production release. The current version requires Java 9 or higher. 
 
 
 ## LICENSE
