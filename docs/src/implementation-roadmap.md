@@ -58,7 +58,7 @@ The prioritization of the test case implementation is given by the requirements 
 
 | TC | Status | Description |
 | -- |------- | ----------- |
-| TC_IR_PRP_PHY_0001 | - | - |
+| TC_IR_PRP_PHY_0001 | implementation candidate | TC may create random PhysicalEntity instance and creates updates with all possible attribute combinations. Problem: With 25 attributes, that would be 2<sup>25</sup> permutations (33.554.432). With 10ms per update, that test would take 233 days. Even when respecting the _Table 7_ this will be to much. So maybe only some random permutations have to be enough. |
 | TC_IR_PRP_PHY_0002 | - | - |
 | TC_IR_PRP_PHY_0003 | - | - |
 | TC_IR_PRP_PHY_0004 | - | - |
@@ -81,7 +81,7 @@ The prioritization of the test case implementation is given by the requirements 
 - IR-RPR-PHY-0003: 
   - Vito: Attributes defined in this table are the ones present in the RPR.
 Requirement IR-RPR-PHY-0001 already states that all attributes of Physical class and subclasses are optional. Is this requirement redundant?
-  - Reinhard: This IR is about attributes from Platform, and also about the default values. And this is probably very hart to test without access to the user interface, as it is only evaluated inside the SuT. I guess the idea behind that requirement is, that a consuming federate must tolerate attributes in any combination. Maybe the permutation approach would be use here as well. 
+  - Reinhard: This IR is about attributes from Platform, and also about the default values. And this is probably very hard to test without access to the user interface, as it is only evaluated inside the SuT. I guess the idea behind that requirement is, that a consuming federate must tolerate attributes in any combination. Maybe the permutation approach would be use here as well. 
 
 - IR-RPR-PHY-0004: 
   - Vito: Is seams reasonable to publish only explicitly defined attributes. On the other hand any additional fields published should not have any impact on the simulation.
