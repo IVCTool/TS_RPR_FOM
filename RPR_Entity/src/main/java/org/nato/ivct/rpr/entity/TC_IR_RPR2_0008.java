@@ -45,6 +45,7 @@ import hla.rti1516e.exceptions.CouldNotOpenFDD;
 import hla.rti1516e.exceptions.ErrorReadingFDD;
 import hla.rti1516e.exceptions.FederateAlreadyExecutionMember;
 import hla.rti1516e.exceptions.FederateInternalError;
+import hla.rti1516e.exceptions.FederateIsExecutionMember;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
 import hla.rti1516e.exceptions.FederateOwnsAttributes;
 import hla.rti1516e.exceptions.FederationExecutionAlreadyExists;
@@ -198,8 +199,9 @@ public class TC_IR_RPR2_0008 extends AbstractTestCaseIf {
         logger.info("postamble action for test {}", this.getClass().getName());
         try {
             rtiAmbassador.resignFederationExecution(ResignAction.NO_ACTION);
+			rtiAmbassador.disconnect();
         } catch (InvalidResignAction | OwnershipAcquisitionPending | FederateOwnsAttributes | FederateNotExecutionMember
-                | NotConnected | CallNotAllowedFromWithinCallback | RTIinternalError e) {
+                | NotConnected | CallNotAllowedFromWithinCallback | RTIinternalError | FederateIsExecutionMember e) {
             throw new TcInconclusiveIf(e.getMessage());
         }		
 	}
