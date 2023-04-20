@@ -14,9 +14,14 @@ limitations under the License. */
 
 package org.nato.ivct.rpr.interactions;
 
+import org.nato.ivct.rpr.OmtBuilder;
 import org.nato.ivct.rpr.RprBuilderException;
 
+import hla.rti1516e.ParameterHandleValueMap;
+import hla.rti1516e.encoding.ByteWrapper;
+import hla.rti1516e.encoding.DecoderException;
 import hla.rti1516e.encoding.EncoderException;
+import hla.rti1516e.encoding.HLAbyte;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
 import hla.rti1516e.exceptions.InvalidInteractionClassHandle;
 import hla.rti1516e.exceptions.NameNotFound;
@@ -28,13 +33,28 @@ public class HLAfederate extends HLAmanager {
     public enum Attributes {
         HLAfederate
     }
+    
+    private HLAbyte aHLAfederate;
 
-    public HLAfederate()
-            throws NameNotFound, FederateNotExecutionMember, NotConnected, RTIinternalError, RprBuilderException {
+    public HLAfederate () throws NameNotFound, FederateNotExecutionMember, NotConnected, RTIinternalError, RprBuilderException {
         super();
+        aHLAfederate = OmtBuilder.getEncoderFactory().createHLAbyte();
     }
     
     public void setHLAfederate (byte[] value) throws NameNotFound, InvalidInteractionClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException, RprBuilderException {
         setParameter(Attributes.HLAfederate.name(), value);
     }
+
+    public void decode(ParameterHandleValueMap values)  {
+        ByteWrapper value = values.getValueReference(getParameterHandle(Attributes.HLAfederate.name()));
+        if (value != null) {
+            try {
+                aHLAfederate.decode(value);
+            } catch (DecoderException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
+
 }
