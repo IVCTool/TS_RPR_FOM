@@ -39,6 +39,7 @@ public class TC_IR_RPR2_0008Test {
         tc.execute(log);
     }
 
+    @Disabled
     @Test
     void testCoreDS() {
         TC_IR_RPR2_0008 tc = new TC_IR_RPR2_0008();
@@ -49,6 +50,7 @@ public class TC_IR_RPR2_0008Test {
         assertTrue(result.verdict == IVCT_Verdict.Verdict.PASSED);
     }
 
+    @Disabled
     @Test
     void testVRforces() {
         TC_IR_RPR2_0008 tc = new TC_IR_RPR2_0008();

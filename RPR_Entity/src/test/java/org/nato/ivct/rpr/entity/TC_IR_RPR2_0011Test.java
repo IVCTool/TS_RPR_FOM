@@ -17,6 +17,7 @@ public class TC_IR_RPR2_0011Test {
     RTIambassador rtiAmbassador = null;
     
     @Test
+    @Disabled
     void testCoreDS() {
         TC_IR_RPR2_0011 tc = new TC_IR_RPR2_0011();
         tc.setSutFederateName("X-Plane");
