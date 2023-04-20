@@ -19,6 +19,7 @@ package org.nato.ivct.rpr.objects;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import org.nato.ivct.rpr.HLAroot;
 import org.nato.ivct.rpr.OmtBuilder;
 import org.nato.ivct.rpr.RprBuilderException;
 import org.slf4j.Logger;
@@ -55,7 +56,7 @@ import hla.rti1516e.exceptions.SaveInProgress;
  * attributes. The class need to be initialized with an RTIambassador, before
  * any services can be used.
  */
-public class HLAobjectRoot {
+public class HLAobjectRoot extends HLAroot {
 
     private static final Logger log = LoggerFactory.getLogger(HLAobjectRoot.class);
     private static RTIambassador rtiAmbassador;
@@ -180,23 +181,7 @@ public class HLAobjectRoot {
      * @return
      */
     public String getHlaClassName() {
-        String hlaClassName = null;
-        if (this.getClass() == HLAobjectRoot.class) {
-            hlaClassName = "HLAobjectRoot";
-        } else {
-            Class cls = this.getClass();
-            do {
-                if (hlaClassName == null) {
-                    hlaClassName = cls.getSimpleName();
-                } else {
-                    hlaClassName = cls.getSimpleName() + "." + hlaClassName;
-                }
-                cls = cls.getSuperclass();
-            }
-            while (cls != HLAobjectRoot.class);
-            hlaClassName = cls.getSimpleName() + "." + hlaClassName;
-        }
-        return hlaClassName;
+        return getHlaClassName("HLAobjectRoot");
     }
 
     /**
