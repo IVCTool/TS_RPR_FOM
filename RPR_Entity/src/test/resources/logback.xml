@@ -8,7 +8,7 @@
     </appender>
 
 	<!-- TRACE	DEBUG	INFO	WARN	ERROR	FATAL	OFF -->
-    <root level="TRACE">
+    <root level="DEBUG">
         <appender-ref ref="STDOUT" />
     </root>
 </configuration>
