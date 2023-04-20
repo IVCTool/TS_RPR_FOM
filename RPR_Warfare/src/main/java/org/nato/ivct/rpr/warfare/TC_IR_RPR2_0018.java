@@ -38,6 +38,7 @@ import org.nato.ivct.rpr.objects.HLAfederate;
 import org.nato.ivct.rpr.objects.Munition;
 import org.nato.ivct.rpr.objects.PhysicalEntity;
 
+import hla.rti1516e.ResignAction;
 import hla.rti1516e.AttributeHandle;
 import hla.rti1516e.AttributeHandleValueMap;
 import hla.rti1516e.CallbackModel;
@@ -64,7 +65,9 @@ import hla.rti1516e.exceptions.CouldNotOpenFDD;
 import hla.rti1516e.exceptions.ErrorReadingFDD;
 import hla.rti1516e.exceptions.FederateAlreadyExecutionMember;
 import hla.rti1516e.exceptions.FederateInternalError;
+import hla.rti1516e.exceptions.FederateIsExecutionMember;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
+import hla.rti1516e.exceptions.FederateOwnsAttributes;
 import hla.rti1516e.exceptions.FederateServiceInvocationsAreBeingReportedViaMOM;
 import hla.rti1516e.exceptions.FederationExecutionAlreadyExists;
 import hla.rti1516e.exceptions.FederationExecutionDoesNotExist;
@@ -75,10 +78,12 @@ import hla.rti1516e.exceptions.InteractionParameterNotDefined;
 import hla.rti1516e.exceptions.InvalidInteractionClassHandle;
 import hla.rti1516e.exceptions.InvalidLocalSettingsDesignator;
 import hla.rti1516e.exceptions.InvalidObjectClassHandle;
+import hla.rti1516e.exceptions.InvalidResignAction;
 import hla.rti1516e.exceptions.NameNotFound;
 import hla.rti1516e.exceptions.NotConnected;
 import hla.rti1516e.exceptions.ObjectClassNotDefined;
 import hla.rti1516e.exceptions.ObjectInstanceNotKnown;
+import hla.rti1516e.exceptions.OwnershipAcquisitionPending;
 import hla.rti1516e.exceptions.RTIinternalError;
 import hla.rti1516e.exceptions.RestoreInProgress;
 import hla.rti1516e.exceptions.SaveInProgress;
@@ -102,6 +107,7 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 	private FederateAmbassador tcAmbassador = null;
 	private Semaphore federateDiscovered = new Semaphore(0);
     private HashMap<ObjectInstanceHandle, Munition> knownMunitionEntities = new HashMap<>();
+	private HashMap<ObjectInstanceHandle, Boolean> requestReport = new HashMap<>();
     private Munition munitionProxy;
 	private boolean sutDiscovered = false;
 	private int timeout;
@@ -122,6 +128,7 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 				HLAfederate fed = HLAfederate.discover(theObject, theObjectClass);
                 if (fed != null) {
 					logger.trace("discovered HLAfederate object : {}({})", theObject, receivedClass);
+					requestReport.put(theObject, true);
 					federateDiscovered.release(1);
 				} 
 			} catch (NotConnected | InvalidObjectClassHandle | FederateNotExecutionMember | RTIinternalError | RprBuilderException e) {
@@ -140,9 +147,8 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 					fed.decode(theAttributes);
 					logger.trace("HLAfederate values: {}<{}>", fed.getHLAfederateName(), fed.getHLAfederateHandle());
 					if (fed.getHLAfederateName().equalsIgnoreCase(getSutFederateName())) {
-						// TODO: check if received handle belongs to SuT
-						// fed.getHLAfederateHandle();
-						// sutDiscovered = true;
+						sutDiscovered = true;
+						logger.info("Received HLAfederate update for System under test <{}[{}]> on host {} @ {}", fed.getHLAfederateName(), fed.getHLAfederateType(), fed.getHLAfederateHost(), fed.getHLARTIversion());
 						federateDiscovered.release(1);
 					}
 				}
@@ -161,7 +167,7 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 			if (reportPubs != null) {
 				reportPubs.decode(theParameters);
 				receivedHLAreportInteractionPublication = true;
-				logger.trace("received HLAreportInteractionPublication report for Class={}, HlaClassName={}", reportPubs.getClass(), reportPubs.getHlaClassName());
+				logger.info("received HLAreportInteractionPublication report for Class={}, HlaClassName={}", reportPubs.getClass(), reportPubs.getHlaClassName());
 				federateDiscovered.release(1);
 				return;
 			}
@@ -170,22 +176,16 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 			if (reportSubs != null) {
 				reportSubs.decode(theParameters);
 				receivedHLAreportInteractionSubscription = true;
-				logger.trace("received HLAreportInteractionSubscription report for Class={}, HlaClassName={}", reportSubs.getClass(), reportSubs.getHlaClassName());
+				logger.info("received HLAreportInteractionSubscription report for Class={}, HlaClassName={}", reportSubs.getClass(), reportSubs.getHlaClassName());
 				federateDiscovered.release(1);
 				return;
 			}
 			// Test for HLAreportObjectClassPublication interaction
 			HLAreportObjectClassPublication classPubs = HLAreportObjectClassPublication.discover(interactionClass);
 			if (classPubs != null) {
-				try {
-					classPubs.decode(theParameters);
-					receivedHLAreportObjectClassPublication = true;
-					logger.trace("received HLAreportObjectClassPublication report for objectClass={}, numberOfClasses={}", classPubs.getHLAobjectClass(), classPubs.getaHLAnumberOfClasses());
-				} catch (NameNotFound | InvalidInteractionClassHandle | FederateNotExecutionMember | NotConnected
-						| RTIinternalError | RprBuilderException | DecoderException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				classPubs.decode(theParameters);
+				receivedHLAreportObjectClassPublication = true;
+				logger.info("received HLAreportObjectClassPublication report for objectClass={}, numberOfClasses={}", classPubs.getHLAobjectClass(), classPubs.getaHLAnumberOfClasses());
 				federateDiscovered.release(1);
 				return;
 			}
@@ -194,7 +194,7 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 			if (classSubs != null) {
 				classSubs.decode(theParameters);
 				receivedHLAreportObjectClassSubscription = true;
-				logger.trace("received HLAreportObjectClassSubscription report for Class={}, HlaClassName={}", classSubs.getClass(), classSubs.getHlaClassName());
+				logger.info("received HLAreportObjectClassSubscription report for Class={}, HlaClassName={}", classSubs.getClass(), classSubs.getHlaClassName());
 				federateDiscovered.release(1);
 				return;
 			}
@@ -212,7 +212,7 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
     @Override
     protected void preambleAction(Logger logger) throws TcInconclusiveIf {
         RtiFactory rtiFactory;
-        logger.info("preamble action for test {}", this.getClass().getName());
+        logger.trace("preamble action for test {}", this.getClass().getName());
 		timeout = Integer.parseInt(getTcParam("timeout"));
 		try {
 			rtiFactory = RtiFactoryFactory.getRtiFactory();
@@ -241,11 +241,12 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 				| SaveInProgress | RestoreInProgress | FederateAlreadyExecutionMember | NotConnected e) {
 			throw new TcInconclusiveIf(e.getMessage());
 		}
+        logger.info("Joined federation <{}>", federationName);
     }
 
     @Override
     protected void performTest(Logger logger) throws TcInconclusiveIf, TcFailedIf {
-        logger.info("perform test {}", this.getClass().getName());
+        logger.trace("perform test {}", this.getClass().getName());
 		try {
             HLAfederate.addSub(HLAfederate.Attributes.HLAfederateHandle);
             HLAfederate.addSub(HLAfederate.Attributes.HLAfederateName);
@@ -277,14 +278,14 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 			while (! receivedHLAreportInteractionPublication && ! receivedHLAreportInteractionSubscription && ! receivedHLAreportObjectClassPublication && ! receivedHLAreportObjectClassSubscription ) {
 				try {
 					federateDiscovered.acquire();
-
 					for (HLAfederate federate : HLAfederate.knownObjects.values()) {
 						try {
-							if (federate.getHLAfederateHandle() != null) {
+							if ((federate.getHLAfederateHandle() != null) && (requestReport.get(federate.getObjectHandle()))) {
 								reqPublications.setHLAfederate(federate.getHLAfederateHandle());
 								reqPublications.send();
 								reqSubscriptions.setHLAfederate(federate.getHLAfederateHandle());
 								reqSubscriptions.send();
+								requestReport.put(federate.getObjectHandle(), false);
 							} else {
 								rtiAmbassador.requestAttributeValueUpdate(federate.getObjectHandle(), federate.getSubscribedAttributes(), null);
 							}
@@ -320,8 +321,15 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
         logger.info("test {} passed", this.getClass().getName());
     }
 
-    @Override
-    protected void postambleAction(Logger logger) throws TcInconclusiveIf {
-        logger.info("placeholder for postamble action for test {}", this.getClass().getName());
-    }
+	@Override
+	protected void postambleAction(Logger logger) throws TcInconclusiveIf {
+        logger.info("postamble action for test {}", this.getClass().getName());
+        try {
+            rtiAmbassador.resignFederationExecution(ResignAction.NO_ACTION);
+			rtiAmbassador.disconnect();
+        } catch (InvalidResignAction | OwnershipAcquisitionPending | FederateOwnsAttributes | FederateNotExecutionMember
+                | NotConnected | CallNotAllowedFromWithinCallback | RTIinternalError | FederateIsExecutionMember e) {
+            throw new TcInconclusiveIf(e.getMessage());
+		}		
+	}
 }
