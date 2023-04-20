@@ -1,3 +1,14 @@
 {
+    "java.test.defaultConfig": "RefFedAircraft",
+    "java.test.config": [
+        {
+            "name": "RefFedAircraft",
+            "filters.tags": ["RefFedAircraft"]
+        },
+        {
+            "name": "VRforces",
+            "filters.tags": ["VRforces"]
+        }
+    ],
     "java.configuration.updateBuildConfiguration": "automatic"
 }
