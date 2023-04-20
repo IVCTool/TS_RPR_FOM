@@ -94,21 +94,22 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
  * 
  * 
  * so we have to test if special Attributes will be updated    for Aircraft  eg. 
- * FirePowerDisabled
- * IsConcealed
- * TentDeployed
- * 
  *  <name>FirePowerDisabled</name>    <dataType>RPRboolean</dataType>    
  *  <name>IsConcealed</name>          <dataType>RPRboolean</dataType>     
  *  <name>TentDeployed</name>         <dataType>RPRboolean</dataType>
+ *  
+ *  further Attributes
+ *  ...
+ *  <name>EngineSmokeOn</name>        <dataType>RPRboolean</dataType>
+ *  <name>FlamesPresent</name>        <dataType>RPRboolean</dataType>
+ *  ...
  * 
- *    perhaps we need not to decode,  just see if they are updated 
+ *  perhaps we need not to decode,  just see if they are updated 
  *     
- *    so we have to check if the Classname of the Attributes received by reflectAttributeValues 
- *    are the same as the testclass
+ *  so we have to check if the Classname of the Attributes received by reflectAttributeValues 
+ *  are the same as the testclass
  *    
- *    then get the attributes of the List and check if it#s one of the 'special' Attributes
- *    
+ *  then get the attributes of the List and check if it's one of the 'special' Attributes *    
  *    Aircraft              FirePowerDisabled  IsConcealed    TentDeployed     
  *    AmphibiousVehicle      -----
  *    GroundVehicle          ----- 
@@ -139,10 +140,11 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 	
     //  todo   complete  for all Physical Entities
 	String[] naListAircraft = new String[] {"FirePowerDisabled" , "IsConcealed" , "TentDeployed"};	
-	String[] naAmphibiousVehicle = new String[] {"-----------"};	
-	String[] naGroundVehicle = new String[] {"--------------"};	
-	String[] naSpacecraft = new String[] {"EngineSmokeON" , "FirePowerDisabled" , "IsConcealed" , "TentDeployed" ,"TrailingEffectsCode"};
-	String[] naSurfaceVessel = new String[] {"FirePowerDisabled" , "IsConcealed" , "TentDeployed"};
+	String[] naListAmphibiousVehicle = new String[] {"-----------"};	
+	String[] naListGroundVehicle = new String[] {"--------------"};	
+	String[] naListSpacecraft = new String[] {"EngineSmokeON" , "FirePowerDisabled" , "IsConcealed" , "TentDeployed" ,"TrailingEffectsCode"};
+	String[] naListSurfaceVessel = new String[] {"FirePowerDisabled" , "IsConcealed" , "TentDeployed"};
+	// to be completet
 	
 		
 	String toTestPlatformName="";
@@ -167,7 +169,7 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 				ObjectClassHandle theObjectClass,
 				String objectName) throws FederateInternalError {
 			
-			System.out.println(""); // Debug
+			logger.info(""); // Debug
 			logger.trace("discoverObjectInstance {}", theObject);
 			// semaphore.release(1);
 
@@ -225,34 +227,36 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
                 TransportationTypeHandle theTransport,
                 SupplementalReflectInfo reflectInfo) throws FederateInternalError {
 			
-			System.out.println(""); // Debug
+			logger.info(""); // Debug
 			logger.trace("reflectAttributeValues without  LogicalTime,  MessageRetractionHandle  ");
 			//semaphore.release(1);
 			
 			try {
 			
 			// we have to store the incoming Information to analyse it later
-			System.out.println("\n# ---------   Testing and Debugging --------------------------------"); 
-			//logger.info("reflectAttributeValues: Amount of transmitted  attributes: " +theAttributes.size());	
-			System.out.println("# reflectAttributeValues: Amount of transmitted  attributes: " +theAttributes.size());	
-		    System.out.println("# reflectAttributeValues: got  ObjectInstanceHandle  theObject: " +theObject ); // Debug			    
-		    System.out.println("# reflectAttributeValues: rti-objectInstanceName of theObject: " + rtiAmbassador.getObjectInstanceName(theObject));  // Debug
+			logger.info("\n# ---------   Testing and Debugging --------------------------------"); 
+			logger.info("# reflectAttributeValues: Amount of transmitted  attributes: " +theAttributes.size());	
+		    logger.info("# reflectAttributeValues: got  ObjectInstanceHandle  theObject: " +theObject ); // Debug			    
+		    logger.info("# reflectAttributeValues: rti-objectInstanceName of theObject: " + rtiAmbassador.getObjectInstanceName(theObject));  // Debug
 		    
-		    System.out.println("\n# reflectAttributeValues:   AttributHandleValueMap theAttributes:  "+ theAttributes);  // Debug
-		    System.out.println("#reflectAttributeValues:  the Keys in AttributHandleValueMap  : " + theAttributes.keySet() );
+		    logger.info("\n# reflectAttributeValues:   AttributHandleValueMap theAttributes:  "+ theAttributes);  // Debug
+		    logger.info("#reflectAttributeValues:  the Keys in AttributHandleValueMap  : " + theAttributes.keySet() );  
 		    
 		    // we need the Names of the Attributes 
-		 	System.out.println("# reflectAttributeValues: Names of received Attributes ");
+		 	logger.info("# reflectAttributeValues: Names of received Attributes ");
 		 		for ( AttributeHandle a : theAttributes.keySet() ) {
-		 			System.out.println(rtiAmbassador.getAttributeName(temp_objectClassHandle, a) );
+		 			logger.info(rtiAmbassador.getAttributeName(temp_objectClassHandle, a) );
 		 		}
 		    
-			System.out.println("# reflectAttributeValues: getHlaClassName toBe tested Entity   \t" + toTestPlatform.getHlaClassName()); // Debug			
-			System.out.println("# reflectAttributeValues: rti-ObjectKlassenName of with discoverObjectInstance received temp_objectClassHandle \t" + rtiAmbassador.getObjectClassName(temp_objectClassHandle));  // Debug
-
+		 	// this will be changed  the Name of the "toTestPlatform should be obtained directly from the class 
+			logger.info("# reflectAttributeValues: getHlaClassName toBe tested Entity \t" + toTestPlatform.getHlaClassName()); // Debug			
+			logger.info("# reflectAttributeValues: rti-ObjectKlassenName of with discoverObjectInstance received temp_objectClassHandle \t" + rtiAmbassador.getObjectClassName(temp_objectClassHandle));  // Debug
+			logger.info("\n# ---------  End of Testing  --------------------------------"); 
 			
+			
+			// now we store the names of received Attributes
 			if (toTestPlatform.getHlaClassName().equals(rtiAmbassador.getObjectClassName(temp_objectClassHandle))) {					
-				System.out.println("# class names are equal, do here something"); // Debug
+				logger.info("# class names are equal, do here something"); // Debug
 				
 				for ( AttributeHandle a : theAttributes.keySet() ) {		 			
 		 			 String tempAttributname = rtiAmbassador.getAttributeName(temp_objectClassHandle, a);
@@ -262,17 +266,51 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 		 			}		 			
 		 		}
 				
-				/*  Debug 
-				System.out.println("# reflectAttributeValues: Names of in attributNames stored Attributes ");
-		 		for ( String s : attributNames  ) {
-		 			System.out.println(s) ;
-		 		}   */
-				
-				
-				
 			}
 			
 			
+			// so we might get Attributes for different ObjectClasses.
+			
+			/* we no need a  Map or someting else and store in it the different
+			*   ObjectClassNames with a List of non-applicable PhysicalEntity Attributes
+			*   like the Arrays obove eg. naListAircraft
+			*/
+			
+			// only temporary at this place 
+			HashMap<String, String[]> DomAppPhysEntAttributes = new HashMap<String, String[]>() ;
+			
+			DomAppPhysEntAttributes.put("HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.Aircraft", naListAircraft);
+			DomAppPhysEntAttributes.put("HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.AmphibiousVehicle", naListAmphibiousVehicle);
+			DomAppPhysEntAttributes.put("HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.GroundVehicle", naListGroundVehicle);
+			DomAppPhysEntAttributes.put("HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.Spacecraft", naListSpacecraft);
+			DomAppPhysEntAttributes.put("HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.SurfaceVessel", naListSurfaceVessel);
+			//DomAppPhysEntAttributes.put("HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.SubmersibleVessel", naListSubmersibleVessel);
+			
+			// now check if the received ObjectClassName  is in the List .... (rtiAmbassador.getObjectClassName(temp_objectClassHandle))
+			// ....
+			
+			
+			//  only temporary at this place
+			
+			if (DomAppPhysEntAttributes.containsKey(rtiAmbassador.getObjectClassName(temp_objectClassHandle))) {
+				logger.info("# DomAppPhysEntAttributes  contains "
+						+ rtiAmbassador.getObjectClassName(temp_objectClassHandle)); // Debug
+
+				String[] nonAppAttributes = DomAppPhysEntAttributes
+						.get(rtiAmbassador.getObjectClassName(temp_objectClassHandle));
+
+				for (String naAttribute : nonAppAttributes) {
+
+					for (String atName : attributNames) {
+
+						if (atName.equals(naAttribute)) {
+							logger.warn("###### Test temporairly in reflectAttributeValues failed  "+ atName +" equals " +naAttribute  );
+
+						}
+					}
+				}
+			}
+	
 			
 			} catch ( FederateNotExecutionMember | NotConnected | RTIinternalError | AttributeNotDefined | InvalidAttributeHandle | InvalidObjectClassHandle | ObjectInstanceNotKnown  e) 
 			{ 	};
@@ -382,10 +420,10 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 
 				// We can get here the Names of the received Attributes.
 				for (int i = 0; i < 100; i++) {
-					System.out.println("#### performTest: Names of stored Attributes "); // Debug
-					System.out.println("toString of received Attributes gives: " + attributNames); // Debug
+					logger.info("#### performTest: Names of stored Attributes "); // Debug
+					logger.info("toString of received Attributes gives: " + attributNames); // Debug
 					for (String s : attributNames) {
-						System.out.println(s);
+						logger.info(s);
 					}
 					
 				//-----------------------------------------------------					
@@ -399,13 +437,13 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 						nonApTestList = naListAircraft;
 						break;
 					case "AmphibiousVehicle":
-						nonApTestList = naAmphibiousVehicle;
+						nonApTestList = naListAmphibiousVehicle;
 						break;
 					case "GroundVehicle":
-						nonApTestList = naGroundVehicle;
+						nonApTestList = naListGroundVehicle;
 						break;
 					case "Spacecraft":
-						nonApTestList = naSpacecraft;
+						nonApTestList = naListSpacecraft;
 						break;
 					default:
 						logger.info(" non-applicable TestList unknown, we assume Aircraft ");
@@ -415,15 +453,15 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 					for (String nonAppAttribut : nonApTestList ) {
 						
 						for (String s : attributNames) {
-							System.out.println("AttributName of received Attributs is now: " + s);
-							System.out.println("non-applicable PhysicalEntity Attribute is now "+nonAppAttribut);							
-							System.out.println("---------------------------------------------------------\n");
+							logger.info("AttributName of received Attributs is now: " + s);
+							logger.info("non-applicable PhysicalEntity Attribute is now "+nonAppAttribut);							
+							logger.info("---------------------------------------------------------\n");
 							
 							// Test if there is a match
 							
 							if (s.equals(nonAppAttribut)) {
-								System.out.println("We have a match off received Attributs " + s+ " with non-applicable Atttibut List " + nonAppAttribut);
-								System.out.println("AttributName of received Attributs is now: " + s);
+								logger.info("We have a match off received Attributs " + s+ " with non-applicable Atttibut List " + nonAppAttribut);
+								logger.info("AttributName of received Attributs is now: " + s);
 								logger.warn("################## Test failed ###################### ");
 								
 							}
