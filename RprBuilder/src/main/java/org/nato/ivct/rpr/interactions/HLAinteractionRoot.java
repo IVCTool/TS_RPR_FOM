@@ -20,6 +20,7 @@ import org.nato.ivct.rpr.RprBuilderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import hla.rti1516e.ParameterHandle;
 import hla.rti1516e.ParameterHandleValueMap;
@@ -30,6 +31,7 @@ import hla.rti1516e.exceptions.InteractionClassNotDefined;
 import hla.rti1516e.exceptions.InteractionClassNotPublished;
 import hla.rti1516e.exceptions.InteractionParameterNotDefined;
 import hla.rti1516e.exceptions.InvalidInteractionClassHandle;
+import hla.rti1516e.exceptions.InvalidParameterHandle;
 import hla.rti1516e.exceptions.NameNotFound;
 import hla.rti1516e.exceptions.NotConnected;
 import hla.rti1516e.exceptions.RTIinternalError;
@@ -85,17 +87,52 @@ public class HLAinteractionRoot extends HLAroot {
         OmtBuilder.getRtiAmbassador().publishInteractionClass(interactionClassHandle);
     }
 
-    public ParameterHandle getParameterHandle(String name) throws NameNotFound, InvalidInteractionClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, RprBuilderException {
+    public ParameterHandle getParameterHandle(String name) {
         ParameterHandle handle = knownParameterHandles.get(name);
         if (handle == null) {
-            handle = OmtBuilder.getRtiAmbassador().getParameterHandle(interactionClassHandle, name);
+            try {
+                handle = OmtBuilder.getRtiAmbassador().getParameterHandle(interactionClassHandle, name);
+            } catch (NameNotFound | InvalidInteractionClassHandle | FederateNotExecutionMember | NotConnected
+                    | RTIinternalError | RprBuilderException e) {
+                log.error("Parameter name not found", e);
+            }
+            knownParameterHandles.put(name,handle);
         }
         return handle;
     }
-    
-    public String getHlaClassName() {
-        return getHlaClassName("HLAinteractionRoot");
+
+
+    /**
+     * Helper function to get the name of a cached attribute handle. If handle is unknown, a null string is returned.
+     * 
+     * @param handle
+     * @return
+     */
+    protected String getHandleString(ParameterHandle handle) {
+        for (Entry<String, ParameterHandle> entry : knownParameterHandles.entrySet()) {
+            if (handle.equals(entry.getValue())) {
+                return entry.getKey();
+            }
+        }
+        try {
+            String handleName = OmtBuilder.getRtiAmbassador().getParameterName(interactionClassHandle, handle);
+            knownParameterHandles.put(handleName, handle);
+            return handleName;
+        } catch (InteractionParameterNotDefined | InvalidParameterHandle | InvalidInteractionClassHandle
+                | FederateNotExecutionMember | NotConnected | RTIinternalError | RprBuilderException e) {
+            log.error("ParameterHandle not found", e);
+        }
+        return null;
     }
 
+    
+    /**
+     * Get class name in HLA-style as full path with '.' separators. 
+     * 
+     * @return
+     */
+    public String getHlaClassName() {
+        return getHlaClassName("HLAinteractionRoot");
+    }    
 
 }
