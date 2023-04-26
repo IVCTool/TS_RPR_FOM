@@ -14,8 +14,39 @@ limitations under the License. */
 
 package org.nato.ivct.rpr;
 
+import java.util.HashMap;
+import java.util.Map.Entry;
+
+import hla.rti1516e.AttributeHandleValueMap;
+import hla.rti1516e.encoding.DataElement;
+import hla.rti1516e.encoding.DecoderException;
+import hla.rti1516e.exceptions.FederateNotExecutionMember;
+import hla.rti1516e.exceptions.InvalidObjectClassHandle;
+import hla.rti1516e.exceptions.NameNotFound;
+import hla.rti1516e.exceptions.NotConnected;
+import hla.rti1516e.exceptions.RTIinternalError;
+
 
 public class HLAroot {
+
+    // reference object to manage common class specific settings
+    private static HLAroot anchor;
+
+    private HashMap<String, DataElement> attributeMap = new HashMap<>();
+    public void addAttribute (String name, DataElement data) {
+        attributeMap.put(name, data);
+    }
+    public DataElement getAttribute (String name) {
+        return attributeMap.get(name);
+    }
+    public void decode(AttributeHandleValueMap theAttributes) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, DecoderException {
+        for (Entry<String, DataElement> entry: attributeMap.entrySet()) {
+            entry.getKey();
+            entry.getValue();
+        }
+    }
+
+
 
     /**
      * Get class name in HLA-style as full path with '.' separators. 

@@ -32,6 +32,7 @@ import hla.rti1516e.ObjectClassHandle;
 import hla.rti1516e.ObjectInstanceHandle;
 import hla.rti1516e.RTIambassador;
 import hla.rti1516e.RtiFactoryFactory;
+import hla.rti1516e.encoding.ByteWrapper;
 import hla.rti1516e.encoding.DataElement;
 import hla.rti1516e.encoding.DecoderException;
 import hla.rti1516e.encoding.EncoderException;
@@ -39,6 +40,7 @@ import hla.rti1516e.encoding.EncoderFactory;
 import hla.rti1516e.exceptions.AttributeNotDefined;
 import hla.rti1516e.exceptions.AttributeNotOwned;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
+import hla.rti1516e.exceptions.InvalidAttributeHandle;
 import hla.rti1516e.exceptions.InvalidObjectClassHandle;
 import hla.rti1516e.exceptions.NameNotFound;
 import hla.rti1516e.exceptions.NotConnected;
@@ -104,8 +106,16 @@ public class HLAobjectRoot extends HLAroot {
         attributeValues.clear();
     }
 
+    public AttributeHandleValueMap getAttributeValues() {
+        return attributeValues;
+    }
+
     public void decode(AttributeHandleValueMap theAttributes) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, DecoderException {
-        log.error("HLAobjectRoot has no attributes to decode");
+        // log.error("HLAobjectRoot has no attributes to decode");
+        for (Entry<AttributeHandle, byte[]> entry : theAttributes.entrySet()) {
+            AttributeHandle attributeHandle = entry.getKey();
+            attributeValues.put(attributeHandle, entry.getValue());
+        }
     }
 
     protected void addPubAttribute (String attributeName) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
@@ -142,7 +152,6 @@ public class HLAobjectRoot extends HLAroot {
         }
         return attr;        
     }
-    
     
     protected void setAttributeValue(String attributeName, DataElement value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         attributeValues.put(getAttributeHandle(attributeName), value.toByteArray());

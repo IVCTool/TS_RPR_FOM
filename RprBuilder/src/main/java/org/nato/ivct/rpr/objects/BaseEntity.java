@@ -58,6 +58,7 @@ public class BaseEntity extends HLAobjectRoot {
     }
     
     public void decode(AttributeHandleValueMap theAttributes) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, DecoderException {
+        super.decode(theAttributes);
         for (Entry<AttributeHandle, byte[]> entry : theAttributes.entrySet()) {
             AttributeHandle attributeHandle = entry.getKey();
             Attributes attribute = Attributes.valueOf(getHandleString(attributeHandle));
