@@ -19,17 +19,17 @@ import java.util.HashMap;
 
 import org.nato.ivct.rpr.OmtBuilder;
 import org.nato.ivct.rpr.RprBuilderException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import hla.rti1516e.AttributeHandle;
 import hla.rti1516e.AttributeHandleValueMap;
-import hla.rti1516e.FederateHandle;
 import hla.rti1516e.FederateHandleFactory;
 import hla.rti1516e.ObjectClassHandle;
 import hla.rti1516e.ObjectInstanceHandle;
 import hla.rti1516e.encoding.DecoderException;
 import hla.rti1516e.encoding.HLAunicodeString;
 import hla.rti1516e.exceptions.AttributeNotDefined;
-import hla.rti1516e.exceptions.CouldNotDecode;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
 import hla.rti1516e.exceptions.InvalidObjectClassHandle;
 import hla.rti1516e.exceptions.NameNotFound;
@@ -40,40 +40,27 @@ import hla.rti1516e.exceptions.RestoreInProgress;
 import hla.rti1516e.exceptions.SaveInProgress;
 
 /**
- * This object class shall contain RTI state variables relating to a joined
- * federate. The RTI
- * shall publish it and shall register one object instance for each joined
- * federate in a federation.
- * Dynamic attributes that shall be contained in an object instance shall be
- * updated periodically, where
- * the period should be determined by an interaction of the class
- * HLAmanager.HLAfederate.HLAadjust.HLAsetTiming. If this value is never set or
- * is set to zero, no
- * periodic update shall be performed by the RTI.
+ * This object class shall contain RTI state variables relating to a joined federate. 
+ * The RTI shall publish it and shall register one object instance for each joined 
+ * federate in a federation. Dynamic attributes that shall be contained in an object 
+ * instance shall be updated periodically, where the period should be determined by an 
+ * interaction of the class HLAmanager.HLAfederate.HLAadjust.HLAsetTiming. If this 
+ * value is never set or is set to zero, no periodic update shall be performed by the RTI.
  * 
- * The RTI shall respond to the invocation, by any federate, of the Request
- * Attribute Value Update
- * service for this object class or for any instance attribute of an object
- * instance of this class by
- * supplying values via the normal instance attribute update mechanism,
- * regardless of whether the
- * attribute has a data type of static, periodic, or conditional. In addition to
- * its responsibility to
- * update attributes of object instances of this class when those updates are
- * explicitly requested, the
- * RTI shall automatically update instance attributes of object instances of
- * this class according to the
- * update policy of the attribute, which is determined by the update type of the
- * class attribute in Table
- * 6. For those attributes that have an update type of Periodic, the update
- * wall-clock time interval
- * shall be determined by the HLAreportPeriod parameter in an interaction of
- * classHLAmanager.HLAfederate.
- * HLAadjust.HLAsetTiming. If this value is never set or is set to zero, no
- * periodic updates shall be
- * performed by the RTI. Those attributes that have an update type of
- * Conditional shall have update
- * conditions as defined in the Table 6.
+ * The RTI shall respond to the invocation, by any federate, of the Request Attribute Value 
+ * Update service for this object class or for any instance attribute of an object
+ * instance of this class by supplying values via the normal instance attribute update mechanism,
+ * regardless of whether the attribute has a data type of static, periodic, or conditional. 
+ * In addition to its responsibility to update attributes of object instances of this class 
+ * when those updates are explicitly requested, the RTI shall automatically update instance 
+ * attributes of object instances of this class according to the update policy of the attribute, 
+ * which is determined by the update type of the class attribute in Table 6. 
+ * 
+ * For those attributes that have an update type of Periodic, the update wall-clock time interval
+ * shall be determined by the HLAreportPeriod parameter in an interaction of class 
+ * HLAmanager.HLAfederate.HLAadjust.HLAsetTiming. If this value is never set or is set to zero, no
+ * periodic updates shall be performed by the RTI. Those attributes that have an update type of
+ * Conditional shall have update conditions as defined in the Table 6.
  */
 public class HLAfederate extends HLAmanager {
 
@@ -112,11 +99,12 @@ public class HLAfederate extends HLAmanager {
         HLAconveyProducingFederate
     }
 
+    private static final Logger log = LoggerFactory.getLogger(HLAfederate.class);
     private static HLAfederate anchor;
     public static HashMap<ObjectInstanceHandle, HLAfederate> knownObjects = new HashMap<>();
 
-    private FederateHandleFactory  aHLAfederateHandleFactory;
-    private byte[]  aHLAfederateHandle;
+    private FederateHandleFactory aHLAfederateHandleFactory;
+    private byte[] aHLAfederateHandle;
     private HLAunicodeString aHLAfederateName;
     private HLAunicodeString aHLAfederateType;
     private HLAunicodeString aHLAfederateHost;
@@ -154,7 +142,7 @@ public class HLAfederate extends HLAmanager {
         aHLAfederateName = OmtBuilder.getEncoderFactory().createHLAunicodeString();
         aHLAfederateType = OmtBuilder.getEncoderFactory().createHLAunicodeString();
         aHLAfederateHost = OmtBuilder.getEncoderFactory().createHLAunicodeString();
-        aHLARTIversion = OmtBuilder.getEncoderFactory().createHLAunicodeString();    
+        aHLARTIversion = OmtBuilder.getEncoderFactory().createHLAunicodeString();
     }
 
     public void decode(AttributeHandleValueMap theAttributes) throws DecoderException {
@@ -163,11 +151,12 @@ public class HLAfederate extends HLAmanager {
             Attributes attribute = Attributes.valueOf(getHandleString(attributeHandle));
             switch (attribute) {
                 case HLAfederateHandle:
-                    aHLAfederateHandle = theAttributes.get(entry.getKey());
+                    // aHLAfederateHandle = theAttributes.get(entry.getKey());
+                    aHLAfederateHandle = entry.getValue();
                     break;
                 case HLAfederateName:
                     aHLAfederateName.decode(entry.getValue());
-                break;
+                    break;
                 case HLAfederateType:
                     aHLAfederateType.decode(entry.getValue());
                     break;
@@ -177,6 +166,8 @@ public class HLAfederate extends HLAmanager {
                 case HLARTIversion:
                     aHLARTIversion.decode(entry.getValue());
                     break;
+                default:
+                    log.warn("Attribute {} not implemented", attribute);
             }
         }
     }

@@ -77,3 +77,6 @@ BaseEntity recvEntity = new BaseEntity();
 recvEntity.decode(theAttributes);
 short n = recvEntity.getEntityIdentifier().getEntityNumber();
 ```
+
+> Please not that the _subscribeEntityType_ method is currently defined as a instance method, and not as a class method. This is because in Java class methods (static methods) can not be overwritten by inherited methods. Or in other words, static methods are not polymorphic. However, the published attributes are inherited on several levels and the helper functions need work on all inheritance layers. 
+

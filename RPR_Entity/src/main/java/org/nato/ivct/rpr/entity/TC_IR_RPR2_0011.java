@@ -15,7 +15,6 @@ limitations under the License. */
 package org.nato.ivct.rpr.entity;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.Semaphore;
 
@@ -53,6 +52,7 @@ import hla.rti1516e.exceptions.CouldNotOpenFDD;
 import hla.rti1516e.exceptions.ErrorReadingFDD;
 import hla.rti1516e.exceptions.FederateAlreadyExecutionMember;
 import hla.rti1516e.exceptions.FederateInternalError;
+import hla.rti1516e.exceptions.FederateIsExecutionMember;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
 import hla.rti1516e.exceptions.FederateOwnsAttributes;
 import hla.rti1516e.exceptions.FederationExecutionAlreadyExists;
@@ -85,7 +85,7 @@ public class TC_IR_RPR2_0011 extends AbstractTestCaseIf {
     Semaphore receivedEntityIdentifier = new Semaphore(0);
     Semaphore receivedEntityType = new Semaphore(0);
     Semaphore receivedSpatial = new Semaphore(0);
-    HashMap<ObjectInstanceHandle, PhysicalEntity> knownPhysicalEntitys = new HashMap<>();
+    HashMap<ObjectInstanceHandle, PhysicalEntity> knownPhysicalEntities = new HashMap<>();
     HashMap<ObjectInstanceHandle, BaseEntity> knownEntities = new HashMap<>();
     PhysicalEntity phyEntity;
     BaseEntity entity;
@@ -105,7 +105,7 @@ public class TC_IR_RPR2_0011 extends AbstractTestCaseIf {
                     // create the helper object
                     PhysicalEntity obj = new PhysicalEntity();
                     obj.setObjectHandle(theObject);
-                    knownPhysicalEntitys.put(theObject, obj);
+                    knownPhysicalEntities.put(theObject, obj);
                     physicalEntityDiscovered.release(1);
                 } else if (receivedClass.equals(entity.getHlaClassName())) {
                     BaseEntity newEntity = new BaseEntity();
@@ -137,6 +137,12 @@ public class TC_IR_RPR2_0011 extends AbstractTestCaseIf {
 		}
 
         @Override
+        public void attributeIsNotOwned(ObjectInstanceHandle arg0, AttributeHandle arg1) throws FederateInternalError {
+            // TODO Auto-generated method stub
+            super.attributeIsNotOwned(arg0, arg1);
+        }
+
+        @Override
         public void reflectAttributeValues(ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes,
                 byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport,
                 LogicalTime theTime, OrderType receivedOrdering, MessageRetractionHandle retractionHandle,
@@ -159,7 +165,7 @@ public class TC_IR_RPR2_0011 extends AbstractTestCaseIf {
                 byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport,
                 SupplementalReflectInfo reflectInfo) throws FederateInternalError {
             logger.trace("reflectAttributeValues without time");
-            PhysicalEntity phyEntity = knownPhysicalEntitys.get(theObject);
+            PhysicalEntity phyEntity = knownPhysicalEntities.get(theObject);
             if (phyEntity != null) {
                 phyEntity.clear();
                 try {
@@ -216,9 +222,9 @@ public class TC_IR_RPR2_0011 extends AbstractTestCaseIf {
     
 	private boolean testSutHandle(FederateHandle theFederate, ObjectInstanceHandle theObject) {
 		try {
-			PhysicalEntity phyEntity = knownPhysicalEntitys.get(theObject);
+			PhysicalEntity phyEntity = knownPhysicalEntities.get(theObject);
 			sutHandle = rtiAmbassador.getFederateHandle(getSutFederateName());
-			if ((sutHandle == theFederate) &&  (phyEntity != null)){
+			if ((sutHandle.equals(theFederate)) &&  (phyEntity != null)){
 				phyEntityFromSutFound = true;
 				physicalEntityDiscovered.release(1);
 				return true;
@@ -247,19 +253,19 @@ public class TC_IR_RPR2_0011 extends AbstractTestCaseIf {
             rtiFactory = RtiFactoryFactory.getRtiFactory();
             rtiAmbassador = rtiFactory.getRtiAmbassador();
             tcAmbassador = new TestCaseAmbassador();
-            ArrayList<URL> fomList = new FomFiles()
-                .addRPR_BASE()
-                .addRPR_Enumerations()
-                .addRPR_Foundation()
-                .addRPR_Physical()
-                .addRPR_Switches()
-                .get();
+            URL[] fomList = new FomFiles()
+                .addTmpRPR_BASE()
+                .addTmpRPR_Enumerations()
+                .addTmpRPR_Foundation()
+                .addTmpRPR_Physical()
+                .addTmpRPR_Switches()
+                .getArray();
             
             rtiAmbassador.connect(tcAmbassador, CallbackModel.HLA_IMMEDIATE);
             try {
-                rtiAmbassador.createFederationExecution(federationName, fomList.toArray(new URL[fomList.size()]));
+                rtiAmbassador.createFederationExecution(federationName, fomList);
             } catch (FederationExecutionAlreadyExists ignored) { }
-            rtiAmbassador.joinFederationExecution(this.getClass().getSimpleName(), federationName, fomList.toArray(new URL[fomList.size()]));
+            rtiAmbassador.joinFederationExecution(this.getClass().getSimpleName(), federationName, fomList);
         } catch (RTIinternalError | ConnectionFailed | InvalidLocalSettingsDesignator | UnsupportedCallbackModel 
                 | AlreadyConnected | CallNotAllowedFromWithinCallback | CouldNotCreateLogicalTimeFactory 
                 | FederationExecutionDoesNotExist | InconsistentFDD | ErrorReadingFDD | CouldNotOpenFDD 
@@ -285,13 +291,13 @@ public class TC_IR_RPR2_0011 extends AbstractTestCaseIf {
 			// wait until physical entity object is discovered and check if SuT owns it
             while (!phyEntityFromSutFound) {
 				physicalEntityDiscovered.acquire();
-				for (PhysicalEntity aPhysicalEntity : knownPhysicalEntitys.values()) {
+				for (PhysicalEntity aPhysicalEntity : knownPhysicalEntities.values()) {
 					ObjectInstanceHandle objectHandle = aPhysicalEntity.getObjectHandle();
 					AttributeHandle entityIdentifierHandle = aPhysicalEntity.getAttributeHandle(BaseEntity.Attributes.EntityIdentifier.name());
 					rtiAmbassador.queryAttributeOwnership(objectHandle, entityIdentifierHandle);
 				}
             }
-            for (PhysicalEntity phyEnt : knownPhysicalEntitys.values()) {
+            for (PhysicalEntity phyEnt : knownPhysicalEntities.values()) {
                 logger.trace("received entity identifier {}({}): EntityNumber={}, FederateIdentifier[SiteID={}, ApplicationID={}]",
                     phyEnt.getHlaClassName(), phyEnt.getObjectHandle(), 
                     phyEnt.getEntityIdentifier().getEntityNumber(),
@@ -319,8 +325,9 @@ public class TC_IR_RPR2_0011 extends AbstractTestCaseIf {
         logger.info("postamble action for test {}", this.getClass().getName());
         try {
             rtiAmbassador.resignFederationExecution(ResignAction.NO_ACTION);
+			rtiAmbassador.disconnect();
         } catch (InvalidResignAction | OwnershipAcquisitionPending | FederateOwnsAttributes | FederateNotExecutionMember
-                | NotConnected | CallNotAllowedFromWithinCallback | RTIinternalError e) {
+                | NotConnected | CallNotAllowedFromWithinCallback | RTIinternalError | FederateIsExecutionMember e) {
             throw new TcInconclusiveIf(e.getMessage());
         }
     }

@@ -21,12 +21,9 @@ import hla.rti1516e.NullFederateAmbassador;
 import hla.rti1516e.RTIambassador;
 import hla.rti1516e.RtiFactory;
 import hla.rti1516e.RtiFactoryFactory;
-import hla.rti1516e.encoding.DataElement;
-import hla.rti1516e.encoding.EncoderFactory;
-import hla.rti1516e.encoding.HLAboolean;
 import hla.rti1516e.exceptions.FederationExecutionAlreadyExists;
+
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.slf4j.LoggerFactory;
@@ -41,7 +38,6 @@ import org.nato.ivct.rpr.objects.HLAobjectRoot;
 import org.nato.ivct.rpr.objects.Munition;
 import org.nato.ivct.rpr.objects.BaseEntity;
 import org.nato.ivct.rpr.objects.PhysicalEntity;
-import org.nato.ivct.rpr.objects.PhysicalEntity.Attributes;
 
 public class AircraftApp extends NullFederateAmbassador {
     
@@ -69,7 +65,8 @@ public class AircraftApp extends NullFederateAmbassador {
 	private boolean provoke(CmdLineOptions optionId) { return options.get(optionId).enabled; }
     private String rtiHost = "localhost";
 	private String federationName = "TestFederation";
-	private String federateName = "RefFedAircraft";
+	private String federateName = "Aircraft";
+	private String federateType = "RefFed";
 	private int nrOfCycles = 4000;
 	private RTIambassador rtiAmbassador;
 	private FederateHandle fedHandle;
@@ -151,19 +148,22 @@ public class AircraftApp extends NullFederateAmbassador {
 			RtiFactory rtiFactory = RtiFactoryFactory.getRtiFactory();
 			rtiAmbassador = rtiFactory.getRtiAmbassador();
 			FederateAmbassador nullAmbassador = new NullFederateAmbassador();
-			ArrayList<URL> fomList = new FomFiles()
-				.addRPR_BASE()
-				.addRPR_Enumerations()
-				.addRPR_Foundation()
-				.addRPR_Physical()
-				.addRPR_Switches()
-				.addRPR_Warfare()
-				.get();
+			
+			// That should be the normal normal loading procedure
+			URL[] fomList = new FomFiles()
+				.addTmpRPR_BASE()
+				.addTmpRPR_Switches()
+				.addTmpRPR_Enumerations()
+				.addTmpRPR_Foundation()
+				.addTmpRPR_Warfare()
+				.addTmpRPR_Physical()
+				.getArray();
+
 			rtiAmbassador.connect(nullAmbassador, CallbackModel.HLA_IMMEDIATE);
 			try {
-				rtiAmbassador.createFederationExecution(this.federationName, fomList.toArray(new URL[fomList.size()]));
+				rtiAmbassador.createFederationExecution(this.federationName, fomList);
 			} catch (FederationExecutionAlreadyExists ignored) { }
-			fedHandle = rtiAmbassador.joinFederationExecution(this.federateName, this.federationName, fomList.toArray(new URL[fomList.size()]));
+			fedHandle = rtiAmbassador.joinFederationExecution(this.federateName, this.federateType, this.federationName, fomList);
 
             HLAobjectRoot.initialize(rtiAmbassador);
             Aircraft aircraft = new Aircraft();

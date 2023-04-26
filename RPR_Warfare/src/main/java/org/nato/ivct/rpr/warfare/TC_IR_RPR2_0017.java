@@ -16,7 +16,6 @@ limitations under the License. */
 package org.nato.ivct.rpr.warfare;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.Semaphore;
 
@@ -49,6 +48,7 @@ import hla.rti1516e.exceptions.CouldNotOpenFDD;
 import hla.rti1516e.exceptions.ErrorReadingFDD;
 import hla.rti1516e.exceptions.FederateAlreadyExecutionMember;
 import hla.rti1516e.exceptions.FederateInternalError;
+import hla.rti1516e.exceptions.FederateIsExecutionMember;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
 import hla.rti1516e.exceptions.FederateOwnsAttributes;
 import hla.rti1516e.exceptions.FederationExecutionAlreadyExists;
@@ -128,7 +128,7 @@ public class TC_IR_RPR2_0017 extends AbstractTestCaseIf {
 		try {
 			Munition aMunition = knownMunitionEntities.get(theObject);
 			sutHandle = rtiAmbassador.getFederateHandle(getSutFederateName());
-			if ((sutHandle == theFederate) &&  (aMunition != null)){
+			if ((sutHandle.equals(theFederate)) &&  (aMunition != null)){
 				munitionFromSutFound = true;
 				munitionDiscovered.release(1);
 				return true;
@@ -157,20 +157,20 @@ public class TC_IR_RPR2_0017 extends AbstractTestCaseIf {
 			rtiFactory = RtiFactoryFactory.getRtiFactory();
 			rtiAmbassador = rtiFactory.getRtiAmbassador();
 			tcAmbassador = new TestCaseAmbassador();
-			ArrayList<URL> fomList = new FomFiles()
-            .addRPR_BASE()
-            .addRPR_Enumerations()
-            .addRPR_Foundation()
-            .addRPR_Physical()
-            .addRPR_Switches()
-            .addRPR_Warfare()
-            .get();
+			URL[] fomList = new FomFiles()
+            .addTmpRPR_BASE()
+            .addTmpRPR_Enumerations()
+            .addTmpRPR_Foundation()
+            .addTmpRPR_Physical()
+            .addTmpRPR_Switches()
+            .addTmpRPR_Warfare()
+            .getArray();
 			
 			rtiAmbassador.connect(tcAmbassador, CallbackModel.HLA_IMMEDIATE);
 			try {
-				rtiAmbassador.createFederationExecution(federationName, fomList.toArray(new URL[fomList.size()]));
+				rtiAmbassador.createFederationExecution(federationName, fomList);
 			} catch (FederationExecutionAlreadyExists ignored) { }
-			rtiAmbassador.joinFederationExecution(this.getClass().getSimpleName(), federationName, fomList.toArray(new URL[fomList.size()]));
+			rtiAmbassador.joinFederationExecution(this.getClass().getSimpleName(), federationName, fomList);
 		} catch (RTIinternalError | ConnectionFailed | InvalidLocalSettingsDesignator | UnsupportedCallbackModel 
 				| AlreadyConnected | CallNotAllowedFromWithinCallback | CouldNotCreateLogicalTimeFactory 
 				| FederationExecutionDoesNotExist | InconsistentFDD | ErrorReadingFDD | CouldNotOpenFDD 
@@ -228,10 +228,11 @@ public class TC_IR_RPR2_0017 extends AbstractTestCaseIf {
         logger.info("postamble action for test {}", this.getClass().getName());
         try {
             rtiAmbassador.resignFederationExecution(ResignAction.NO_ACTION);
+			rtiAmbassador.disconnect();
         } catch (InvalidResignAction | OwnershipAcquisitionPending | FederateOwnsAttributes | FederateNotExecutionMember
-                | NotConnected | CallNotAllowedFromWithinCallback | RTIinternalError e) {
+                | NotConnected | CallNotAllowedFromWithinCallback | RTIinternalError | FederateIsExecutionMember e) {
             throw new TcInconclusiveIf(e.getMessage());
-        }		
+		}		
 	}
 
 }

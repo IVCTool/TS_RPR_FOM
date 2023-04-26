@@ -19,6 +19,7 @@ package org.nato.ivct.rpr.objects;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import org.nato.ivct.rpr.HLAroot;
 import org.nato.ivct.rpr.OmtBuilder;
 import org.nato.ivct.rpr.RprBuilderException;
 import org.slf4j.Logger;
@@ -31,6 +32,7 @@ import hla.rti1516e.ObjectClassHandle;
 import hla.rti1516e.ObjectInstanceHandle;
 import hla.rti1516e.RTIambassador;
 import hla.rti1516e.RtiFactoryFactory;
+import hla.rti1516e.encoding.ByteWrapper;
 import hla.rti1516e.encoding.DataElement;
 import hla.rti1516e.encoding.DecoderException;
 import hla.rti1516e.encoding.EncoderException;
@@ -38,6 +40,7 @@ import hla.rti1516e.encoding.EncoderFactory;
 import hla.rti1516e.exceptions.AttributeNotDefined;
 import hla.rti1516e.exceptions.AttributeNotOwned;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
+import hla.rti1516e.exceptions.InvalidAttributeHandle;
 import hla.rti1516e.exceptions.InvalidObjectClassHandle;
 import hla.rti1516e.exceptions.NameNotFound;
 import hla.rti1516e.exceptions.NotConnected;
@@ -55,7 +58,7 @@ import hla.rti1516e.exceptions.SaveInProgress;
  * attributes. The class need to be initialized with an RTIambassador, before
  * any services can be used.
  */
-public class HLAobjectRoot {
+public class HLAobjectRoot extends HLAroot {
 
     private static final Logger log = LoggerFactory.getLogger(HLAobjectRoot.class);
     private static RTIambassador rtiAmbassador;
@@ -103,8 +106,16 @@ public class HLAobjectRoot {
         attributeValues.clear();
     }
 
+    public AttributeHandleValueMap getAttributeValues() {
+        return attributeValues;
+    }
+
     public void decode(AttributeHandleValueMap theAttributes) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, DecoderException {
-        log.error("HLAobjectRoot has no attributes to decode");
+        // log.error("HLAobjectRoot has no attributes to decode");
+        for (Entry<AttributeHandle, byte[]> entry : theAttributes.entrySet()) {
+            AttributeHandle attributeHandle = entry.getKey();
+            attributeValues.put(attributeHandle, entry.getValue());
+        }
     }
 
     protected void addPubAttribute (String attributeName) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
@@ -141,7 +152,6 @@ public class HLAobjectRoot {
         }
         return attr;        
     }
-    
     
     protected void setAttributeValue(String attributeName, DataElement value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         attributeValues.put(getAttributeHandle(attributeName), value.toByteArray());
@@ -180,23 +190,7 @@ public class HLAobjectRoot {
      * @return
      */
     public String getHlaClassName() {
-        String hlaClassName = null;
-        if (this.getClass() == HLAobjectRoot.class) {
-            hlaClassName = "HLAobjectRoot";
-        } else {
-            Class cls = this.getClass();
-            do {
-                if (hlaClassName == null) {
-                    hlaClassName = cls.getSimpleName();
-                } else {
-                    hlaClassName = cls.getSimpleName() + "." + hlaClassName;
-                }
-                cls = cls.getSuperclass();
-            }
-            while (cls != HLAobjectRoot.class);
-            hlaClassName = cls.getSimpleName() + "." + hlaClassName;
-        }
-        return hlaClassName;
+        return getHlaClassName("HLAobjectRoot");
     }
 
     /**

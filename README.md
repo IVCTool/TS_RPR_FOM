@@ -36,11 +36,11 @@ In order to demonstrate and verify the interoperability test cases, a *System un
 
 The *Aircraft* federate can be build and started with the gradle build command:
 
-> .\gradlew :RefFedAircraft:run --args="-provokeFlyAircraft"
+> .\gradlew :RefFedAircraft:run --args="-provokeFlyAircraft -federateName Flyer1"
 
 ## IVCT Compliance
 
-The current test suite design uses the ServiceLoader interface feature of the IVCT framework. This is only available in the latest snapshot releases and not yet included in the production release. 
+The current test suite design uses the ServiceLoader interface feature of the IVCT framework. This is only available in the latest snapshot releases and not yet included in the production release. The current version requires Java 9 or higher. 
 
 
 ## LICENSE

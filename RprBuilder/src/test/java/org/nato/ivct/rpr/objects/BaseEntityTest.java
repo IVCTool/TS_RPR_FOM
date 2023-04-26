@@ -14,8 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import java.net.URL;
-import java.util.ArrayList;
 import hla.rti1516e.AttributeHandle;
+import hla.rti1516e.AttributeHandleValueMap;
 import hla.rti1516e.CallbackModel;
 import hla.rti1516e.FederateAmbassador;
 import hla.rti1516e.NullFederateAmbassador;
@@ -57,17 +57,17 @@ public class BaseEntityTest {
         RtiFactory rtiFactory = RtiFactoryFactory.getRtiFactory();
         rtiAmbassador = rtiFactory.getRtiAmbassador();
         FederateAmbassador nullAmbassador = new NullFederateAmbassador();
-        ArrayList<URL> fomList = new FomFiles()
-            .addRPR_BASE()
-            .addRPR_Enumerations()
-            .addRPR_Foundation()
-            .addRPR_Physical()
-            .addRPR_Switches()
-            .get();
+        URL[] fomList = new FomFiles()
+            .addTmpRPR_BASE()
+            .addTmpRPR_Enumerations()
+            .addTmpRPR_Foundation()
+            .addTmpRPR_Physical()
+            .addTmpRPR_Switches()
+            .getArray();
 
         rtiAmbassador.connect(nullAmbassador, CallbackModel.HLA_IMMEDIATE);
         try {
-            rtiAmbassador.createFederationExecution("TestFederation", fomList.toArray(new URL[fomList.size()]));
+            rtiAmbassador.createFederationExecution("TestFederation", fomList);
         } catch (FederationExecutionAlreadyExists ignored) { }
         rtiAmbassador.joinFederationExecution("BaseEntityTest", "UnitTest", "TestFederation");
         HLAobjectRoot.initialize(rtiAmbassador);
@@ -185,7 +185,20 @@ public class BaseEntityTest {
             assertTrue(ex == 0xf);
             
             base1.setEntityType(aEntityType);
-            base1.update();            
+            base1.update();
+            
+            AttributeHandleValueMap values = base1.getAttributeValues();
+
+            BaseEntity base2 = new BaseEntity();
+            base2.decode(values);
+            assertTrue(base2.getEntityType().getEntityKind() == 0xa);
+            assertTrue(base2.getEntityType().getDomain() == 0xb);
+            assertTrue(base2.getEntityType().getCountryCode() == (short)3);
+            assertTrue(base2.getEntityType().getCategory() == 0xc);
+            assertTrue(base2.getEntityType().getSubcategory() == 0xd);
+            assertTrue(base2.getEntityType().getSpecific() == 0xe);
+            assertTrue(base2.getEntityType().getExtra() == 0xf);
+
         } catch (Exception e) {
             fail(e.getMessage());
         }
