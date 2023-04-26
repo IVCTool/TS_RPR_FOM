@@ -16,8 +16,21 @@
 
  package org.nato.ivct.rpr.objects;
 
-import org.nato.ivct.rpr.RprBuilderException;
+import java.util.Map.Entry;
 
+import org.nato.ivct.rpr.RprBuilderException;
+import org.nato.ivct.rpr.datatypes.EntityIdentifierStruct;
+import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
+import org.nato.ivct.rpr.datatypes.SpatialVariantStruct;
+import org.nato.ivct.rpr.datatypes.SpatialRVStruct.AttributeName;
+import org.nato.ivct.rpr.objects.BaseEntity.Attributes;
+
+import hla.rti1516e.AttributeHandle;
+import hla.rti1516e.AttributeHandleValueMap;
+import hla.rti1516e.encoding.DataElement;
+import hla.rti1516e.encoding.DecoderException;
+import hla.rti1516e.encoding.EncoderException;
+import hla.rti1516e.encoding.HLAboolean;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
 import hla.rti1516e.exceptions.InvalidObjectClassHandle;
 import hla.rti1516e.exceptions.NameNotFound;
@@ -25,7 +38,7 @@ import hla.rti1516e.exceptions.NotConnected;
 import hla.rti1516e.exceptions.RTIinternalError;
 
 public class PhysicalEntity extends BaseEntity {
-
+	
     public enum Attributes {
         AcousticSignatureIndex,
         AlternateEntityType,
@@ -54,11 +67,32 @@ public class PhysicalEntity extends BaseEntity {
         VectoringNozzleSystemData        
     }
 
+    
+    
     // TODO: create fields
     
+    // added by brf    
+    //private PhysicalEntityStruct aFirePowerDisabledStr = null;                 
+    //private PhysicalEntityStruct aIsConcealedStr = null;
+    //private PhysicalEntityStruct aTentDeployedStr = null ;
+    private HLAboolean aEngineSmokeOn = null;
+    private HLAboolean aFirePowerDisabled = null;
+    private HLAboolean aFlamesPresent= null;
+    private HLAboolean aIsConcealed = null;
+    private HLAboolean aTentDeployed = null;
+    //------------
+    
+    //modified by brf
     public PhysicalEntity() throws RprBuilderException {
         super();
+        aEngineSmokeOn = encoderFactory.createHLAboolean();
+        aFirePowerDisabled = encoderFactory.createHLAboolean();
+        aFlamesPresent = encoderFactory.createHLAboolean();
+        aIsConcealed = encoderFactory.createHLAboolean();
+        aTentDeployed = encoderFactory.createHLAboolean();
     }
+    
+    
 
     public void addSubscribe(Attributes attribute) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
         addSubAttribute(attribute.name());
@@ -67,9 +101,95 @@ public class PhysicalEntity extends BaseEntity {
         addPubAttribute(attribute.name()); 
     }
 
-
-    // TODO: add remaining sub/pub helpers
-
-    // TODO: add attribute setter and getter
+    // added by brf
+    /*   ### we have here to add something like the following,  adapted to this class
+     *  public void decode(AttributeHandleValueMap theAttributes) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, DecoderException {
+        for (Entry<AttributeHandle, byte[]> entry : theAttributes.entrySet()) {
+            AttributeHandle attributeHandle = entry.getKey();
+            Attributes attribute = Attributes.valueOf(getHandleString(attributeHandle));
+            switch (attribute) {
+                case EngineSmokeOn   //++++++++++++++:
+                    aEngineSmokeOn().decode(entry.getValue());
+                    break;
+                case EntityIdentifier:
+                    // hier steht der Struct .decode
+                    getEntityIdentifier().decode(entry.getValue());
+                    break;
+                case IsPartOf:
+                    getIsPartOf().decode(entry.getValue());
+                    break;
+                case Spatial:
+                    getSpatial().decode(entry.getValue());
+                    break;
+                case RelativeSpatial:
+                    getRelativeSpatical().decode(entry.getValue());
+                    break;
+                default:
+                    throw new NameNotFound(attribute.name());
+            }
+        }
+    }
+     */
+    // -------------------
+    
+   
+    
+    // added by brf
+    public void setEngineSmokeOn(boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        aEngineSmokeOn.setValue(value);
+        setAttributeValue(Attributes.EngineSmokeOn.name(), aEngineSmokeOn);
+    }
+    public boolean  getEngineSmokeOn() {
+        return aEngineSmokeOn.getValue();
+    }
+    
+    public void setFirePowerDisabled(boolean value)  throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        aFirePowerDisabled.setValue(value);
+        setAttributeValue(Attributes.FirePowerDisabled.name(), aFirePowerDisabled );
+        
+    }
+    public boolean  getFirePowerDisabled()  {
+        return aFirePowerDisabled.getValue();
+    }
+    
+    public void setFlamesPresent(boolean value)  throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        aFirePowerDisabled.setValue(value);
+        setAttributeValue(Attributes.FlamesPresent.name(), aFlamesPresent);
+    }
+    public boolean  getFlamesPresent() {
+        return aFirePowerDisabled.getValue();
+    }
+    
+    public void setIsConcealed(boolean isConcealed)  throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        aIsConcealed.setValue(isConcealed);
+        setAttributeValue(Attributes.IsConcealed.name(), aIsConcealed);
+    }
+    public boolean  getIsConcealed() {
+        return aIsConcealed.getValue();
+    }    
+    
+    public void setTentDeployed(boolean tentDeployed)  throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        aTentDeployed.setValue(tentDeployed);
+        setAttributeValue(Attributes.TentDeployed.name(), aTentDeployed);
+     }
+    public boolean  getTentDeployed() {
+        return aTentDeployed.getValue();
+        
+    }    
+   
+ 
+    /*
+     *   public void setCamouflageType(boolean tentDeployed) {
+        (( whatever   .....Value(tentDeployed);
+    }
+    public boolean  getCamouflageType() {
+        return ((whatever ......getValue();
+    }
+     
+    */
+    // -------------  end of added by brf
+    
+    
+    
 }
 
