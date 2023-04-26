@@ -202,7 +202,6 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 			// semaphore.release(1);
 			
 			
-			
 			//objectInstanceHandlesAndobjectClassNames
 			
 			try {
@@ -281,8 +280,7 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 		    
 		    logger.info("# reflectAttributeValues:  AttributHandleValueMap \"theAttributes\":  "+ theAttributes);  // Debug
 		    logger.info("# reflectAttributeValues:  the Keys in AttributHandleValueMap  : " + theAttributes.keySet() );  		    
-		 	logger.info("# reflectAttributeValues: Names of received Attributes ");		 
-		 	logger.info("# reflectAttributeValues: Zusammenhang zwischen ObjectInstanceHandle und ObjectClass " +theObjectInstanceH.toString());
+		 	logger.info("# reflectAttributeValues: Names of received Attributes ");
 		 	 
 		 	    // too be changed  temp_objectClassHandle  should not be used
 		 		for ( AttributeHandle a : theAttributes.keySet() ) {
@@ -429,7 +427,7 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 				// the Test ......
 
 				// We can get here the Names of the received Attributes.
-				for (int i = 0; i < 100; i++) {
+				for (int i = 0; i < 10; i++) {
 					logger.info("# performTest: Names of stored Attributes:  "); // Debug
 					logger.info("# performTest: toString of received Attributes gives: " + listOfReceivedAttributNames); // Debug
 					for (String s : listOfReceivedAttributNames) {
@@ -463,12 +461,6 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 						}
 						
 					}
-					
-					
-					
-					
-
-			  //---------------------------------------------------------
 		
 					Thread.sleep(1000);
 				}
