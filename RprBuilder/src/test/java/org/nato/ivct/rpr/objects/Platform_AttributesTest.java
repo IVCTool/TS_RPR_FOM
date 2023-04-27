@@ -2,8 +2,8 @@ package org.nato.ivct.rpr.objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.nato.ivct.rpr.FomFiles;
 import org.nato.ivct.rpr.RprBuilderException;
@@ -53,10 +53,10 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
 public class Platform_AttributesTest {
 
     public static final Logger log = LoggerFactory.getLogger(Platform_AttributesTest.class);
-    RTIambassador rtiAmbassador = null;
+    public static RTIambassador rtiAmbassador = null;
 
-    @BeforeEach
-    void createRtiAmbassador() throws ConnectionFailed, InvalidLocalSettingsDesignator, UnsupportedCallbackModel, AlreadyConnected, CallNotAllowedFromWithinCallback, RTIinternalError, InconsistentFDD, ErrorReadingFDD, CouldNotOpenFDD, NotConnected, CouldNotCreateLogicalTimeFactory, FederationExecutionDoesNotExist, SaveInProgress, RestoreInProgress, FederateAlreadyExecutionMember, FederateNameAlreadyInUse {
+    @BeforeAll
+    static void createRtiAmbassador() throws ConnectionFailed, InvalidLocalSettingsDesignator, UnsupportedCallbackModel, AlreadyConnected, CallNotAllowedFromWithinCallback, RTIinternalError, InconsistentFDD, ErrorReadingFDD, CouldNotOpenFDD, NotConnected, CouldNotCreateLogicalTimeFactory, FederationExecutionDoesNotExist, SaveInProgress, RestoreInProgress, FederateAlreadyExecutionMember, FederateNameAlreadyInUse {
         RtiFactory rtiFactory = RtiFactoryFactory.getRtiFactory();
         rtiAmbassador = rtiFactory.getRtiAmbassador();
         FederateAmbassador nullAmbassador = new NullFederateAmbassador();
@@ -76,8 +76,8 @@ public class Platform_AttributesTest {
         HLAobjectRoot.initialize(rtiAmbassador);
     }
 
-    @AfterEach
-    void leaveFederation() throws InvalidResignAction, OwnershipAcquisitionPending, FederateOwnsAttributes, FederateNotExecutionMember, NotConnected, CallNotAllowedFromWithinCallback, RTIinternalError, FederationExecutionDoesNotExist, FederateIsExecutionMember {
+    @AfterAll
+    static void leaveFederation() throws InvalidResignAction, OwnershipAcquisitionPending, FederateOwnsAttributes, FederateNotExecutionMember, NotConnected, CallNotAllowedFromWithinCallback, RTIinternalError, FederationExecutionDoesNotExist, FederateIsExecutionMember {
         rtiAmbassador.resignFederationExecution(ResignAction.DELETE_OBJECTS);
         try {
             rtiAmbassador.destroyFederationExecution("TestFederation");
@@ -89,8 +89,7 @@ public class Platform_AttributesTest {
 
     
     @Test
-    void testValues() {
-        HLAobjectRoot.initialize(rtiAmbassador);
+    void testAttributeSetterAndGetter() {
         try {
             // create Platform object and set test data
             Platform p1 = new Platform();
@@ -155,4 +154,42 @@ public class Platform_AttributesTest {
             fail(e.getMessage());
         }
     }
+
+    @Test
+    void testMunitionSetterAndGetter() {
+        try {
+            // create Munition object and set test data
+            Munition m1 = new Munition();
+            EntityIdentifierStruct aEntityIdentifier = m1.getEntityIdentifier();
+            aEntityIdentifier.setEntityNumber((short) 1);
+            aEntityIdentifier.getFederateIdentifier().setApplicationID((short) 2);
+            aEntityIdentifier.getFederateIdentifier().setSiteID((short) 3);
+            m1.setEntityIdentifier(aEntityIdentifier);
+            SpatialVariantStruct spatial = m1.getSpatial();
+            SpatialStaticStruct spatialStatic = spatial.getSpatialStatic();
+            spatialStatic.setIsFrozen(true);
+            spatialStatic.getWorldLocation().setX(1.1);
+            spatialStatic.getWorldLocation().setY(2.2);
+            spatialStatic.getWorldLocation().setZ(3.3);
+            m1.setSpatial(spatial);
+            m1.setLauncherFlashPresent(true);
+
+            // encode attributes
+            AttributeHandleValueMap value = m1.getAttributeValues();
+            // decode and validate attributes
+            Munition m2 = new Munition();
+            m2.decode(value);
+            assertEquals(m2.getEntityIdentifier().getEntityNumber(), (short) 1);
+            assertEquals(m2.getEntityIdentifier().getFederateIdentifier().getApplicationID(), (short) 2);
+            assertEquals(m2.getEntityIdentifier().getFederateIdentifier().getSiteID(), (short) 3);
+            assertEquals(m2.getSpatial().getSpatialStatic().getWorldLocation().getX(), 1.1);
+            assertEquals(m2.getSpatial().getSpatialStatic().getWorldLocation().getY(), 2.2);
+            assertEquals(m2.getSpatial().getSpatialStatic().getWorldLocation().getZ(), 3.3);
+            assertEquals(m2.getLauncherFlashPresent().getValue(), true);
+
+        } catch ( DecoderException | RprBuilderException | RTIinternalError | NameNotFound | InvalidObjectClassHandle | FederateNotExecutionMember | NotConnected | EncoderException e) {
+            fail(e.getMessage());
+        }
+    }
+
 }
