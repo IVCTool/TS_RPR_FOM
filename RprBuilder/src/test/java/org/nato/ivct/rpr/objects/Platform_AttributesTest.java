@@ -9,6 +9,7 @@ import org.nato.ivct.rpr.FomFiles;
 import org.nato.ivct.rpr.RprBuilderException;
 import org.nato.ivct.rpr.datatypes.EntityIdentifierStruct;
 import org.nato.ivct.rpr.datatypes.SpatialStaticStruct;
+import org.nato.ivct.rpr.datatypes.SpatialVariantStruct;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import java.net.URL;
@@ -90,27 +91,65 @@ public class Platform_AttributesTest {
     @Test
     void testValues() {
         HLAobjectRoot.initialize(rtiAmbassador);
-
         try {
+            // create Platform object and set test data
             Platform p1 = new Platform();
-
-            
             EntityIdentifierStruct aEntityIdentifier = p1.getEntityIdentifier();
             aEntityIdentifier.setEntityNumber((short) 1);
             aEntityIdentifier.getFederateIdentifier().setApplicationID((short) 2);
             aEntityIdentifier.getFederateIdentifier().setSiteID((short) 3);
-            SpatialStaticStruct spatialStatic = p1.getSpatial().getSpatialStatic();
+            p1.setEntityIdentifier(aEntityIdentifier);
+            SpatialVariantStruct spatial = p1.getSpatial();
+            SpatialStaticStruct spatialStatic = spatial.getSpatialStatic();
             spatialStatic.setIsFrozen(true);
             spatialStatic.getWorldLocation().setX(1.1);
             spatialStatic.getWorldLocation().setY(2.2);
             spatialStatic.getWorldLocation().setZ(3.3);
-            AttributeHandleValueMap value = p1.getAttributeValues();
+            p1.setSpatial(spatial);
+            p1.setAfterburnerOn(true);
+            p1.setAntiCollisionLightsOn(true);
+            p1.setBlackOutBrakeLightsOn(true);
+            p1.setBlackOutLightsOn(true);
+            p1.setBrakeLightsOn(true);
+            p1.setFormationLightsOn(true);
+            p1.setHatchState(true);
+            p1.setHeadLightsOn(true);
+            p1.setInteriorLightsOn(true);
+            p1.setLandingLightsOn(true);
+            p1.setLauncherRaised(true);
+            p1.setNavigationLightsOn(true);
+            p1.setRampDeployed(true);
+            p1.setRunningLightsOn(true);
+            p1.setSpotLightsOn(true);
+            p1.setTailLightsOn(true);
 
+            // encode attributes
+            AttributeHandleValueMap value = p1.getAttributeValues();
+            // decode and validate attributes
             Platform p2 = new Platform();
             p2.decode(value);
+            assertEquals(p2.getEntityIdentifier().getEntityNumber(), (short) 1);
+            assertEquals(p2.getEntityIdentifier().getFederateIdentifier().getApplicationID(), (short) 2);
+            assertEquals(p2.getEntityIdentifier().getFederateIdentifier().getSiteID(), (short) 3);
             assertEquals(p2.getSpatial().getSpatialStatic().getWorldLocation().getX(), 1.1);
             assertEquals(p2.getSpatial().getSpatialStatic().getWorldLocation().getY(), 2.2);
             assertEquals(p2.getSpatial().getSpatialStatic().getWorldLocation().getZ(), 3.3);
+            assertEquals(p2.getAfterburnerOn().getValue(), true);
+            assertEquals(p2.getAntiCollisionLightsOn().getValue(), true);
+            assertEquals(p2.getBlackOutBrakeLightsOn().getValue(), true);
+            assertEquals(p2.getBlackOutLightsOn().getValue(), true);
+            assertEquals(p2.getBrakeLightsOn().getValue(), true);
+            assertEquals(p2.getFormationLightsOn().getValue(), true);
+            assertEquals(p2.getHatchState().getValue(), true);
+            assertEquals(p2.getHeadLightsOn().getValue(), true);
+            assertEquals(p2.getInteriorLightsOn().getValue(), true);
+            assertEquals(p2.getLandingLightsOn().getValue(), true);
+            assertEquals(p2.getLauncherRaised().getValue(), true);
+            assertEquals(p2.getNavigationLightsOn().getValue(), true);
+            assertEquals(p2.getRampDeployed().getValue(), true);
+            assertEquals(p2.getRunningLightsOn().getValue(), true);
+            assertEquals(p2.getSpotLightsOn().getValue(), true);
+            assertEquals(p2.getTailLightsOn().getValue(), true);
 
         } catch ( DecoderException | RprBuilderException | RTIinternalError | NameNotFound | InvalidObjectClassHandle | FederateNotExecutionMember | NotConnected | EncoderException e) {
             fail(e.getMessage());
