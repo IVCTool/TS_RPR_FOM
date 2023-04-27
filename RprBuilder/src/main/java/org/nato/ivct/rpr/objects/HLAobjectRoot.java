@@ -60,6 +60,16 @@ import hla.rti1516e.exceptions.SaveInProgress;
  */
 public class HLAobjectRoot extends HLAroot {
 
+    class AttributeHolder {
+        AttributeHandle handle;
+        DataElement data;
+        Boolean isUpdated;
+        public AttributeHolder(DataElement value) {
+            data = value;
+            isUpdated = false;
+        }
+    }
+
     private static final Logger log = LoggerFactory.getLogger(HLAobjectRoot.class);
     private static RTIambassador rtiAmbassador;
     private static HashMap<String,AttributeHandle> knownAttributeHandles = null;  // known attribute handles
@@ -70,7 +80,8 @@ public class HLAobjectRoot extends HLAroot {
     private Boolean isSubscribed = false;
     private ObjectClassHandle thisClassHandle = null;
     private ObjectInstanceHandle thisObjectHandle;
-    private AttributeHandleValueMap attributeValues;  // (handle,value) map for updates
+    private HashMap<String, AttributeHolder> attributeMap = new HashMap<>();
+    // private AttributeHandleValueMap attributeValues;  // (handle,value) map for updates
     private Boolean isRegistered = false;
 
     protected EncoderFactory encoderFactory;
@@ -89,32 +100,29 @@ public class HLAobjectRoot extends HLAroot {
                 thisClassHandle = rtiAmbassador.getObjectClassHandle(getHlaClassName());
                 if (knownAttributeHandles == null) { knownAttributeHandles = new HashMap<>(); }
                 thisObjectHandle = null; // undefined until object is registered
-                this.attributeValues = rtiAmbassador.getAttributeHandleValueMapFactory().create(0);
+                // this.attributeValues = rtiAmbassador.getAttributeHandleValueMapFactory().create(0);
                 encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory();
             } catch (Exception e) {
                 throw new RprBuilderException("unhandled HLA exception", e);
             }
         }
-        log.trace("created {} object created", this);
+        log.trace("created {} object created", getHlaClassName());
     }
 
     public ObjectClassHandle getClassHandle() throws NameNotFound, FederateNotExecutionMember, NotConnected, RTIinternalError {
-        return rtiAmbassador.getObjectClassHandle(getHlaClassName());
+        return thisClassHandle;
     }
 
     public void clear() {
-        attributeValues.clear();
-    }
-
-    public AttributeHandleValueMap getAttributeValues() {
-        return attributeValues;
+        // attributeValues.clear();
     }
 
     public void decode(AttributeHandleValueMap theAttributes) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, DecoderException {
-        // log.error("HLAobjectRoot has no attributes to decode");
+        log.trace("decoding class {} ", getHlaClassName());
         for (Entry<AttributeHandle, byte[]> entry : theAttributes.entrySet()) {
-            AttributeHandle attributeHandle = entry.getKey();
-            attributeValues.put(attributeHandle, entry.getValue());
+            AttributeHolder holder = attributeMap.get(getHandleString(entry.getKey()));
+            holder.data.decode(entry.getValue());
+            holder.isUpdated = true;
         }
     }
 
@@ -154,16 +162,60 @@ public class HLAobjectRoot extends HLAroot {
     }
     
     protected void setAttributeValue(String attributeName, DataElement value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
-        attributeValues.put(getAttributeHandle(attributeName), value.toByteArray());
+        // attributeValues.put(getAttributeHandle(attributeName), value.toByteArray());    // keep attributeValues up to date
+        AttributeHolder holder = attributeMap.get(attributeName);
+        if (holder == null) {
+            holder = new AttributeHolder(value);
+        } else {
+            holder.data = value;
+            holder.isUpdated = true;
+        }
+        attributeMap.put(attributeName, holder);
+        // attributeMap.put(attributeName, value);
         log.trace("set value {}->{} = {}", this, attributeName, value);
     }
 
-    // protected DataElement getAttributeValue(String attributeName) {
-    //     return attributeValues.get(attributeName);
-    // }
+    public void addAttribute (String name, DataElement data) {
+        attributeMap.put(name, new AttributeHolder(data));
+    }
+    public DataElement getAttribute (String name) {
+        AttributeHolder holder = attributeMap.get(name);
+        if (holder != null) {
+            return attributeMap.get(name).data;
+        }
+        return null;
+    }
+    public Boolean hasAttribute (String name) {
+        return attributeMap.containsKey(name);
+    }
+    public AttributeHandleValueMap getAttributeValues() throws FederateNotExecutionMember, NotConnected, NameNotFound, InvalidObjectClassHandle, RTIinternalError, EncoderException {
+        int nbValues = 0;
+        for (Entry<String, AttributeHolder> entry: attributeMap.entrySet()) {
+            if (entry.getValue().isUpdated) {
+                nbValues++;
+            }
+        }
+        AttributeHandleValueMap attributeValues = rtiAmbassador.getAttributeHandleValueMapFactory().create(nbValues);
+        for (Entry<String, AttributeHolder> entry: attributeMap.entrySet()) {
+            if (entry.getValue().isUpdated) {
+                attributeValues.put(getAttributeHandle(entry.getKey()), entry.getValue().data.toByteArray());
+            }
+        }
+        return attributeValues;
+    }
+    public Boolean isUpdated (String name) {
+        AttributeHolder holder = attributeMap.get(name);
+        if ((holder != null) && (holder.isUpdated)) {
+            return true;
+        }
+        return false;
+    }
 
-    public void update() throws AttributeNotOwned, AttributeNotDefined, ObjectInstanceNotKnown, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError {
-        rtiAmbassador.updateAttributeValues(thisObjectHandle, attributeValues, null);
+
+
+
+    public void update() throws AttributeNotOwned, AttributeNotDefined, ObjectInstanceNotKnown, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError, NameNotFound, InvalidObjectClassHandle, EncoderException {
+        rtiAmbassador.updateAttributeValues(thisObjectHandle, getAttributeValues(), null);
         log.trace("update {}({}) to RTI", this, thisObjectHandle);
     }
 

@@ -173,13 +173,13 @@ public class TC_IR_RPR2_0011 extends AbstractTestCaseIf {
                 } catch (Exception e) {
                     logger.error("reflectAttributeValues received Exception", e);
                 }
-                if (phyEntity.isSetEntityType()) {
+                if (phyEntity.isUpdated(BaseEntity.Attributes.EntityIdentifier.name())) {
                     receivedEntityIdentifier.release(1);
                 }
-                if (phyEntity.isSetEntityType()) {
+                if (phyEntity.isUpdated(BaseEntity.Attributes.EntityType.name())) {
                     receivedEntityType.release(1);
                 }
-                if (phyEntity.isSetSpatial()) {
+                if (phyEntity.isUpdated(BaseEntity.Attributes.Spatial.name())) {
                     receivedSpatial.release(1);
                 }
             }
@@ -194,28 +194,9 @@ public class TC_IR_RPR2_0011 extends AbstractTestCaseIf {
                         spatial.getWorldLocation().getY(),
                         spatial.getWorldLocation().getZ()
                     );
-                } catch (NameNotFound e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (InvalidObjectClassHandle e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (FederateNotExecutionMember e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (NotConnected e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (RTIinternalError e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (DecoderException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+                } catch (NameNotFound | InvalidObjectClassHandle | FederateNotExecutionMember | NotConnected | RTIinternalError | DecoderException e) {
+                    logger.error("error decoding attribute values", e);
+                } 
             }            
         }
     }
