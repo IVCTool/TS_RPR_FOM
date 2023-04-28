@@ -72,7 +72,8 @@ public class HLAobjectRoot extends HLAroot {
 
     private static final Logger log = LoggerFactory.getLogger(HLAobjectRoot.class);
     private static RTIambassador rtiAmbassador;
-    private static HashMap<String,AttributeHandle> knownAttributeHandles = null;  // known attribute handles
+    private static HashMap<ObjectClassHandle,HashMap<String,AttributeHandle>> knownAttributeHandles = null;  // known attribute handles
+    
     private static HashMap<String, AttributeHandleSet> publishedAttributes = new HashMap<>();
     private static HashMap<String, AttributeHandleSet> subscribedAttributes = new HashMap<>();
 
@@ -98,7 +99,12 @@ public class HLAobjectRoot extends HLAroot {
         if (thisClassHandle == null) { 
             try {
                 thisClassHandle = rtiAmbassador.getObjectClassHandle(getHlaClassName());
-                if (knownAttributeHandles == null) { knownAttributeHandles = new HashMap<>(); }
+                if (knownAttributeHandles == null) { 
+                    knownAttributeHandles = new HashMap<>();
+                }
+                if (!knownAttributeHandles.containsKey(thisClassHandle)) {
+                    knownAttributeHandles.put(thisClassHandle, new HashMap<>());
+                }
                 thisObjectHandle = null; // undefined until object is registered
                 // this.attributeValues = rtiAmbassador.getAttributeHandleValueMapFactory().create(0);
                 encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory();
@@ -314,10 +320,10 @@ public class HLAobjectRoot extends HLAroot {
      * @throws RTIinternalError
      */
     public AttributeHandle getAttributeHandle(String attributeName) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
-        AttributeHandle handle = knownAttributeHandles.get(attributeName);
+        AttributeHandle handle = knownAttributeHandles.get(thisClassHandle).get(attributeName);
         if (handle == null) {
             handle = rtiAmbassador.getAttributeHandle(thisClassHandle, attributeName);
-            knownAttributeHandles.put(attributeName, handle);
+            knownAttributeHandles.get(thisClassHandle).put(attributeName, handle);
         }
         return handle;
     }
@@ -330,7 +336,7 @@ public class HLAobjectRoot extends HLAroot {
      * @return
      */
     protected String getHandleString(AttributeHandle handle) {
-        for (Entry<String, AttributeHandle> entry : knownAttributeHandles.entrySet()) {
+        for (Entry<String, AttributeHandle> entry : knownAttributeHandles.get(thisClassHandle).entrySet()) {
             if (handle.equals(entry.getValue())) {
                 return entry.getKey();
             }
