@@ -101,7 +101,6 @@ public class Platform extends PhysicalEntity{
         addPubAttribute(Attributes.AfterburnerOn.name());
     }
 
-    // TODO: add remaining sub/pub helpers
 
     // attribute setter and getter
     
