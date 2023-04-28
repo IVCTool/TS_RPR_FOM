@@ -75,24 +75,33 @@ public class PhysicalEntity extends BaseEntity {
     //private PhysicalEntityStruct aFirePowerDisabledStr = null;                 
     //private PhysicalEntityStruct aIsConcealedStr = null;
     //private PhysicalEntityStruct aTentDeployedStr = null ;
-    private HLAboolean aEngineSmokeOn = null;
-    private HLAboolean aFirePowerDisabled = null;
-    private HLAboolean aFlamesPresent= null;
-    private HLAboolean aIsConcealed = null;
-    private HLAboolean aTentDeployed = null;
+
+    /**
+     * attributes moved into generic attributeMap managed by HLAobjectRoot
+     * 
+     private HLAboolean aEngineSmokeOn = null;
+     private HLAboolean aFirePowerDisabled = null;
+     private HLAboolean aFlamesPresent= null;
+     private HLAboolean aIsConcealed = null;
+     private HLAboolean aTentDeployed = null;
+     */
     //------------
     
-    //modified by brf
+
     public PhysicalEntity() throws RprBuilderException {
         super();
-        aEngineSmokeOn = encoderFactory.createHLAboolean();
-        aFirePowerDisabled = encoderFactory.createHLAboolean();
-        aFlamesPresent = encoderFactory.createHLAboolean();
-        aIsConcealed = encoderFactory.createHLAboolean();
-        aTentDeployed = encoderFactory.createHLAboolean();
+        try {
+            getEngineSmokeOn();
+            getFirePowerDisabled();
+            getFlamesPresent();
+            getIsConcealed();
+            getTentDeployed();
+        } catch (NameNotFound | InvalidObjectClassHandle | FederateNotExecutionMember | NotConnected | RTIinternalError
+                | EncoderException e) {
+            throw new RprBuilderException("error while creating member attributes", e);
+        }
     }
-    
-    
+
 
     public void addSubscribe(Attributes attribute) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
         addSubAttribute(attribute.name());
@@ -101,82 +110,82 @@ public class PhysicalEntity extends BaseEntity {
         addPubAttribute(attribute.name()); 
     }
 
-    // added by brf
-    /*   ### we have here to add something like the following,  adapted to this class
-     *  public void decode(AttributeHandleValueMap theAttributes) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, DecoderException {
-        for (Entry<AttributeHandle, byte[]> entry : theAttributes.entrySet()) {
-            AttributeHandle attributeHandle = entry.getKey();
-            Attributes attribute = Attributes.valueOf(getHandleString(attributeHandle));
-            switch (attribute) {
-                case EngineSmokeOn   //++++++++++++++:
-                    aEngineSmokeOn().decode(entry.getValue());
-                    break;
-                case EntityIdentifier:
-                    // hier steht der Struct .decode
-                    getEntityIdentifier().decode(entry.getValue());
-                    break;
-                case IsPartOf:
-                    getIsPartOf().decode(entry.getValue());
-                    break;
-                case Spatial:
-                    getSpatial().decode(entry.getValue());
-                    break;
-                case RelativeSpatial:
-                    getRelativeSpatical().decode(entry.getValue());
-                    break;
-                default:
-                    throw new NameNotFound(attribute.name());
-            }
-        }
-    }
-     */
-    // -------------------
     
-   
-    
-    // added by brf
+    // attribute setter and getter
+
     public void setEngineSmokeOn(boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
-        aEngineSmokeOn.setValue(value);
-        setAttributeValue(Attributes.EngineSmokeOn.name(), aEngineSmokeOn);
+        // aEngineSmokeOn.setValue(value);
+        HLAboolean holder = (HLAboolean) getAttribute(Attributes.EngineSmokeOn.name());
+        holder.setValue(value);
+        setAttributeValue(Attributes.EngineSmokeOn.name(), holder);
     }
-    public boolean  getEngineSmokeOn() {
-        return aEngineSmokeOn.getValue();
-    }
-    
-    public void setFirePowerDisabled(boolean value)  throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
-        aFirePowerDisabled.setValue(value);
-        setAttributeValue(Attributes.FirePowerDisabled.name(), aFirePowerDisabled );
-        
-    }
-    public boolean  getFirePowerDisabled()  {
-        return aFirePowerDisabled.getValue();
+    public boolean  getEngineSmokeOn() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        HLAboolean attribute = (HLAboolean) getAttribute(Attributes.EngineSmokeOn.name());
+        if (attribute == null) {
+            attribute = encoderFactory.createHLAboolean();
+            setAttributeValue(Attributes.EngineSmokeOn.name(), attribute);
+        }
+        return attribute.getValue();
     }
     
-    public void setFlamesPresent(boolean value)  throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
-        aFirePowerDisabled.setValue(value);
-        setAttributeValue(Attributes.FlamesPresent.name(), aFlamesPresent);
+    public void setFirePowerDisabled(boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        // aFirePowerDisabled.setValue(value);
+        HLAboolean holder = (HLAboolean) getAttribute(Attributes.FirePowerDisabled.name());
+        holder.setValue(value);
+        setAttributeValue(Attributes.FirePowerDisabled.name(), holder);
     }
-    public boolean  getFlamesPresent() {
-        return aFirePowerDisabled.getValue();
+    public boolean  getFirePowerDisabled() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        HLAboolean attribute = (HLAboolean) getAttribute(Attributes.FirePowerDisabled.name());
+        if (attribute == null) {
+            attribute = encoderFactory.createHLAboolean();
+            setAttributeValue(Attributes.FirePowerDisabled.name(), attribute);
+        }
+        return attribute.getValue();
     }
     
-    public void setIsConcealed(boolean isConcealed)  throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
-        aIsConcealed.setValue(isConcealed);
-        setAttributeValue(Attributes.IsConcealed.name(), aIsConcealed);
+    public void setFlamesPresent(boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        HLAboolean holder = (HLAboolean) getAttribute(Attributes.FlamesPresent.name());
+        holder.setValue(value);
+        setAttributeValue(Attributes.FlamesPresent.name(), holder);
     }
-    public boolean  getIsConcealed() {
-        return aIsConcealed.getValue();
-    }    
+    public boolean  getFlamesPresent() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        HLAboolean attribute = (HLAboolean) getAttribute(Attributes.FlamesPresent.name());
+        if (attribute == null) {
+            attribute = encoderFactory.createHLAboolean();
+            setAttributeValue(Attributes.FlamesPresent.name(), attribute);
+        }
+        return attribute.getValue();
+    }
     
-    public void setTentDeployed(boolean tentDeployed)  throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
-        aTentDeployed.setValue(tentDeployed);
-        setAttributeValue(Attributes.TentDeployed.name(), aTentDeployed);
-     }
-    public boolean  getTentDeployed() {
-        return aTentDeployed.getValue();
-        
-    }    
-   
+    public void setIsConcealed(boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        HLAboolean holder = (HLAboolean) getAttribute(Attributes.IsConcealed.name());
+        holder.setValue(value);
+        setAttributeValue(Attributes.IsConcealed.name(), holder);
+    }
+    public boolean  getIsConcealed() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        HLAboolean attribute = (HLAboolean) getAttribute(Attributes.IsConcealed.name());
+        if (attribute == null) {
+            attribute = encoderFactory.createHLAboolean();
+            setAttributeValue(Attributes.IsConcealed.name(), attribute);
+        }
+        return attribute.getValue();
+    }
+    
+    public void setTentDeployed(boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        HLAboolean holder = (HLAboolean) getAttribute(Attributes.TentDeployed.name());
+        holder.setValue(value);
+        setAttributeValue(Attributes.TentDeployed.name(), holder);
+    }
+    public boolean  getTentDeployed() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        HLAboolean attribute = (HLAboolean) getAttribute(Attributes.TentDeployed.name());
+        if (attribute == null) {
+            attribute = encoderFactory.createHLAboolean();
+            setAttributeValue(Attributes.TentDeployed.name(), attribute);
+        }
+        return attribute.getValue();
+    }
+    
+    
  
     /*
      *   public void setCamouflageType(boolean tentDeployed) {
