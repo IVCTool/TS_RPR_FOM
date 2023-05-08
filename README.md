@@ -29,6 +29,7 @@ In order to ease the use of the extensive RPR FOM model elements, several [encod
 The test suite modules are aligned with the RPR FOM modules.
 
 - [Entity](docs/src/ts-entity.md)
+- [Warfare](docs/src/rpr-warfare.md)
 
 ## Reference Federates
 
