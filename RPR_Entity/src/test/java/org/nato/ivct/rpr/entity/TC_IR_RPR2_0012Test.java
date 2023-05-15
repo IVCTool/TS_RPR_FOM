@@ -15,16 +15,6 @@ public class TC_IR_RPR2_0012Test {
 
     public static final Logger log = LoggerFactory.getLogger(TC_IR_RPR2_0012Test.class);
     RTIambassador rtiAmbassador = null;
-
-    /*
-    @Test
-    void testPerformTest() {
-        TC_IR_RPR2_0012 tc = new TC_IR_RPR2_0012();
-        tc.setSutFederateName("TC_IR_RPR2_0012");
-        tc.setFederationName("TestFederation");
-        tc.setSkipOperatorMsg(true);
-        tc.execute(log);
-    }  */
     
     
     @Test
