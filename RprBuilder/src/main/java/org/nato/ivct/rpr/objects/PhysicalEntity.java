@@ -72,9 +72,6 @@ public class PhysicalEntity extends BaseEntity {
     // TODO: create fields
     
     // added by brf    
-    //private PhysicalEntityStruct aFirePowerDisabledStr = null;                 
-    //private PhysicalEntityStruct aIsConcealedStr = null;
-    //private PhysicalEntityStruct aTentDeployedStr = null ;
     private HLAboolean aEngineSmokeOn = null;
     private HLAboolean aFirePowerDisabled = null;
     private HLAboolean aFlamesPresent= null;
@@ -101,38 +98,6 @@ public class PhysicalEntity extends BaseEntity {
         addPubAttribute(attribute.name()); 
     }
 
-    // added by brf
-    /*   ### we have here to add something like the following,  adapted to this class
-     *  public void decode(AttributeHandleValueMap theAttributes) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, DecoderException {
-        for (Entry<AttributeHandle, byte[]> entry : theAttributes.entrySet()) {
-            AttributeHandle attributeHandle = entry.getKey();
-            Attributes attribute = Attributes.valueOf(getHandleString(attributeHandle));
-            switch (attribute) {
-                case EngineSmokeOn   //++++++++++++++:
-                    aEngineSmokeOn().decode(entry.getValue());
-                    break;
-                case EntityIdentifier:
-                    // hier steht der Struct .decode
-                    getEntityIdentifier().decode(entry.getValue());
-                    break;
-                case IsPartOf:
-                    getIsPartOf().decode(entry.getValue());
-                    break;
-                case Spatial:
-                    getSpatial().decode(entry.getValue());
-                    break;
-                case RelativeSpatial:
-                    getRelativeSpatical().decode(entry.getValue());
-                    break;
-                default:
-                    throw new NameNotFound(attribute.name());
-            }
-        }
-    }
-     */
-    // -------------------
-    
-   
     
     // added by brf
     public void setEngineSmokeOn(boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
@@ -176,20 +141,6 @@ public class PhysicalEntity extends BaseEntity {
         return aTentDeployed.getValue();
         
     }    
-   
- 
-    /*
-     *   public void setCamouflageType(boolean tentDeployed) {
-        (( whatever   .....Value(tentDeployed);
-    }
-    public boolean  getCamouflageType() {
-        return ((whatever ......getValue();
-    }
-     
-    */
-    // -------------  end of added by brf
-    
-    
     
 }
 
