@@ -251,7 +251,7 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
 			
 			toTestEntity.subscribe();
 
-			boolean seenEnough = false;
+			boolean seenEnough = true;
 			while (!seenEnough) {
 				// the Test ......
 			}

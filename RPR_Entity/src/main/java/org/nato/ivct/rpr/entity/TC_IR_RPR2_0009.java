@@ -170,7 +170,7 @@ public class TC_IR_RPR2_0009 extends AbstractTestCaseIf {
 			// aircraft.addSubscribe(BaseEntity.Attributes.EntityIdentifier);   //to adjust
 			// aircraft.subscribe();         //to adjust
 
-			boolean seenEnough = false;
+			boolean seenEnough = true;
 			while (!seenEnough) {
 				// the Test ......
 			}
