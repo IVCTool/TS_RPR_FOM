@@ -30,9 +30,7 @@ import hla.rti1516e.AttributeHandleSet;
 import hla.rti1516e.AttributeHandleValueMap;
 import hla.rti1516e.ObjectClassHandle;
 import hla.rti1516e.ObjectInstanceHandle;
-import hla.rti1516e.RTIambassador;
 import hla.rti1516e.RtiFactoryFactory;
-import hla.rti1516e.encoding.ByteWrapper;
 import hla.rti1516e.encoding.DataElement;
 import hla.rti1516e.encoding.DecoderException;
 import hla.rti1516e.encoding.EncoderException;
@@ -40,7 +38,6 @@ import hla.rti1516e.encoding.EncoderFactory;
 import hla.rti1516e.exceptions.AttributeNotDefined;
 import hla.rti1516e.exceptions.AttributeNotOwned;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
-import hla.rti1516e.exceptions.InvalidAttributeHandle;
 import hla.rti1516e.exceptions.InvalidObjectClassHandle;
 import hla.rti1516e.exceptions.NameNotFound;
 import hla.rti1516e.exceptions.NotConnected;
@@ -71,26 +68,24 @@ public class HLAobjectRoot extends HLAroot {
     }
 
     private static final Logger log = LoggerFactory.getLogger(HLAobjectRoot.class);
-    private static RTIambassador rtiAmbassador;
-    private static HashMap<ObjectClassHandle,HashMap<String,AttributeHandle>> knownAttributeHandles = null;  // known attribute handles
-    
+    private static HashMap<ObjectClassHandle,HashMap<String,AttributeHandle>> knownAttributeHandles = null;
     private static HashMap<String, AttributeHandleSet> publishedAttributes = new HashMap<>();
     private static HashMap<String, AttributeHandleSet> subscribedAttributes = new HashMap<>();
-
     private Boolean isPublished = false;
     private Boolean isSubscribed = false;
     private ObjectClassHandle thisClassHandle = null;
     private ObjectInstanceHandle thisObjectHandle;
     private HashMap<String, AttributeHolder> attributeMap = new HashMap<>();
-    // private AttributeHandleValueMap attributeValues;  // (handle,value) map for updates
     private Boolean isRegistered = false;
-
     protected EncoderFactory encoderFactory;
     
-    public static void initialize(RTIambassador rtiAmbassador2Use) {
-        rtiAmbassador = rtiAmbassador2Use;
-    }
-
+    /**
+     * Base constructor for HLAobject elements. It will initialize the generic attribute support elements
+     * and shall be called by all derived subclasses. As a good practice, a subclass shall add and initialize 
+     * class specific attributes, by adding the appropriate DataElement encoders. 
+     * 
+     * @throws RprBuilderException
+     */
     public HLAobjectRoot() throws RprBuilderException {
         if (rtiAmbassador == null) {
             rtiAmbassador = OmtBuilder.getRtiAmbassador();
@@ -119,19 +114,54 @@ public class HLAobjectRoot extends HLAroot {
         return thisClassHandle;
     }
 
+    /**
+     * The clear method will reset the update status of all known attribute holders. Values encoded 
+     * in the DataElements will be kept. 
+     */
     public void clear() {
-        // attributeValues.clear();
+        log.trace("reset update status {} ", this.getObjectHandle());
+        for (Entry<String, AttributeHolder> attribute: attributeMap.entrySet()) {
+            attribute.getValue().isUpdated = false;
+        }
     }
 
+    /**
+     * Generic decode method to iterate through an AttributeHandleValueMap, typically received by the RTI.
+     * The AttributeValues with the ValueMap will be decoded with the DataElement associated to the attribute
+     * handle. Attributes with unknown Handles will be skipped. 
+     *  
+     * @param theAttributes
+     * @throws NameNotFound
+     * @throws InvalidObjectClassHandle
+     * @throws FederateNotExecutionMember
+     * @throws NotConnected
+     * @throws RTIinternalError
+     * @throws DecoderException
+     */
     public void decode(AttributeHandleValueMap theAttributes) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, DecoderException {
         log.trace("decoding class {} ", getHlaClassName());
         for (Entry<AttributeHandle, byte[]> entry : theAttributes.entrySet()) {
             AttributeHolder holder = attributeMap.get(getHandleString(entry.getKey()));
+            if (holder == null) {
+                log.warn("unknown attribute handle {}. Decoding skipped.", entry.getKey());
+                continue;
+            }
             holder.data.decode(entry.getValue());
             holder.isUpdated = true;
         }
     }
 
+    /**
+     * 
+     * Add a given attribute name to the set of published attributes. This publication set
+     * will be valid for all instances of the current object class.
+     * @param attributeName
+     * @throws NameNotFound
+     * @throws InvalidObjectClassHandle
+     * @throws FederateNotExecutionMember
+     * @throws NotConnected
+     * @throws RTIinternalError
+     */
     protected void addPubAttribute (String attributeName) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
         AttributeHandleSet attr = publishedAttributes.get(this.getClass().getSimpleName());
         if (attr == null) { 
@@ -145,6 +175,17 @@ public class HLAobjectRoot extends HLAroot {
         log.trace("added publish for {}->{}({})", this.getHlaClassName(), attributeName, getAttributeHandle(attributeName));
     }
 
+    /**
+     * Add a given attribute name to the set of subscribed attributes. This subscription set
+     * will be valid for all instances of the current object class.
+     * 
+     * @param attributeName
+     * @throws NameNotFound
+     * @throws InvalidObjectClassHandle
+     * @throws FederateNotExecutionMember
+     * @throws NotConnected
+     * @throws RTIinternalError
+     */
     protected void addSubAttribute (String attributeName) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
         AttributeHandleSet attr = subscribedAttributes.get(this.getClass().getSimpleName());
         if (attr == null) { 
@@ -158,6 +199,13 @@ public class HLAobjectRoot extends HLAroot {
         log.trace("added subscribe for {}->{}({})", this.getClass().getSimpleName(), attributeName, getAttributeHandle(attributeName));
     }
 
+    /**
+     * Get the list of subscribed attributes for the objects class of the current instance. 
+     * 
+     * @return
+     * @throws FederateNotExecutionMember
+     * @throws NotConnected
+     */
     public AttributeHandleSet getSubscribedAttributes() throws FederateNotExecutionMember, NotConnected {
         AttributeHandleSet attr = subscribedAttributes.get(this.getClass().getSimpleName());
         if (attr == null) { 
@@ -167,6 +215,19 @@ public class HLAobjectRoot extends HLAroot {
         return attr;        
     }
     
+    /**
+     * Overwrites a DataElement for a certain attribute with a new value. The attribute shall be given with its 
+     * valid name and the DataElement shall an encoder with the correct type as defined in the OMT data model. 
+     * 
+     * @param attributeName
+     * @param value
+     * @throws NameNotFound
+     * @throws InvalidObjectClassHandle
+     * @throws FederateNotExecutionMember
+     * @throws NotConnected
+     * @throws RTIinternalError
+     * @throws EncoderException
+     */
     protected void setAttributeValue(String attributeName, DataElement value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         // attributeValues.put(getAttributeHandle(attributeName), value.toByteArray());    // keep attributeValues up to date
         AttributeHolder holder = attributeMap.get(attributeName);
@@ -181,9 +242,24 @@ public class HLAobjectRoot extends HLAroot {
         log.trace("set value {}->{} = {}", this, attributeName, value);
     }
 
+    /**
+     * Adds a DataElement for a certain attribute. The attribute shall be given with its valid name
+     * and the DataElement shall an encoder with the correct type as defined in the OMT data model. 
+     * 
+     * @param name
+     * @param data
+     */
     public void addAttribute (String name, DataElement data) {
         attributeMap.put(name, new AttributeHolder(data));
     }
+
+    /**
+     * Returns the DataElement encoder element for a given attribute name. If the attribute name
+     * is unknown, a null value will be returned.
+     * 
+     * @param name
+     * @return
+     */
     public DataElement getAttribute (String name) {
         AttributeHolder holder = attributeMap.get(name);
         if (holder != null) {
@@ -191,9 +267,21 @@ public class HLAobjectRoot extends HLAroot {
         }
         return null;
     }
+
+    /**
+     * Test if a given attribute has been added to the object instance. 
+     * 
+     * @param name
+     * @return
+     */
     public Boolean hasAttribute (String name) {
         return attributeMap.containsKey(name);
     }
+
+    /**
+     * The getAttributeValues created a new AttributeHandleValueMap, containing the attributes
+     * known by the object instance. 
+     */
     public AttributeHandleValueMap getAttributeValues() throws FederateNotExecutionMember, NotConnected, NameNotFound, InvalidObjectClassHandle, RTIinternalError, EncoderException {
         int nbValues = 0;
         for (Entry<String, AttributeHolder> entry: attributeMap.entrySet()) {
@@ -209,6 +297,13 @@ public class HLAobjectRoot extends HLAroot {
         }
         return attributeValues;
     }
+
+    /**
+     * Test is a given attribute is known and has been updated. 
+     *  
+     * @param name
+     * @return
+     */
     public Boolean isUpdated (String name) {
         AttributeHolder holder = attributeMap.get(name);
         if ((holder != null) && (holder.isUpdated)) {
@@ -218,13 +313,28 @@ public class HLAobjectRoot extends HLAroot {
     }
 
 
-
-
+    /** 
+     * The update method will send the attribute values of the current attribute instance to the 
+     * RTI ambassador. 
+     */
     public void update() throws AttributeNotOwned, AttributeNotDefined, ObjectInstanceNotKnown, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError, NameNotFound, InvalidObjectClassHandle, EncoderException {
         rtiAmbassador.updateAttributeValues(thisObjectHandle, getAttributeValues(), null);
         log.trace("update {}({}) to RTI", this, thisObjectHandle);
     }
 
+    /**
+     * The register method will make sure that all assigned attributes are published and will
+     * register the current object instance with the RTI ambassador. 
+     *  
+     * @throws ObjectClassNotPublished
+     * @throws ObjectClassNotDefined
+     * @throws SaveInProgress
+     * @throws RestoreInProgress
+     * @throws FederateNotExecutionMember
+     * @throws NotConnected
+     * @throws RTIinternalError
+     * @throws AttributeNotDefined
+     */
     public void register() throws ObjectClassNotPublished, ObjectClassNotDefined, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError, AttributeNotDefined {
         publish();
         if (!isRegistered) {
@@ -234,10 +344,18 @@ public class HLAobjectRoot extends HLAroot {
         }
     }
 
+    /** 
+     * Assign a given object handle to the current object instance. This is required in case
+     * the java object is created as mirror object of a remote HLA object.  
+     */
     public void setObjectHandle(ObjectInstanceHandle newHandle) {
         thisObjectHandle = newHandle;
     }
 
+    /**
+     * Returns the known HLA object handle of the current instance. 
+     * @return
+     */     
     public ObjectInstanceHandle getObjectHandle() {
         return thisObjectHandle;
     }
