@@ -159,7 +159,6 @@ public class BaseEntityTest {
             aEntityIdentifier.getFederateIdentifier().setSiteID((short) 3);
 
             EntityTypeStruct aEntityType = base1.getEntityType();
-            aEntityType.setEntityKind((byte) 0x1);
             aEntityType.setEntityKind((byte) 0xa);
             aEntityType.setDomain((byte) 0xb);
             aEntityType.setCountryCode((short) 3);

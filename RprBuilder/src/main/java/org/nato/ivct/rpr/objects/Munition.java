@@ -18,6 +18,8 @@ package org.nato.ivct.rpr.objects;
 
 import org.nato.ivct.rpr.RprBuilderException;
 
+import hla.rti1516e.encoding.EncoderException;
+import hla.rti1516e.encoding.HLAboolean;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
 import hla.rti1516e.exceptions.InvalidObjectClassHandle;
 import hla.rti1516e.exceptions.NameNotFound;
@@ -32,6 +34,12 @@ public class Munition extends PhysicalEntity{
 
     public Munition() throws RprBuilderException {
         super();
+        try {
+            setAttributeValue(Attributes.LauncherFlashPresent.name(), encoderFactory.createHLAboolean());
+        } catch (NameNotFound | InvalidObjectClassHandle | FederateNotExecutionMember | NotConnected | RTIinternalError
+                | EncoderException e) {
+        throw new RprBuilderException("error while creating member attributes", e);
+       }
     }
 
 
@@ -57,6 +65,21 @@ public class Munition extends PhysicalEntity{
 
     // TODO: add remaining sub/pub helpers
 
-    // TODO: add attribute setter and getter
+    // attribute setter and getter
+
+    public void setLauncherFlashPresent(Boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        HLAboolean holder = getLauncherFlashPresent();
+        holder.setValue(value);
+        setAttributeValue(Attributes.LauncherFlashPresent.name(), holder);
+    }
+    public HLAboolean getLauncherFlashPresent() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        HLAboolean attribute = (HLAboolean) getAttribute(Attributes.LauncherFlashPresent.name());
+        if (attribute == null) {
+            attribute = encoderFactory.createHLAboolean();
+            setAttributeValue(Attributes.LauncherFlashPresent.name(), attribute);
+        }
+        return attribute;
+    }
+
 }
 

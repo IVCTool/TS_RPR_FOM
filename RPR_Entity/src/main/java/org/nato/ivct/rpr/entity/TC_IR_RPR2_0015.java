@@ -201,7 +201,7 @@ public class TC_IR_RPR2_0015 extends AbstractTestCaseIf {
 			phyEntity.addSubscribe(BaseEntity.Attributes.EntityIdentifier);  // to adjust
 			phyEntity.subscribe();
 			
-			boolean gotEnoughAtttributes = false;
+			boolean gotEnoughAtttributes = true;
 			while (! gotEnoughAtttributes) {
 				// the Test ......
 			}

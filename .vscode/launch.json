@@ -16,7 +16,10 @@
             "request": "launch",
             "mainClass": "org.nato.ivct.refFed.AircraftApp",
             "projectName": "RefFedAircraft",
-            "args": ["-federateName", "Flyer1", "-provokeFlyAircraft"]
+            "args": ["-federateName", "Flyer1", "-provokeFlyAircraft"],
+            "env": {
+                "LRC_CLASSPATH" : "C:\\MAK\\makRti4.6\\lib\\hla.jar"
+            }
         }
     ]
 }
