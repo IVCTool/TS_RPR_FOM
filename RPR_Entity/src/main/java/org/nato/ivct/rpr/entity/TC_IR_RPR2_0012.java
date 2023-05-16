@@ -402,7 +402,8 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 	      //logger.info("test {} passed", this.getClass().getName());
         if (! matchList.isEmpty() ) {
         	logger.info("test {} failed", this.getClass().getName());
-        }else {
+			throw new TcInconclusiveIf("Failed because: ...");
+        } else {
         	logger.info("test {} passed", this.getClass().getName());	        	
         }
   
