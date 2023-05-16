@@ -2,8 +2,8 @@ package org.nato.ivct.rpr.objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.nato.ivct.rpr.FomFiles;
 import org.nato.ivct.rpr.datatypes.EntityIdentifierStruct;
@@ -50,10 +50,10 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
 
 public class BaseEntityTest {
     public static final Logger log = LoggerFactory.getLogger(BaseEntityTest.class);
-    RTIambassador rtiAmbassador = null;
+    static RTIambassador rtiAmbassador = null;
 
-    @BeforeEach
-    void createRtiAmbassador() throws ConnectionFailed, InvalidLocalSettingsDesignator, UnsupportedCallbackModel, AlreadyConnected, CallNotAllowedFromWithinCallback, RTIinternalError, InconsistentFDD, ErrorReadingFDD, CouldNotOpenFDD, NotConnected, CouldNotCreateLogicalTimeFactory, FederationExecutionDoesNotExist, SaveInProgress, RestoreInProgress, FederateAlreadyExecutionMember, FederateNameAlreadyInUse {
+    @BeforeAll
+    static void createRtiAmbassador() throws ConnectionFailed, InvalidLocalSettingsDesignator, UnsupportedCallbackModel, AlreadyConnected, CallNotAllowedFromWithinCallback, RTIinternalError, InconsistentFDD, ErrorReadingFDD, CouldNotOpenFDD, NotConnected, CouldNotCreateLogicalTimeFactory, FederationExecutionDoesNotExist, SaveInProgress, RestoreInProgress, FederateAlreadyExecutionMember, FederateNameAlreadyInUse {
         RtiFactory rtiFactory = RtiFactoryFactory.getRtiFactory();
         rtiAmbassador = rtiFactory.getRtiAmbassador();
         FederateAmbassador nullAmbassador = new NullFederateAmbassador();
@@ -73,8 +73,8 @@ public class BaseEntityTest {
         HLAobjectRoot.initialize(rtiAmbassador);
     }
 
-    @AfterEach
-    void leaveFederation() throws InvalidResignAction, OwnershipAcquisitionPending, FederateOwnsAttributes, FederateNotExecutionMember, NotConnected, CallNotAllowedFromWithinCallback, RTIinternalError, FederationExecutionDoesNotExist, FederateIsExecutionMember {
+    @AfterAll
+    static void leaveFederation() throws InvalidResignAction, OwnershipAcquisitionPending, FederateOwnsAttributes, FederateNotExecutionMember, NotConnected, CallNotAllowedFromWithinCallback, RTIinternalError, FederationExecutionDoesNotExist, FederateIsExecutionMember {
         rtiAmbassador.resignFederationExecution(ResignAction.DELETE_OBJECTS);
         try {
             rtiAmbassador.destroyFederationExecution("TestFederation");
