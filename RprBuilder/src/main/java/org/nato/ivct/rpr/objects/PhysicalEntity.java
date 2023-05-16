@@ -16,19 +16,7 @@
 
  package org.nato.ivct.rpr.objects;
 
-import java.util.Map.Entry;
-
 import org.nato.ivct.rpr.RprBuilderException;
-import org.nato.ivct.rpr.datatypes.EntityIdentifierStruct;
-import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
-import org.nato.ivct.rpr.datatypes.SpatialVariantStruct;
-import org.nato.ivct.rpr.datatypes.SpatialRVStruct.AttributeName;
-import org.nato.ivct.rpr.objects.BaseEntity.Attributes;
-
-import hla.rti1516e.AttributeHandle;
-import hla.rti1516e.AttributeHandleValueMap;
-import hla.rti1516e.encoding.DataElement;
-import hla.rti1516e.encoding.DecoderException;
 import hla.rti1516e.encoding.EncoderException;
 import hla.rti1516e.encoding.HLAboolean;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
