@@ -32,10 +32,10 @@ public class TC_IR_RPR2_0017Test {
     @Test
     @Tag("RefFedAircraft")
     void testRefFedAircraft() throws FileNotFoundException, IOException, ParseException {
-        // TC_IR_RPR2_0017 tc = new TC_IR_RPR2_0017();
         RPR_Warfare_TestSuite ts = new RPR_Warfare_TestSuite();
         AbstractTestCaseIf tc = ts.getTestCase("org.nato.ivct.rpr.warfare.TC_IR_RPR2_0017");
         JSONObject p = ts.getParameterTemplate();
+        p.put("timeout", "100");
 
         tc.setSutFederateName(SUT_FEDERATE_NAME);
         tc.setFederationName(SUT_FEDERATION_NAME);
@@ -49,7 +49,6 @@ public class TC_IR_RPR2_0017Test {
     @Disabled
     @Tag("VRforces")
     void testVRforces() throws FileNotFoundException, IOException, ParseException {
-        // TC_IR_RPR2_0017 tc = new TC_IR_RPR2_0017();
         RPR_Warfare_TestSuite ts = new RPR_Warfare_TestSuite();
         AbstractTestCaseIf tc = ts.getTestCase("org.nato.ivct.rpr.warfare.TC_IR_RPR2_0017");
         JSONObject p = ts.getParameterTemplate();
@@ -66,7 +65,6 @@ public class TC_IR_RPR2_0017Test {
     @Disabled
     @Tag("CoreDS")
     void testCoreDS() throws FileNotFoundException, IOException, ParseException {
-        // TC_IR_RPR2_0017 tc = new TC_IR_RPR2_0017();
         RPR_Warfare_TestSuite ts = new RPR_Warfare_TestSuite();
         AbstractTestCaseIf tc = ts.getTestCase("org.nato.ivct.rpr.warfare.TC_IR_RPR2_0017");
         JSONObject p = ts.getParameterTemplate();
