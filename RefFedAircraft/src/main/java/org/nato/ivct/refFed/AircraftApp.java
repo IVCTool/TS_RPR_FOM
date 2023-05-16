@@ -185,14 +185,8 @@ public class AircraftApp extends NullFederateAmbassador {
             
             aircraft.register();
 
-           //  the 'simple'  boolean Attributes 
             // --- added by brf
-  
-            /*  not necessary for the 'simple' Datatypes 
-            PhysicalEntityStruct firePowerDisabledStr = new PhysicalEntityStruct();            
-            PhysicalEntityStruct firePowerDisabledStr = aircraft.getFirePowerDisabledStr();
-            firePowerDisabledStr.setFirePowerDisabled(true);            
-            aircraft.activateFirePowerD(firePowerDisabledStr);   */
+           //  the 'simple'  boolean Attributes
             // for other Attributes e.g. CamouflageType we may need  a Struct
             
             aircraft.setEngineSmokeOn(true);            

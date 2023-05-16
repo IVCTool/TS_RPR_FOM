@@ -58,23 +58,7 @@ public class PhysicalEntity extends BaseEntity {
     
     
     // TODO: create fields
-    
-    // added by brf    
-    //private PhysicalEntityStruct aFirePowerDisabledStr = null;                 
-    //private PhysicalEntityStruct aIsConcealedStr = null;
-    //private PhysicalEntityStruct aTentDeployedStr = null ;
-
-    /**
-     * attributes moved into generic attributeMap managed by HLAobjectRoot
-     * 
-     private HLAboolean aEngineSmokeOn = null;
-     private HLAboolean aFirePowerDisabled = null;
-     private HLAboolean aFlamesPresent= null;
-     private HLAboolean aIsConcealed = null;
-     private HLAboolean aTentDeployed = null;
-     */
-    //------------
-    
+     
 
     public PhysicalEntity() throws RprBuilderException {
         super();
@@ -99,6 +83,7 @@ public class PhysicalEntity extends BaseEntity {
     }
 
     
+
     // attribute setter and getter
 
     public void setEngineSmokeOn(boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
@@ -171,22 +156,6 @@ public class PhysicalEntity extends BaseEntity {
             setAttributeValue(Attributes.TentDeployed.name(), attribute);
         }
         return attribute.getValue();
-    }
-    
-    
- 
-    /*
-     *   public void setCamouflageType(boolean tentDeployed) {
-        (( whatever   .....Value(tentDeployed);
-    }
-    public boolean  getCamouflageType() {
-        return ((whatever ......getValue();
-    }
-     
-    */
-    // -------------  end of added by brf
-    
-    
-    
+    }  
 }
 
