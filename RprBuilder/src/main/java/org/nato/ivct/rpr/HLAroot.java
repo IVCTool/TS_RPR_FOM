@@ -14,17 +14,22 @@ limitations under the License. */
 
 package org.nato.ivct.rpr;
 
+import hla.rti1516e.RTIambassador;
 
 public class HLAroot {
 
     // reference object to manage common class specific settings
     private static HLAroot anchor;
+    protected static RTIambassador rtiAmbassador;
 
-
-
+    public static void initialize(RTIambassador rtiAmbassador2Use) {
+        rtiAmbassador = rtiAmbassador2Use;
+    }
 
     /**
-     * Get class name in HLA-style as full path with '.' separators. 
+     * Get class name in HLA-style as full path with '.' separators, using root
+     * as the terminated top level class. The typical usage of this method is 
+     * from with the HLAobjectRoot and the HLAinteractionRoot classes. 
      * 
      * @return
      */
