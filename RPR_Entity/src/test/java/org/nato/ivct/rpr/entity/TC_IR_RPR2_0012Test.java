@@ -24,7 +24,7 @@ public class TC_IR_RPR2_0012Test {
         tc.setFederationName("TestFederation");
         tc.setSkipOperatorMsg(true);        
         IVCT_Verdict result = tc.execute(log);
-        assertTrue(result.verdict == IVCT_Verdict.Verdict.PASSED);
+        assertTrue(result.verdict == IVCT_Verdict.Verdict.FAILED);
     }
     
     

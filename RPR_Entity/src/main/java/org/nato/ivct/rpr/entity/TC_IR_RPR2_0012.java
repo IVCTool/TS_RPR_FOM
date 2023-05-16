@@ -28,6 +28,7 @@ import org.nato.ivct.rpr.objects.Platform;
 import org.nato.ivct.rpr.objects.HLAobjectRoot;
 import org.slf4j.Logger;
 
+import de.fraunhofer.iosb.tc_lib.TcFailed;
 import de.fraunhofer.iosb.tc_lib_if.AbstractTestCaseIf;
 import de.fraunhofer.iosb.tc_lib_if.TcFailedIf;
 import de.fraunhofer.iosb.tc_lib_if.TcInconclusiveIf;
@@ -402,7 +403,7 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 	      //logger.info("test {} passed", this.getClass().getName());
         if (! matchList.isEmpty() ) {
         	logger.info("test {} failed", this.getClass().getName());
-			throw new TcInconclusiveIf("Failed because: ...");
+			throw new TcFailed("Failed because: ...");
         } else {
         	logger.info("test {} passed", this.getClass().getName());	        	
         }
