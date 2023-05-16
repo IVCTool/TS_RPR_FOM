@@ -14,12 +14,10 @@ limitations under the License. */
 
 package org.nato.ivct.rpr.entity;
 
-import de.fraunhofer.iosb.tc_lib_if.AbstractTestCaseIf;
 import de.fraunhofer.iosb.tc_lib.HlaTestSuite;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.slf4j.LoggerFactory;
@@ -34,17 +32,5 @@ public class RPR_Entity_TestSuite extends HlaTestSuite {
     JSONObject description;
 
     public static final org.slf4j.Logger log = LoggerFactory.getLogger(RPR_Entity_TestSuite.class);
-
-    @Override
-    public AbstractTestCaseIf getTestCase(String testCaseId) {
-        log.trace("got test case id {} to find", testCaseId);
-        if (testCaseId.equals(TC_IR_RPR2_0008.class.getName())) {
-            return new TC_IR_RPR2_0008();
-        } else if (testCaseId.equals(TC_IR_RPR2_0011.class.getName())) {
-            return new TC_IR_RPR2_0011();
-        }
-        log.trace("nothing found");
-        return null;
-    }
 
 }

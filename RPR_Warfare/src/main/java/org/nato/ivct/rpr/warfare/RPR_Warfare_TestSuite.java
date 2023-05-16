@@ -35,16 +35,4 @@ public class RPR_Warfare_TestSuite extends HlaTestSuite {
 
     public static final org.slf4j.Logger log = LoggerFactory.getLogger(RPR_Warfare_TestSuite.class);
 
-    @Override
-    public AbstractTestCaseIf getTestCase(String testCaseId) {
-        log.trace("got test case id {} to find", testCaseId);
-        if (testCaseId.equals(TC_IR_RPR2_0017.class.getName())) {
-            return new TC_IR_RPR2_0017();
-        } else if (testCaseId.equals(TC_IR_RPR2_0018.class.getName())) {
-            return new TC_IR_RPR2_0018();
-        }
-        log.trace("nothing found");
-        return null;
-    }
-
 }

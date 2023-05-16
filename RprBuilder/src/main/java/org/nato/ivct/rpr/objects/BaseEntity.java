@@ -16,16 +16,11 @@
 
 package org.nato.ivct.rpr.objects;
 
-import java.util.Map.Entry;
-
 import org.nato.ivct.rpr.RprBuilderException;
 import org.nato.ivct.rpr.datatypes.EntityIdentifierStruct;
 import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
 import org.nato.ivct.rpr.datatypes.SpatialVariantStruct;
 
-import hla.rti1516e.AttributeHandle;
-import hla.rti1516e.AttributeHandleValueMap;
-import hla.rti1516e.encoding.DecoderException;
 import hla.rti1516e.encoding.EncoderException;
 import hla.rti1516e.encoding.HLAfixedRecord;
 import hla.rti1516e.encoding.HLAoctet;
@@ -46,44 +41,22 @@ public class BaseEntity extends HLAobjectRoot {
         RelativeSpatial
     }
     
-    private EntityTypeStruct aEntityType = null;
-    private EntityIdentifierStruct aEntityIdentifier = null;
-    private SpatialVariantStruct aSpatial = null;
-    // following are the not-yet typed attributes
-    private HLAfixedRecord aIsPartOf = null;
-    private HLAvariantRecord<HLAoctet> aRelativeSpatical = null;
     
     public BaseEntity() throws RprBuilderException {
         super();
-    }
-    
-    public void decode(AttributeHandleValueMap theAttributes) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, DecoderException {
-        super.decode(theAttributes);
-        for (Entry<AttributeHandle, byte[]> entry : theAttributes.entrySet()) {
-            AttributeHandle attributeHandle = entry.getKey();
-            Attributes attribute = Attributes.valueOf(getHandleString(attributeHandle));
-            switch (attribute) {
-                case EntityType:
-                    getEntityType().decode(entry.getValue());
-                    break;
-                case EntityIdentifier:
-                    getEntityIdentifier().decode(entry.getValue());
-                    break;
-                case IsPartOf:
-                    getIsPartOf().decode(entry.getValue());
-                    break;
-                case Spatial:
-                    getSpatial().decode(entry.getValue());
-                    break;
-                case RelativeSpatial:
-                    getRelativeSpatical().decode(entry.getValue());
-                    break;
-                default:
-                    throw new NameNotFound(attribute.name());
-            }
+        try {
+            // initialize attribute holders by calling the getter for each member attribute
+            getEntityType();
+            getEntityIdentifier();
+            getIsPartOf();
+            getSpatial();
+            getRelativeSpatical();
+        } catch (NameNotFound | InvalidObjectClassHandle | FederateNotExecutionMember | NotConnected
+                | RTIinternalError e) {
+            throw new RprBuilderException(e.getMessage());
         }
     }
-
+    
     public void addSubscribe(Attributes attribute) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
         addSubAttribute(attribute.name());
     }
@@ -130,38 +103,34 @@ public class BaseEntity extends HLAobjectRoot {
      * setter and getter for BaseEntity attributes
      */
     public void setEntityType (EntityTypeStruct value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
-        aEntityType = value;
-        setAttributeValue(Attributes.EntityType.name(), aEntityType.getDataElement());
+        setAttributeValue(Attributes.EntityType.name(), value);
     }
     public EntityTypeStruct getEntityType() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
+        EntityTypeStruct aEntityType = (EntityTypeStruct) getAttribute(Attributes.EntityType.name());
         if (aEntityType == null) {
             aEntityType = new EntityTypeStruct();
+            setEntityType(aEntityType);
         }
-        return aEntityType;
-    }
-    public Boolean isSetEntityType() {
-        return (aEntityType != null);
+        return (aEntityType);
     }
 
     public void setEntityIdentifier(EntityIdentifierStruct value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
-        aEntityIdentifier = value;
-        setAttributeValue(Attributes.EntityIdentifier.name(), value.getDataElement());
+        setAttributeValue(Attributes.EntityIdentifier.name(), value);
     }
     public EntityIdentifierStruct getEntityIdentifier() throws RTIinternalError, NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, EncoderException {
+        EntityIdentifierStruct aEntityIdentifier = (EntityIdentifierStruct) getAttribute(Attributes.EntityIdentifier.name());
         if (aEntityIdentifier == null) {
             aEntityIdentifier = new EntityIdentifierStruct();
-            setAttributeValue(Attributes.EntityIdentifier.name(), aEntityIdentifier);
+            setEntityIdentifier(aEntityIdentifier);
         }
         return aEntityIdentifier;
-    }
-    public Boolean isSetEntityIdentifier() {
-        return (aEntityIdentifier != null);
     }
 
     public void setIsPartOf (HLAfixedRecord value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         setAttributeValue (Attributes.IsPartOf.name(), value);
     }
-    public HLAfixedRecord getIsPartOf() {
+    public HLAfixedRecord getIsPartOf() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        HLAfixedRecord aIsPartOf = (HLAfixedRecord) getAttribute(Attributes.IsPartOf.name());
         if (aIsPartOf == null) {
             aIsPartOf = encoderFactory.createHLAfixedRecord();
             aIsPartOf.add(encoderFactory.createHLAoctet());       // EntityKind
@@ -171,38 +140,33 @@ public class BaseEntity extends HLAobjectRoot {
             aIsPartOf.add(encoderFactory.createHLAoctet());       // Subcategory
             aIsPartOf.add(encoderFactory.createHLAoctet());       // Specific
             aIsPartOf.add(encoderFactory.createHLAoctet());       // Extra
+            setIsPartOf(aIsPartOf);
         }
         return aIsPartOf;
-    }
-    public Boolean isSetIsPartOf() {
-        return (aIsPartOf != null);
     }
 
     public void setSpatial (SpatialVariantStruct value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         setAttributeValue (Attributes.Spatial.name(), value);
     }
-    public SpatialVariantStruct getSpatial() throws RTIinternalError {
+    public SpatialVariantStruct getSpatial() throws RTIinternalError, NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, EncoderException {
+        SpatialVariantStruct aSpatial = (SpatialVariantStruct) getAttribute(Attributes.Spatial.name());
         if (aSpatial == null) {
             aSpatial = new SpatialVariantStruct();
+            setSpatial(aSpatial);
         }
         return aSpatial;
     }
-    public Boolean isSetSpatial() {
-        return (aSpatial != null);
-    }
 
-    public void setRelativeSpatical (HLAvariantRecord value) {
-        aRelativeSpatical = value;
+    public void setRelativeSpatical (HLAvariantRecord value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        setAttributeValue (Attributes.RelativeSpatial.name(), value);
     }
     public HLAvariantRecord getRelativeSpatical () {
+        HLAvariantRecord aRelativeSpatical = (HLAvariantRecord) getAttribute(Attributes.RelativeSpatial.name());
         if (aRelativeSpatical == null) {
             HLAoctet spatialDiscriminant = encoderFactory.createHLAoctet((byte) 1);
             aRelativeSpatical = encoderFactory.createHLAvariantRecord(spatialDiscriminant);
         }
         return aRelativeSpatical;
-    }
-    public Boolean isSetRelativeSpatical() {
-        return (aRelativeSpatical != null);
     }
 
 

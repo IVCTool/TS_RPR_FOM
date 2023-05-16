@@ -13,6 +13,7 @@ import java.io.IOException;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import hla.rti1516e.RTIambassador;
@@ -45,6 +46,7 @@ public class TC_IR_RPR2_0017Test {
     }
 
     @Test
+    @Disabled
     @Tag("VRforces")
     void testVRforces() throws FileNotFoundException, IOException, ParseException {
         // TC_IR_RPR2_0017 tc = new TC_IR_RPR2_0017();
@@ -61,6 +63,7 @@ public class TC_IR_RPR2_0017Test {
     }
 
     @Test
+    @Disabled
     @Tag("CoreDS")
     void testCoreDS() throws FileNotFoundException, IOException, ParseException {
         // TC_IR_RPR2_0017 tc = new TC_IR_RPR2_0017();
