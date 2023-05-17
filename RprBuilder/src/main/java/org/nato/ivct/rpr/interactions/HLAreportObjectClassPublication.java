@@ -77,18 +77,18 @@ public class HLAreportObjectClassPublication extends HLAreport {
         return candidate;
     }
     
-    public void decode(ParameterHandleValueMap values) {
-        super.decode(values);
-        try {
-            ByteWrapper value = values.getValueReference(getParameterHandle(Attributes.HLAnumberOfClasses.name()));
-            if (value != null) {
-                aHLAnumberOfClasses.decode(value);
-            }
-        } catch (DecoderException e) {
-            log.error ("error in decode", e);
-        }
-        aHLAobjectClass = values.get(getParameterHandle(Attributes.HLAobjectClass.name()));
-        aHLAattributeList = values.get(getParameterHandle(Attributes.HLAattributeList.name()));
-    }
+    // public void decode(ParameterHandleValueMap values) {
+    //     super.decode(values);
+    //     try {
+    //         ByteWrapper value = values.getValueReference(getParameterHandle(Attributes.HLAnumberOfClasses.name()));
+    //         if (value != null) {
+    //             aHLAnumberOfClasses.decode(value);
+    //         }
+    //     } catch (DecoderException e) {
+    //         log.error ("error in decode", e);
+    //     }
+    //     aHLAobjectClass = values.get(getParameterHandle(Attributes.HLAobjectClass.name()));
+    //     aHLAattributeList = values.get(getParameterHandle(Attributes.HLAattributeList.name()));
+    // }
 
 }

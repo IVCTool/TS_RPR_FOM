@@ -162,41 +162,45 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 		public void receiveInteraction(InteractionClassHandle interactionClass, ParameterHandleValueMap theParameters,
 				byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport,
 				SupplementalReceiveInfo receiveInfo) throws FederateInternalError {
-			// Test for HLAreportInteractionPublication interaction
-			HLAreportInteractionPublication reportPubs = HLAreportInteractionPublication.discover(interactionClass);
-			if (reportPubs != null) {
-				reportPubs.decode(theParameters);
-				receivedHLAreportInteractionPublication = true;
-				logger.info("received HLAreportInteractionPublication report for Class={}, HlaClassName={}", reportPubs.getClass(), reportPubs.getHlaClassName());
-				federateDiscovered.release(1);
-				return;
-			}
-			// Test for HLAreportInteractionSubscription interaction
-			HLAreportInteractionSubscription reportSubs = HLAreportInteractionSubscription.discover(interactionClass);
-			if (reportSubs != null) {
-				reportSubs.decode(theParameters);
-				receivedHLAreportInteractionSubscription = true;
-				logger.info("received HLAreportInteractionSubscription report for Class={}, HlaClassName={}", reportSubs.getClass(), reportSubs.getHlaClassName());
-				federateDiscovered.release(1);
-				return;
-			}
-			// Test for HLAreportObjectClassPublication interaction
-			HLAreportObjectClassPublication classPubs = HLAreportObjectClassPublication.discover(interactionClass);
-			if (classPubs != null) {
-				classPubs.decode(theParameters);
-				receivedHLAreportObjectClassPublication = true;
-				logger.info("received HLAreportObjectClassPublication report for objectClass={}, numberOfClasses={}", classPubs.getHLAobjectClass(), classPubs.getaHLAnumberOfClasses());
-				federateDiscovered.release(1);
-				return;
-			}
-			// Test for HLAreportObjectClassSubscription interaction
-			HLAreportObjectClassSubscription classSubs = HLAreportObjectClassSubscription.discover(interactionClass);
-			if (classSubs != null) {
-				classSubs.decode(theParameters);
-				receivedHLAreportObjectClassSubscription = true;
-				logger.info("received HLAreportObjectClassSubscription report for Class={}, HlaClassName={}", classSubs.getClass(), classSubs.getHlaClassName());
-				federateDiscovered.release(1);
-				return;
+			try {
+				// Test for HLAreportInteractionPublication interaction
+				HLAreportInteractionPublication reportPubs = HLAreportInteractionPublication.discover(interactionClass);
+				if (reportPubs != null) {
+					reportPubs.decode(theParameters);
+					receivedHLAreportInteractionPublication = true;
+					logger.info("received HLAreportInteractionPublication report for Class={}, HlaClassName={}", reportPubs.getClass(), reportPubs.getHlaClassName());
+					federateDiscovered.release(1);
+					return;
+				}
+				// Test for HLAreportInteractionSubscription interaction
+				HLAreportInteractionSubscription reportSubs = HLAreportInteractionSubscription.discover(interactionClass);
+				if (reportSubs != null) {
+					reportSubs.decode(theParameters);
+					receivedHLAreportInteractionSubscription = true;
+					logger.info("received HLAreportInteractionSubscription report for Class={}, HlaClassName={}", reportSubs.getClass(), reportSubs.getHlaClassName());
+					federateDiscovered.release(1);
+					return;
+				}
+				// Test for HLAreportObjectClassPublication interaction
+				HLAreportObjectClassPublication classPubs = HLAreportObjectClassPublication.discover(interactionClass);
+				if (classPubs != null) {
+					classPubs.decode(theParameters);
+					receivedHLAreportObjectClassPublication = true;
+					logger.info("received HLAreportObjectClassPublication report for objectClass={}, numberOfClasses={}", classPubs.getHLAobjectClass(), classPubs.getaHLAnumberOfClasses());
+					federateDiscovered.release(1);
+					return;
+				}
+				// Test for HLAreportObjectClassSubscription interaction
+				HLAreportObjectClassSubscription classSubs = HLAreportObjectClassSubscription.discover(interactionClass);
+				if (classSubs != null) {
+					classSubs.decode(theParameters);
+					receivedHLAreportObjectClassSubscription = true;
+					logger.info("received HLAreportObjectClassSubscription report for Class={}, HlaClassName={}", classSubs.getClass(), classSubs.getHlaClassName());
+					federateDiscovered.release(1);
+					return;
+				}
+			} catch (DecoderException e) {
+				logger.error("unhandled decoder exception", e);
 			}
 		}
     }

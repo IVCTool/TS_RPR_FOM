@@ -14,9 +14,14 @@ limitations under the License. */
 
 package org.nato.ivct.rpr;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import hla.rti1516e.RTIambassador;
 
 public class HLAroot {
+
+    private static final Logger log = LoggerFactory.getLogger(HLAroot.class);
 
     // reference object to manage common class specific settings
     private static HLAroot anchor;
