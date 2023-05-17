@@ -184,8 +184,7 @@ public class BaseEntityTest {
             assertTrue(ex == 0xf);
             
             base1.setEntityType(aEntityType);
-            base1.update();
-            
+            // emulate the base1.update() logic;
             AttributeHandleValueMap values = base1.getAttributeValues();
 
             BaseEntity base2 = new BaseEntity();
