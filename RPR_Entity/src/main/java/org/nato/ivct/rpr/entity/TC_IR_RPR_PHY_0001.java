@@ -131,9 +131,8 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
 			try {			
                 String receivedClass = rtiAmbassador.getObjectClassName(theObjectClass);
                 
-                
-                
-                //    Hier wird etwas noch nicht korrekt   uebergeben  die Klassen Namen stimmen nicht ueberein 
+                // to Do
+                // not yet  implanted,  incorrect Klassnames ..... 
                 
                 if (receivedClass.equals(phyEntity.getHlaClassName())) {
 					// create the helper object
@@ -333,14 +332,12 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
 			System.out.println("Added some  attributes to :"+  rtiAmbassador.getObjectClassName(temp_objectClassHandle ) );
 			
 			// wait until object is discovered
-			boolean waitingFor = true;
-			while (waitingFor) {
-				
-				// the Test
-				
-			}
 			
-			
+			boolean gotEnoughAtttributes = true;
+            while (! gotEnoughAtttributes) {
+                // the Test ......
+            }
+    
 			
 		} catch (Exception e) {
 			throw new TcInconclusiveIf(e.getMessage());

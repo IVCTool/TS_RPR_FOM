@@ -157,31 +157,29 @@ public class TC_IR_RPR2_0009 extends AbstractTestCaseIf {
 	}
 
 	
-		
-	@Override
-	protected void performTest(Logger logger) throws TcInconclusiveIf, TcFailedIf {
-		logger.info("perform test {}", this.getClass().getName());
-		
-		Aircraft.initialize(rtiAmbassador);     //to adjust  //  move to Preamble ?
+    @Override
+    protected void performTest(Logger logger) throws TcInconclusiveIf, TcFailedIf {
+        logger.info("perform test {}", this.getClass().getName());
 
-		try {
-			
-			// aircraft = new Aircraft();    //to adjust
-			// aircraft.addSubscribe(BaseEntity.Attributes.EntityIdentifier);   //to adjust
-			// aircraft.subscribe();         //to adjust
+        Aircraft.initialize(rtiAmbassador); // to adjust // move to Preamble ?
 
-			boolean seenEnough = false;
-			while (!seenEnough) {
-				// the Test ......
-			}
+        try {
 
-		} catch (Exception e) {
-			throw new TcInconclusiveIf(e.getMessage());
-		}
+            // aircraft = new Aircraft(); //to adjust
+            // aircraft.addSubscribe(BaseEntity.Attributes.EntityIdentifier); //to adjust
+            // aircraft.subscribe(); //to adjust
 
-		logger.info("test {} passed", this.getClass().getName());
-	}
-	
+            boolean gotEnoughAtttributes = true;
+            while (!gotEnoughAtttributes) {
+                // the Test ......
+            }
+
+        } catch (Exception e) {
+            throw new TcInconclusiveIf(e.getMessage());
+        }
+
+        logger.info("test {} passed", this.getClass().getName());
+    }
 
 	@Override
 	protected void postambleAction(Logger logger) throws TcInconclusiveIf {

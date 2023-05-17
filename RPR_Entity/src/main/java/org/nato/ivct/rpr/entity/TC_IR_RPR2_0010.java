@@ -247,21 +247,21 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
 			}
 			
 			toTestEntity.addSubscribe(BaseEntity.Attributes.EntityIdentifier);  // to be adjusted
-			// ...
 			
 			toTestEntity.subscribe();
+			    
+            boolean gotEnoughAtttributes = true;
+            while (!gotEnoughAtttributes) {
+                // the Test ......
 
-			boolean seenEnough = false;
-			while (!seenEnough) {
-				// the Test ......
-			}
+            }
 
-		} catch (Exception e) {
-			throw new TcInconclusiveIf(e.getMessage());
-		}
+        } catch (Exception e) {
+            throw new TcInconclusiveIf(e.getMessage());
+        }
 
-		logger.info("test {} passed", this.getClass().getName());
-	}
+        logger.info("test {} passed", this.getClass().getName());
+    }
 	
 
 	@Override
