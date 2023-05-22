@@ -250,8 +250,8 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
 			
 			toTestEntity.subscribe();
 			    
-            boolean gotEnoughAtttributes = true;
-            while (!gotEnoughAtttributes) {
+            boolean gotEnoughAtttributes = true; 
+            while (!gotEnoughAtttributes) { 
                 // the Test ......
 
             }
