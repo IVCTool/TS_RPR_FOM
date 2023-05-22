@@ -375,42 +375,42 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 		    
 				// the Test ......
 
-				for (int i = 0; i < 10; i++) {     // toDo  change this to a better  mechanism
-					
-					//check  objectClassNamesAndReceivedAttributeList  against a List with non applicable attributes for this class					
-					// so we check for every ObjectClassName  in the map objectClassNamesAndReceivedAttributeList
-					for (String tempObjectClassname : objectClassNamesAndReceivedAttributeList.keySet()) {
+                for (int i = 0; i < 10; i++) { // toDo change this to a better mechanism
 
-						// if there is a array of nonApplicable Attributes in our map classNamesAndNaAttributList for this classname						
-						if (classNamesAndNaAttributList.get(tempObjectClassname) != null) {
-							String[] tempNonApplicableAttributList = classNamesAndNaAttributList.get(tempObjectClassname);
+                    // check objectClassNamesAndReceivedAttributeList against a List with non applicable attributes for this class
+                    // so we check for every ObjectClassName in the map objectClassNamesAndReceivedAttributeList
+                    for (String tempObjectClassname : objectClassNamesAndReceivedAttributeList.keySet()) {
 
-							// List of for this classname received attributes ( from the in  reflectAttributesvalues created ArrayList)
-							ArrayList<String> tempReceivedAttributList = objectClassNamesAndReceivedAttributeList.get(tempObjectClassname);
+                        // if there is a array of nonApplicable Attributes in our map classNamesAndNaAttributList for this classname
+                        if (classNamesAndNaAttributList.get(tempObjectClassname) != null) {
+                            String[] tempNonApplicableAttributList = classNamesAndNaAttributList.get(tempObjectClassname);
 
-							// for every for/with this classname received attribut
-							for (String receivedAttribut : tempReceivedAttributList) {
+                            // List of for this classname received attributes ( from the in reflectAttributesvalues created ArrayList)
+                            ArrayList<String> tempReceivedAttributList = objectClassNamesAndReceivedAttributeList.get(tempObjectClassname);
 
-								// for every Attribut in the non applicable attributList for this classname
-								for (String nonAppAttribute : tempNonApplicableAttributList) {
+                            // for every for/with this classname received attribut
+                            for (String receivedAttribut : tempReceivedAttributList) {
 
-									// if the received attribut is in the nonapplicable attributlist for this classname the test failed
-									if (receivedAttribut.equals(nonAppAttribute)) {
-										logger.debug("###  test failed  " + tempObjectClassname + " updated  " + receivedAttribut); // Debug										
-										match = true ;
-										
-										if (! resultListReceivedNaAttributes.contains(receivedAttribut)) {
-										  resultListReceivedNaAttributes.add(receivedAttribut);
-										}										
-										// building a List with classnames and received nonapplicable Attributes
-										resultMapClassNamesAndReceivedNaAttributes.put(tempObjectClassname, resultListReceivedNaAttributes );
-									}
-								}
-							}
-						}
-					}
-					Thread.sleep(1000);
-				}
+                                // for every Attribut in the non applicable attributList for this classname
+                                for (String nonAppAttribute : tempNonApplicableAttributList) {
+
+                                    // if the received attribut is in the nonapplicable attributlist for this classname the test failed
+                                    if (receivedAttribut.equals(nonAppAttribute)) {
+                                        logger.debug("###  test failed  " + tempObjectClassname + " updated  " + receivedAttribut); // Debug
+                                        match = true;
+
+                                        if (!resultListReceivedNaAttributes.contains(receivedAttribut)) {
+                                            resultListReceivedNaAttributes.add(receivedAttribut);
+                                        }
+                                        // building a List with classnames and received nonapplicable Attributes
+                                        resultMapClassNamesAndReceivedNaAttributes.put(tempObjectClassname, resultListReceivedNaAttributes);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    Thread.sleep(1000);
+                }
 
 		} catch (Exception e) {
 			throw new TcInconclusiveIf(e.getMessage());
