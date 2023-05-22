@@ -17,9 +17,7 @@ package org.nato.ivct.rpr.interactions;
 import org.nato.ivct.rpr.OmtBuilder;
 import org.nato.ivct.rpr.RprBuilderException;
 
-import hla.rti1516e.ParameterHandleValueMap;
-import hla.rti1516e.encoding.ByteWrapper;
-import hla.rti1516e.encoding.DecoderException;
+import hla.rti1516e.encoding.DataElementFactory;
 import hla.rti1516e.encoding.EncoderException;
 import hla.rti1516e.encoding.HLAbyte;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
@@ -34,28 +32,21 @@ public class HLAfederate extends HLAmanager {
         HLAfederate
     }
     
-    // private HLAbyte aHLAfederate;
 
     public HLAfederate () throws NameNotFound, FederateNotExecutionMember, NotConnected, RTIinternalError, RprBuilderException {
         super();
-        // aHLAfederate = OmtBuilder.getEncoderFactory().createHLAbyte();
-        addParameter(Attributes.HLAfederate.name(), OmtBuilder.getEncoderFactory().createHLAbyte());
+        DataElementFactory<HLAbyte> byteFactory = new DataElementFactory<HLAbyte>()
+        {
+            public HLAbyte createElement(int index)
+            {
+                return OmtBuilder.getEncoderFactory().createHLAbyte();
+            }
+        };
+        addParameter(Attributes.HLAfederate.name(), OmtBuilder.getEncoderFactory().createHLAvariableArray(byteFactory));
     }
     
     public void setHLAfederate (byte[] value) throws NameNotFound, InvalidInteractionClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException, RprBuilderException {
-        setParameter2(Attributes.HLAfederate.name(), value);
+        setParameter(Attributes.HLAfederate.name(), value);
     }
-
-    // public void decode(ParameterHandleValueMap values)  {
-    //     ByteWrapper value = values.getValueReference(getParameterHandle(Attributes.HLAfederate.name()));
-    //     if (value != null) {
-    //         try {
-    //             aHLAfederate.decode(value);
-    //         } catch (DecoderException e) {
-    //             // TODO Auto-generated catch block
-    //             e.printStackTrace();
-    //         }
-    //     }
-    // }
 
 }

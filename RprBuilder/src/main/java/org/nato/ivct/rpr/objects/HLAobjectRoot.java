@@ -152,7 +152,6 @@ public class HLAobjectRoot extends HLAroot {
     }
 
     /**
-     * 
      * Add a given attribute name to the set of published attributes. This publication set
      * will be valid for all instances of the current object class.
      * @param attributeName

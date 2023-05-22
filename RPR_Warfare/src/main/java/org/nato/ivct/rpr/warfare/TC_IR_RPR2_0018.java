@@ -148,11 +148,15 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 					logger.trace("HLAfederate values: {}<{}>", fed.getHLAfederateName(), fed.getHLAfederateHandle());
 					if (fed.getHLAfederateName().equalsIgnoreCase(getSutFederateName())) {
 						sutDiscovered = true;
-						logger.info("Received HLAfederate update for System under test <{}[{}]> on host {} @ {}", fed.getHLAfederateName(), fed.getHLAfederateType(), fed.getHLAfederateHost(), fed.getHLARTIversion());
+						logger.info("Received HLAfederate update for System under test <{}[{}]> on host {} @ {}", 
+							fed.getHLAfederateName(), 
+							fed.getHLAfederateType(), 
+							fed.getHLAfederateHost(), 
+							fed.getHLARTIversion());
 						federateDiscovered.release(1);
 					}
 				}
-			} catch (RprBuilderException | DecoderException  e) {
+			} catch (RprBuilderException | DecoderException | NameNotFound | InvalidObjectClassHandle | FederateNotExecutionMember | NotConnected | RTIinternalError  e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -166,6 +170,7 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 				// Test for HLAreportInteractionPublication interaction
 				HLAreportInteractionPublication reportPubs = HLAreportInteractionPublication.discover(interactionClass);
 				if (reportPubs != null) {
+					reportPubs.clear();
 					reportPubs.decode(theParameters);
 					receivedHLAreportInteractionPublication = true;
 					logger.info("received HLAreportInteractionPublication report for Class={}, HlaClassName={}", reportPubs.getClass(), reportPubs.getHlaClassName());
@@ -175,6 +180,7 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 				// Test for HLAreportInteractionSubscription interaction
 				HLAreportInteractionSubscription reportSubs = HLAreportInteractionSubscription.discover(interactionClass);
 				if (reportSubs != null) {
+					reportSubs.clear();
 					reportSubs.decode(theParameters);
 					receivedHLAreportInteractionSubscription = true;
 					logger.info("received HLAreportInteractionSubscription report for Class={}, HlaClassName={}", reportSubs.getClass(), reportSubs.getHlaClassName());
@@ -184,6 +190,7 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 				// Test for HLAreportObjectClassPublication interaction
 				HLAreportObjectClassPublication classPubs = HLAreportObjectClassPublication.discover(interactionClass);
 				if (classPubs != null) {
+					classPubs.clear();
 					classPubs.decode(theParameters);
 					receivedHLAreportObjectClassPublication = true;
 					logger.info("received HLAreportObjectClassPublication report for objectClass={}, numberOfClasses={}", classPubs.getHLAobjectClass(), classPubs.getaHLAnumberOfClasses());
@@ -193,6 +200,7 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 				// Test for HLAreportObjectClassSubscription interaction
 				HLAreportObjectClassSubscription classSubs = HLAreportObjectClassSubscription.discover(interactionClass);
 				if (classSubs != null) {
+					classSubs.clear();
 					classSubs.decode(theParameters);
 					receivedHLAreportObjectClassSubscription = true;
 					logger.info("received HLAreportObjectClassSubscription report for Class={}, HlaClassName={}", classSubs.getClass(), classSubs.getHlaClassName());
@@ -284,7 +292,8 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 					federateDiscovered.acquire();
 					for (HLAfederate federate : HLAfederate.knownObjects.values()) {
 						try {
-							if ((federate.getHLAfederateHandle() != null) && (requestReport.get(federate.getObjectHandle()))) {
+							byte[] fh = federate.getHLAfederateHandle();
+							if (federate.isUpdated(HLAfederate.Attributes.HLAfederateHandle.name()) && (requestReport.get(federate.getObjectHandle()))) {
 								reqPublications.setHLAfederate(federate.getHLAfederateHandle());
 								reqPublications.send();
 								reqSubscriptions.setHLAfederate(federate.getHLAfederateHandle());
