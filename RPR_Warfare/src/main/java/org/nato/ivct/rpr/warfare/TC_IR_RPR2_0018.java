@@ -170,40 +170,40 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 				// Test for HLAreportInteractionPublication interaction
 				HLAreportInteractionPublication reportPubs = HLAreportInteractionPublication.discover(interactionClass);
 				if (reportPubs != null) {
+					logger.info("HLAreportInteractionPublication received");
 					reportPubs.clear();
 					reportPubs.decode(theParameters);
 					receivedHLAreportInteractionPublication = true;
-					logger.info("received HLAreportInteractionPublication report for Class={}, HlaClassName={}", reportPubs.getClass(), reportPubs.getHlaClassName());
 					federateDiscovered.release(1);
 					return;
 				}
 				// Test for HLAreportInteractionSubscription interaction
 				HLAreportInteractionSubscription reportSubs = HLAreportInteractionSubscription.discover(interactionClass);
 				if (reportSubs != null) {
+					logger.info("HLAreportInteractionSubscription received");
 					reportSubs.clear();
 					reportSubs.decode(theParameters);
 					receivedHLAreportInteractionSubscription = true;
-					logger.info("received HLAreportInteractionSubscription report for Class={}, HlaClassName={}", reportSubs.getClass(), reportSubs.getHlaClassName());
 					federateDiscovered.release(1);
 					return;
 				}
 				// Test for HLAreportObjectClassPublication interaction
 				HLAreportObjectClassPublication classPubs = HLAreportObjectClassPublication.discover(interactionClass);
 				if (classPubs != null) {
+					logger.info("HLAreportObjectClassPublication received");
 					classPubs.clear();
 					classPubs.decode(theParameters);
 					receivedHLAreportObjectClassPublication = true;
-					logger.info("received HLAreportObjectClassPublication report for objectClass={}, numberOfClasses={}", classPubs.getHLAobjectClass(), classPubs.getaHLAnumberOfClasses());
 					federateDiscovered.release(1);
 					return;
 				}
 				// Test for HLAreportObjectClassSubscription interaction
 				HLAreportObjectClassSubscription classSubs = HLAreportObjectClassSubscription.discover(interactionClass);
 				if (classSubs != null) {
+					logger.info("HLAreportObjectClassSubscription received");
 					classSubs.clear();
 					classSubs.decode(theParameters);
 					receivedHLAreportObjectClassSubscription = true;
-					logger.info("received HLAreportObjectClassSubscription report for Class={}, HlaClassName={}", classSubs.getClass(), classSubs.getHlaClassName());
 					federateDiscovered.release(1);
 					return;
 				}
@@ -253,7 +253,7 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 				| SaveInProgress | RestoreInProgress | FederateAlreadyExecutionMember | NotConnected e) {
 			throw new TcInconclusiveIf(e.getMessage());
 		}
-        logger.info("Joined federation <{}>", federationName);
+        logger.trace("Joined federation <{}>", federationName);
     }
 
     @Override
@@ -292,10 +292,13 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 					federateDiscovered.acquire();
 					for (HLAfederate federate : HLAfederate.knownObjects.values()) {
 						try {
-							byte[] fh = federate.getHLAfederateHandle();
-							if (federate.isUpdated(HLAfederate.Attributes.HLAfederateHandle.name()) && (requestReport.get(federate.getObjectHandle()))) {
+							if (federate.isUpdated(HLAfederate.Attributes.HLAfederateHandle.name()) 
+							&& (requestReport.get(federate.getObjectHandle()))
+							&& (federate.getHLAfederateName().equalsIgnoreCase(getSutFederateName()))) {
+								logger.info("SuT publications report requested for {}", federate.getHLAfederateName());
 								reqPublications.setHLAfederate(federate.getHLAfederateHandle());
 								reqPublications.send();
+								logger.info("SuT subscription report requested for {}", federate.getHLAfederateName());
 								reqSubscriptions.setHLAfederate(federate.getHLAfederateHandle());
 								reqSubscriptions.send();
 								requestReport.put(federate.getObjectHandle(), false);
@@ -336,7 +339,7 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 
 	@Override
 	protected void postambleAction(Logger logger) throws TcInconclusiveIf {
-        logger.info("postamble action for test {}", this.getClass().getName());
+        logger.trace("postamble action for test {}", this.getClass().getName());
         try {
             rtiAmbassador.resignFederationExecution(ResignAction.NO_ACTION);
 			rtiAmbassador.disconnect();

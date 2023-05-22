@@ -23,11 +23,9 @@ import org.slf4j.LoggerFactory;
 
 import hla.rti1516e.ObjectClassHandle;
 import hla.rti1516e.ObjectInstanceHandle;
-import hla.rti1516e.encoding.DataElement;
 import hla.rti1516e.encoding.DataElementFactory;
 import hla.rti1516e.encoding.HLAbyte;
 import hla.rti1516e.encoding.HLAunicodeString;
-import hla.rti1516e.encoding.HLAvariableArray;
 import hla.rti1516e.exceptions.AttributeNotDefined;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
 import hla.rti1516e.exceptions.InvalidObjectClassHandle;

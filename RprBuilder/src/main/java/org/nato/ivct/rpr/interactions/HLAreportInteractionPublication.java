@@ -14,14 +14,10 @@ limitations under the License. */
 
 package org.nato.ivct.rpr.interactions;
 
-import java.util.Map.Entry;
-
 import org.nato.ivct.rpr.OmtBuilder;
 import org.nato.ivct.rpr.RprBuilderException;
 
 import hla.rti1516e.InteractionClassHandle;
-import hla.rti1516e.ParameterHandle;
-import hla.rti1516e.ParameterHandleValueMap;
 import hla.rti1516e.encoding.DataElementFactory;
 import hla.rti1516e.encoding.HLAbyte;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
@@ -67,11 +63,4 @@ public class HLAreportInteractionPublication extends HLAreport {
         }
         return candidate;
     }
-    
-    // public void decode(ParameterHandleValueMap values) {
-    //     for (Entry<ParameterHandle, byte[]> entry : values.entrySet()) {
-    //         log.trace("decode {} = {}", entry.getKey(), entry.getValue());
-            
-    //     }
-    // }
 }
