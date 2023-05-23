@@ -67,10 +67,6 @@ import hla.rti1516e.exceptions.SaveInProgress;
 import hla.rti1516e.exceptions.UnsupportedCallbackModel;
 
 
-
-
-
-
 /**
  * Interoperability Requirement:  IR-RPR2-0010
  * 
@@ -123,15 +119,13 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
 	String toTestEntityIdentifier="";
 	BaseEntity toTestEntity;
 	
-	
 	 public TC_IR_RPR2_0010() {
 			
 		}
 		
-	    public TC_IR_RPR2_0010(String  _toTestEntityName) {
-	    	toTestEntityIdentifier=_toTestEntityName;
-		}
-	
+	  public TC_IR_RPR2_0010(String  _toTestEntityName) {
+	   	toTestEntityIdentifier=_toTestEntityName;
+	 }
 	
 
 	class TestCaseAmbassador extends NullFederateAmbassador {
@@ -226,34 +220,31 @@ public class TC_IR_RPR2_0010 extends AbstractTestCaseIf {
 		BaseEntity.initialize(rtiAmbassador);     //to adjust  //  move to Preamble ?
 
 		try {
-			
-			switch (toTestEntityIdentifier){
-			  case "Aircraft":                                    //to adjust 
+			switch (toTestEntityIdentifier) {
+			  case "Aircraft":
+                  // TODO adjust to testcase 10
 				  toTestEntity = new Aircraft();
-			   //Anweisung1   toTestEntity
-			    break;			   
+			      break;			   
 			  case "AmphibiousVehicle":
 				  //toTestPlatform = new AmphibiousVehicle();
-			    break;			    
+			      break;			    
 			  case "GroundVehicle":
-				  //toTestPlatform = new GroundVehicle();
-				    break;				    
+				   //toTestPlatform = new GroundVehicle();
+				   break;				    
 			  case "Spacecraft":
-				  //toTestPlatform = new Spacecraft();
-				    break;				    
+				   //toTestPlatform = new Spacecraft();
+				   break;				    
 			  default :
-				  logger.info(" to Test Type  unknown, we assume Aircraft ");
-				  toTestEntity = new Aircraft();
+				   logger.info(" to Test Type  unknown, we assume Aircraft ");
+				   toTestEntity = new Aircraft();
 			}
 			
-			toTestEntity.addSubscribe(BaseEntity.Attributes.EntityIdentifier);  // to be adjusted
-			
+			toTestEntity.addSubscribe(BaseEntity.Attributes.EntityIdentifier); 
+            // TODO to be adjusted to Testcase 10
 			toTestEntity.subscribe();
-			    
-            boolean gotEnoughAtttributes = true; 
+            boolean gotEnoughAtttributes = true;
             while (!gotEnoughAtttributes) { 
                 // the Test ......
-
             }
 
         } catch (Exception e) {

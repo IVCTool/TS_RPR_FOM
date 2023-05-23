@@ -162,9 +162,8 @@ public class TC_IR_RPR2_0009 extends AbstractTestCaseIf {
         logger.info("perform test {}", this.getClass().getName());
 
         Aircraft.initialize(rtiAmbassador); // to adjust // move to Preamble ?
-
+      
         try {
-
             // aircraft = new Aircraft(); //to adjust
             // aircraft.addSubscribe(BaseEntity.Attributes.EntityIdentifier); //to adjust
             // aircraft.subscribe(); //to adjust

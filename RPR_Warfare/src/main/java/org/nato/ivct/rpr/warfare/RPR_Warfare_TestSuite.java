@@ -14,7 +14,6 @@ limitations under the License. */
 
 package org.nato.ivct.rpr.warfare;
 
-import de.fraunhofer.iosb.tc_lib_if.AbstractTestCaseIf;
 import de.fraunhofer.iosb.tc_lib.HlaTestSuite;
 
 import java.io.FileNotFoundException;
