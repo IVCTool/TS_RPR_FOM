@@ -44,6 +44,7 @@ import hla.rti1516e.ObjectClassHandle;
 import hla.rti1516e.ObjectInstanceHandle;
 import hla.rti1516e.OrderType;
 import hla.rti1516e.RTIambassador;
+import hla.rti1516e.ResignAction;
 import hla.rti1516e.RtiFactory;
 import hla.rti1516e.RtiFactoryFactory;
 import hla.rti1516e.TransportationTypeHandle;
@@ -56,15 +57,19 @@ import hla.rti1516e.exceptions.CouldNotOpenFDD;
 import hla.rti1516e.exceptions.ErrorReadingFDD;
 import hla.rti1516e.exceptions.FederateAlreadyExecutionMember;
 import hla.rti1516e.exceptions.FederateInternalError;
+import hla.rti1516e.exceptions.FederateIsExecutionMember;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
+import hla.rti1516e.exceptions.FederateOwnsAttributes;
 import hla.rti1516e.exceptions.FederationExecutionAlreadyExists;
 import hla.rti1516e.exceptions.FederationExecutionDoesNotExist;
 import hla.rti1516e.exceptions.InconsistentFDD;
 import hla.rti1516e.exceptions.InvalidAttributeHandle;
 import hla.rti1516e.exceptions.InvalidLocalSettingsDesignator;
 import hla.rti1516e.exceptions.InvalidObjectClassHandle;
+import hla.rti1516e.exceptions.InvalidResignAction;
 import hla.rti1516e.exceptions.NotConnected;
 import hla.rti1516e.exceptions.ObjectInstanceNotKnown;
+import hla.rti1516e.exceptions.OwnershipAcquisitionPending;
 import hla.rti1516e.exceptions.RTIinternalError;
 import hla.rti1516e.exceptions.RestoreInProgress;
 import hla.rti1516e.exceptions.SaveInProgress;
@@ -176,7 +181,7 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 				// we only want to observe selected  "platform classes" defined in performTest
 				for (Platform p : platformWorkList) {
 					if ( p.getHlaClassName().equals(rtiAmbassador.getObjectClassName(theObjectClassH) ) ) {						
-						logger.info("# discoverObjectInstance: reveived Instance with rti-ObjectClassName:  " + rtiAmbassador.getObjectClassName(theObjectClassH)); // Debug
+						logger.debug("# discoverObjectInstance: reveived Instance with rti-ObjectClassName:  " + rtiAmbassador.getObjectClassName(theObjectClassH)); // Debug
 						
 						// we store a List of ObjectClassNames with their ObjectInstanceHandles
 						if (objectInstanceHandlesAndobjectClassHandle.get(theObjectInstanceH)==null ) {							
@@ -203,7 +208,7 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 			discoverObjectInstance(theObject, theObjectClass, objectName);
 		}
 
-		
+	
 		@Override		
         public void reflectAttributeValues(ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes,
                 byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport,
@@ -329,7 +334,13 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 		logger.info("perform test {}", this.getClass().getName());
 		
 		Platform.initialize(rtiAmbassador);
-		ArrayList<String> matchList = new ArrayList<String>();
+		
+		boolean match = false;
+		
+		// to build a fail - Message
+		
+		ArrayList<String>resultListReceivedNaAttributes=  new ArrayList<String>();;
+		HashMap<String, ArrayList> resultMapClassNamesAndReceivedNaAttributes = new HashMap<String, ArrayList>() ;
 		
 		try {
 			
@@ -364,57 +375,70 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 		    
 				// the Test ......
 
-				for (int i = 0; i < 10; i++) {     // toDo  change this to a better  mechanism
-					
-					//check  objectClassNamesAndReceivedAttributeList  against a List with non applicable attributes for this class
-					
-					// so we check for every ObjectClassName  in the map objectClassNamesAndReceivedAttributeList
-					for (String tempObjectClassname : objectClassNamesAndReceivedAttributeList.keySet()) {
+                for (int i = 0; i < 10; i++) { // toDo change this to a better mechanism
 
-						// if there is a array of nonApplicable Attributes in our map classNamesAndNaAttributList for this classname						
-						if (classNamesAndNaAttributList.get(tempObjectClassname) != null) {
-							String[] tempNonApplicableAttributList = classNamesAndNaAttributList.get(tempObjectClassname);
+                    // check objectClassNamesAndReceivedAttributeList against a List with non applicable attributes for this class
+                    // so we check for every ObjectClassName in the map objectClassNamesAndReceivedAttributeList
+                    for (String tempObjectClassname : objectClassNamesAndReceivedAttributeList.keySet()) {
 
-							// List of for this classname received attributes ( from the in  reflectAttributesvalues created ArrayList)
-							ArrayList<String> tempReceivedAttributList = objectClassNamesAndReceivedAttributeList.get(tempObjectClassname);
+                        // if there is a array of nonApplicable Attributes in our map classNamesAndNaAttributList for this classname
+                        if (classNamesAndNaAttributList.get(tempObjectClassname) != null) {
+                            String[] tempNonApplicableAttributList = classNamesAndNaAttributList.get(tempObjectClassname);
 
-							// for every for/with this classname received attribut
-							for (String receivedAttribut : tempReceivedAttributList) {
+                            // List of for this classname received attributes ( from the in reflectAttributesvalues created ArrayList)
+                            ArrayList<String> tempReceivedAttributList = objectClassNamesAndReceivedAttributeList.get(tempObjectClassname);
 
-								// for every Attribut in the non applicable attributList for this classname
-								for (String nonAppAttribute : tempNonApplicableAttributList) {
+                            // for every for/with this classname received attribut
+                            for (String receivedAttribut : tempReceivedAttributList) {
 
-									// if the received attribut is in the nonapplicable attributlist for this classname the test failed
-									if (receivedAttribut.equals(nonAppAttribute)) {
-										logger.debug("###  test failed  " + tempObjectClassname + " updated  " + receivedAttribut); // Debug
-										matchList.add(tempObjectClassname + " updated " + receivedAttribut);					
-									}
-								}
-							}
-						}
-					}
-					Thread.sleep(1000);
-				}
+                                // for every Attribut in the non applicable attributList for this classname
+                                for (String nonAppAttribute : tempNonApplicableAttributList) {
+
+                                    // if the received attribut is in the nonapplicable attributlist for this classname the test failed
+                                    if (receivedAttribut.equals(nonAppAttribute)) {
+                                        logger.debug("###  test failed  " + tempObjectClassname + " updated  " + receivedAttribut); // Debug
+                                        match = true;
+
+                                        if (!resultListReceivedNaAttributes.contains(receivedAttribut)) {
+                                            resultListReceivedNaAttributes.add(receivedAttribut);
+                                        }
+                                        // building a List with classnames and received nonapplicable Attributes
+                                        resultMapClassNamesAndReceivedNaAttributes.put(tempObjectClassname, resultListReceivedNaAttributes);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    Thread.sleep(1000);
+                }
 
 		} catch (Exception e) {
 			throw new TcInconclusiveIf(e.getMessage());
 		}
 		
-	      //logger.info("test {} passed", this.getClass().getName());
-        if (! matchList.isEmpty() ) {
+		String failMessage = "";		
+		for (String tempClassname : resultMapClassNamesAndReceivedNaAttributes.keySet()) {
+			failMessage= failMessage + " " + tempClassname +" updated " + resultMapClassNamesAndReceivedNaAttributes.get(tempClassname);
+		}
+		
+		if ( match) { 	
         	logger.info("test {} failed", this.getClass().getName());
-			throw new TcFailed("Failed because: ...");
+			throw new TcFailed("Failed because: ..."+ failMessage);
         } else {
         	logger.info("test {} passed", this.getClass().getName());	        	
         }
   
 	}
-	
 
 	@Override
 	protected void postambleAction(Logger logger) throws TcInconclusiveIf {
-		// TODO Auto-generated method stub
-
+		 logger.info("postamble action for test {}", this.getClass().getName());
+	        try {
+	            rtiAmbassador.resignFederationExecution(ResignAction.NO_ACTION);
+				rtiAmbassador.disconnect();
+	        } catch (InvalidResignAction | OwnershipAcquisitionPending | FederateOwnsAttributes | FederateNotExecutionMember
+	                | NotConnected | CallNotAllowedFromWithinCallback | RTIinternalError | FederateIsExecutionMember e) {
+	            throw new TcInconclusiveIf(e.getMessage());
+	        }
 	}
-
 }
