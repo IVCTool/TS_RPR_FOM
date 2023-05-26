@@ -21,10 +21,22 @@ import java.util.HashMap;
 import java.util.concurrent.Semaphore;
 
 import org.nato.ivct.rpr.objects.Aircraft;
+import org.nato.ivct.rpr.objects.AmphibiousVehicle;
 import org.nato.ivct.rpr.objects.BaseEntity;
+import org.nato.ivct.rpr.objects.CulturalFeature;
+import org.nato.ivct.rpr.objects.Expendables;
+import org.nato.ivct.rpr.objects.GroundVehicle;
+import org.nato.ivct.rpr.objects.Human;
+import org.nato.ivct.rpr.objects.MultiDomainPlatform;
+import org.nato.ivct.rpr.objects.Munition;
+import org.nato.ivct.rpr.objects.NonHuman;
 import org.nato.ivct.rpr.objects.PhysicalEntity;
-
-
+import org.nato.ivct.rpr.objects.Radio;
+import org.nato.ivct.rpr.objects.Sensor;
+import org.nato.ivct.rpr.objects.Spacecraft;
+import org.nato.ivct.rpr.objects.SubmersibleVessel;
+import org.nato.ivct.rpr.objects.Supplies;
+import org.nato.ivct.rpr.objects.SurfaceVessel;
 import org.nato.ivct.rpr.FomFiles;
 import org.slf4j.Logger;
 
@@ -73,161 +85,259 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
  *
  * SuT updates of instance attributes shall, for BaseEntity.PhysicalEntity and subclasses,
  * be valid according to SISO-STD-001-2015 and SISO-STD-001.1-2015.
- * 
+ */
+
+ /* 
  * What  does "be valid"   mean,  it exist or has a  Default Value  ?
+ *  has a correct Name ?
+ *  
+ *  May be we test here if the  type of the data Representation is 
+ *  Float  Integer   Octed
+ *  ( SISO-STD-001-205   chapter 6.8.1.1 ? )
+ *  
+ * 
+ * BaseEntity.PhysicalEntity and subclasses according to SISO-STD-001-2015  are:
+ * PhysicalEntity
+ *    Plattform
+ *             Aircraft
+ *             AmphibiousVehicle
+ *             GroundVehicle
+ *             MultiDomainPlatform
+ *             Spacecraft
+ *             SubmersibleVessel
+ *             SurfaceVessel
+ *    Lifeform
+ *             Human
+ *             NonHuman
+ *    CulturalFeature
+ *    Munition 
+ *    Expendables
+ *    Radio 
+ *    Sensor
+ *    Supplies
  * 
  * 
  *   in SISO-STD-001  P. 44  Table 6   "PhysicalEntity Attributes"  they are listed
  *   
- *   "PhysicalEntity Attributes"   Table 6:
- *   AcousticSignatureIndex   AlternateEntityType   ArticulatedParametersArray
- *   CamouflageType    DamageState  EngineSmokeOn
- *   FirePowerDisabled  FlamesPresent  ForceIdentifier  
- *   HasAmmunitionSupplyCap  HasFuelSupplyCap  HasRecoveryCap  HasRepairCap
- *   Immobilized  InfraredSignatureIndex   IsConcealed  LiveEntityMeasuredSpeed
- *   Marking   PowerPlantOn  PropulsionSystemsData  RadarCrossSectionSignatureIndex
- *   SmokePlumePresent    TentDeployed   TrailingEffectsCode   VectoringNozzleSystemData
- * 
- * 
+ *   
+ * PhysicalEntity Attributes:  SISO-STD-001  P. 44  Table 6  25 attributes   all Optional
+ *  Attribute Name                           Default Value
+ *  AcousticSignatureIndex                    0
+ *  AlternateEntityType                       BaseEntity.EntityType
+ *  ArticulatedParametersArray                Empty
+ *  CamouflageType                            Uniform Paint Scheme
+ *  DamageState                               No Damage
+ *  EngineSmokeOn                             False
+ *  FirePowerDisabled                         False
+ *  FlamesPresent                             False
+ *  ForceIdentifier                           Other
+ *  HasAmmunitionSupplyCap                    False
+ *  HasFuelSupplyCap                          False
+ *  HasRecoveryCap                            False
+ *  HasRepairCap                              False
+ *  Immobilized                               False
+ *  InfraredSignatureIndex                     0
+ *  IsConcealed                               False
+ *  LiveEntityMeasuredSpeed                   0
+ *  Marking                                   Empty
+ *  PowerPlantOn                              False
+ *  PropulsionSystemsData                     Empty
+ *  RadarCrossSectionSignatureIndex           0
+ *  SmokePlumePresent                         False                      
+ *  TentDeployed                              False
+ *  TrailingEffectsCode                      False
+ *  VectoringNozzleSystemData                 Empty
+ *   
+ *    
  *   the Attributes for SubClasses of PhysicalEntity 
- * 
- *   ########################### here may be a lot of  attributes to test
+    
+* PhysicalEntity-Plattform : Table 8     16 Attributes all Optional
+* Attribute Name         Default Value
+* AfterburnerOn           False
+* AntiCollisionLightsOn   False
+* BlackOutBrakeLightsOn    False
+* BlackOutLightsOn         False
+* BrakeLightsOn            False
+* FormationLightsOn        False
+* HatchState               NotApplicable
+* HeadLightsOn             False
+* InteriorLightsOn         False
+* LandingLightsOn          False
+* LauncherRaised           False
+* NavigationLightsOn       False
+* RampDeployed             False
+* RunningLightsOn          False
+* SpotLightsOn             False
+* TailLightsOn             False
+* 
+*
+ * Subclasses of PhysicalEntity-Plattform
+ * Aircraft                    attributless
+ * AmphibiousVehicle           attributless
+ * GroundVehicle               attributless
+ * MultiDomainPlatform         attributless
+ * Spacecraft                  attributless
+ * SubmersibleVessel           attributless
+ * SurfaceVessel               attributless
  *   
- *   Plattform :   16 Attributes         Table 8
- *   
- *     Aircraft              attributless
- *     AmphibiousVehicle    attributless
- *     GroundVehicle        attributless
- *     MultiDomainPlatform  attributless
- *     Spacecraft            attributless
- *     SubmersibleVessel     attributless
- *     SurfaceVessel         attributless
- *     
  * 
- *   Lifeform :            5 attributes      Table 10
+ * PhysicalEntity-Lifeform :            5 attributes      Table 10
+ * Attribute Name         Default Value
+ * FlashLightsOn            False
+ * StanceCode               NotApplicable
+ * PrimaryWeaponState       NoWeapon
+ * SecondaryWeaponState     NoWeapon
+ * ComplianceState          Other
+ * 
+ * Subclasses of PhysicalEntity-Lifeform
  *      Human               attributless
  *      NonHuman            attributless
  *   
- *   CulturalFeature       3 Attributes      Table 11
+ * PhysicalEntity-CulturalFeature       3 Attributes      Table 11
+ *  Attribute Name         Default Value
+ *  ExternalLightsOn         False
+ *  InternalHeatSourceOn     False
+ *  InternalLightsOn         False
  *     
- *   Munition              LauncherFlashPresent
+ * PhysicalEntity-Munition   Table 12           
+ *  LauncherFlashPresent     False
  *   
- *   Expendables           no attributes
+ * PhysicalEntity-Expendables   has no attributes
  *   
- *   Radio                attributless
+ * PhysicalEntity-Radio           attributless
  *   
- *   Sensor                5 attributes
- *   
- *   Sensor Supplies     has no attributes  
+ * PhysicalEntity-Sensor     Table 13      5 attributes
+  * Attribute Name         Default Value
+ *  AntennaRaised        False
+ *  BlackoutLightsOn   False
+ *  LightsOn                False
+ *  InteriorLightsOn     False
+ *  MissionKill             False
+ * 
+ * PhysicalEntity-Supplies     has no attributes  
  *   
  */
 
 
-public class TC_IR_RPR2_0013 extends AbstractTestCaseIf {
+ public class TC_IR_RPR2_0013 extends AbstractTestCaseIf {
+
+     RTIambassador rtiAmbassador = null;
+     FederateAmbassador tcAmbassador = null;
+     Logger logger = null;
+
+     HashMap<ObjectInstanceHandle, PhysicalEntity> knownPhysicalEntitys = new HashMap<>();
+
+     PhysicalEntity phyEntity;
+     private FederateHandle sutHandle;
+
+     class TestCaseAmbassador extends NullFederateAmbassador {
+
+         @Override
+         public void discoverObjectInstance(ObjectInstanceHandle theObject, ObjectClassHandle theObjectClass,
+             String objectName) throws FederateInternalError {
+             logger.trace("discoverObjectInstance {}", theObject);
+             // semaphore.release(1);
+         }
+
+         @Override
+         public void discoverObjectInstance(ObjectInstanceHandle theObject, ObjectClassHandle theObjectClass,
+                 String objectName, FederateHandle producingFederate) throws FederateInternalError {
+             logger.trace("discoverObjectInstance {} with producingFederate {}", theObject, producingFederate);
+             discoverObjectInstance(theObject, theObjectClass, objectName);
+         }
+     }
 	
-	RTIambassador rtiAmbassador = null;
-	FederateAmbassador tcAmbassador = null;
-	Logger logger = null;	
-	Semaphore physicalEntityDiscovered = new Semaphore(0);	
-	HashMap<ObjectInstanceHandle, PhysicalEntity> knownPhysicalEntitys = new HashMap<>();
-	
-    PhysicalEntity phyEntity;
-	private FederateHandle sutHandle;
-	
-	class TestCaseAmbassador extends NullFederateAmbassador {
-		
-		@Override
-		public void discoverObjectInstance(
-				ObjectInstanceHandle theObject,
-				ObjectClassHandle theObjectClass,
-				String objectName) throws FederateInternalError {
-			logger.trace("discoverObjectInstance {}", theObject);
-			//semaphore.release(1);
-		}
+     @Override
+     protected void logTestPurpose(Logger logger) {
+         String msg = "Test Case Purpose: ";
+         msg += "SuT updates of instance attributes shall, for BaseEntity.PhysicalEntity and subclasses, ";
+         msg += "be valid according to SISO-STD-001-2015 and SISO-STD-001.1-2015. ";
+         logger.info(msg);
+         this.logger = logger;
+     }
 
-		@Override
-		public void discoverObjectInstance(
-				ObjectInstanceHandle  theObject,
-				ObjectClassHandle theObjectClass,
-				String objectName,
-				FederateHandle producingFederate) throws FederateInternalError {
-			logger.trace("discoverObjectInstance {} with producingFederate {}", theObject, producingFederate);
-			discoverObjectInstance(theObject, theObjectClass, objectName);
-		}
-	}
-	
+     @Override
+     protected void preambleAction(Logger logger) throws TcInconclusiveIf {
+         RtiFactory rtiFactory;
+         logger.info("preamble action for test {}", this.getClass().getName());
 
-	@Override
-	protected void logTestPurpose(Logger logger) {
-	 String msg = "Test Case Purpose: " ;
-	        msg += "SuT updates of instance attributes shall, for BaseEntity.PhysicalEntity and subclasses, ";
-	        msg += "be valid according to SISO-STD-001-2015 and SISO-STD-001.1-2015. ";
-		logger .info(msg);
-		this.logger = logger;
-	}
+         try {
+             rtiFactory = RtiFactoryFactory.getRtiFactory();
+             rtiAmbassador = rtiFactory.getRtiAmbassador();
+             tcAmbassador = new TestCaseAmbassador();
+             URL[] fomList = new FomFiles()
+                 .addRPR_BASE()
+                 .addRPR_Enumerations()
+                 .addRPR_Foundation()
+                 .addRPR_Physical()
+                 .addRPR_Switches()
+                 .getArray();
 
-	@Override
-	protected void preambleAction(Logger logger) throws TcInconclusiveIf {
-		RtiFactory rtiFactory;
-		logger.info("preamble action for test {}", this.getClass().getName());
+             rtiAmbassador.connect(tcAmbassador, CallbackModel.HLA_IMMEDIATE);
+             try {
+                 rtiAmbassador.createFederationExecution(federationName, fomList);
+             } catch (FederationExecutionAlreadyExists ignored) {
+             }
+             rtiAmbassador.joinFederationExecution(this.getClass().getSimpleName(), federationName, fomList);
 
-		try {
-			rtiFactory = RtiFactoryFactory.getRtiFactory();
-			rtiAmbassador = rtiFactory.getRtiAmbassador();
-			tcAmbassador = new TestCaseAmbassador();
-			ArrayList<URL> fomList = new FomFiles()
-					.addRPR_BASE()
-					.addRPR_Enumerations()
-					.addRPR_Foundation()
-					.addRPR_Physical()
-					.addRPR_Switches()
-					.get();
-
-			rtiAmbassador.connect(tcAmbassador, CallbackModel.HLA_IMMEDIATE);
-			try {
-				rtiAmbassador.createFederationExecution(federationName, fomList.toArray(new URL[fomList.size()]));
-			} catch (FederationExecutionAlreadyExists ignored) { }
-
-			rtiAmbassador.joinFederationExecution(this.getClass().getSimpleName(), federationName,
-					fomList.toArray(new URL[fomList.size()]));
-
-		} catch (RTIinternalError | ConnectionFailed | InvalidLocalSettingsDesignator | UnsupportedCallbackModel
-				| AlreadyConnected | CallNotAllowedFromWithinCallback | CouldNotCreateLogicalTimeFactory
-				| FederationExecutionDoesNotExist | InconsistentFDD | ErrorReadingFDD | CouldNotOpenFDD | SaveInProgress
-				| RestoreInProgress | FederateAlreadyExecutionMember | NotConnected e) {
-			throw new TcInconclusiveIf(e.getMessage());
-		}
-	}
-
+         } catch (RTIinternalError | ConnectionFailed | InvalidLocalSettingsDesignator | UnsupportedCallbackModel
+                 | AlreadyConnected | CallNotAllowedFromWithinCallback | CouldNotCreateLogicalTimeFactory
+                 | FederationExecutionDoesNotExist | InconsistentFDD | ErrorReadingFDD | CouldNotOpenFDD
+                 | SaveInProgress | RestoreInProgress | FederateAlreadyExecutionMember | NotConnected e) {
+             throw new TcInconclusiveIf(e.getMessage());
+         }
+     }
 	
 		
-	@Override
-	protected void performTest(Logger logger) throws TcInconclusiveIf, TcFailedIf {
-		logger.info("perform test {}", this.getClass().getName());
-		PhysicalEntity.initialize(rtiAmbassador);  //to adjust
+     @Override
+     protected void performTest(Logger logger) throws TcInconclusiveIf, TcFailedIf {
+         logger.info("perform test {}", this.getClass().getName());
+         
+         PhysicalEntity.initialize(rtiAmbassador);
 
-		try {
-			phyEntity = new PhysicalEntity();
-			phyEntity.addSubscribe(BaseEntity.Attributes.EntityIdentifier);  // to adjust
-			phyEntity.subscribe();
-			
-			boolean gotEnoughAtttributes = true;
-			while (! gotEnoughAtttributes) {
-				// the Test ......
-			}
+      // we have to subscribe to all Attributes of al   Classes  BaseEntity.PhysicalEntity and subclasses
+         
+         try {
+         
+         PhysicalEntity[]  PhysicalEntityToTestList = new PhysicalEntity[]{
+                 new Aircraft(),
+                 new AmphibiousVehicle(),
+                 new GroundVehicle(),
+                 new MultiDomainPlatform(),
+                 new Spacecraft(),
+                 new SubmersibleVessel(),
+                 new SurfaceVessel(),
+                 new Human(),
+                 new NonHuman(),  
+                 new CulturalFeature(),
+                 new Munition(),
+                 new Expendables(),
+                 new Radio(),
+                 new Sensor(),
+                 new Supplies()
+         };
+      
+             //  brf   now  subscribe to all Attributes
+         
+             phyEntity.addSubscribe(BaseEntity.Attributes.EntityIdentifier); // to adjust
+             phyEntity.subscribe();
 
-		} catch (Exception e) {
-			throw new TcInconclusiveIf(e.getMessage());
-		}
+             boolean gotEnoughAtttributes = true;
+             while (!gotEnoughAtttributes) {
+                 // the Test ......
+             }
 
-		logger.info("test {} passed", this.getClass().getName());
-	}
-	
+         } catch (Exception e) {
+             throw new TcInconclusiveIf(e.getMessage());
+         }
 
-	@Override
-	protected void postambleAction(Logger logger) throws TcInconclusiveIf {
-		// TODO Auto-generated method stub
+         logger.info("test {} passed", this.getClass().getName());
+     }
 
-	}
+     @Override
+     protected void postambleAction(Logger logger) throws TcInconclusiveIf {
+         // TODO Auto-generated method stub
+
+     }
 
 }
