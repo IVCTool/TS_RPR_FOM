@@ -27,10 +27,12 @@ import org.nato.ivct.rpr.objects.CulturalFeature;
 import org.nato.ivct.rpr.objects.Expendables;
 import org.nato.ivct.rpr.objects.GroundVehicle;
 import org.nato.ivct.rpr.objects.Human;
+import org.nato.ivct.rpr.objects.Lifeform;
 import org.nato.ivct.rpr.objects.MultiDomainPlatform;
 import org.nato.ivct.rpr.objects.Munition;
 import org.nato.ivct.rpr.objects.NonHuman;
 import org.nato.ivct.rpr.objects.PhysicalEntity;
+import org.nato.ivct.rpr.objects.Platform;
 import org.nato.ivct.rpr.objects.Radio;
 import org.nato.ivct.rpr.objects.Sensor;
 import org.nato.ivct.rpr.objects.Spacecraft;
@@ -293,13 +295,17 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
      protected void performTest(Logger logger) throws TcInconclusiveIf, TcFailedIf {
          logger.info("perform test {}", this.getClass().getName());
          
-         PhysicalEntity.initialize(rtiAmbassador);
-
+    
+     
       // we have to subscribe to all Attributes of al   Classes  BaseEntity.PhysicalEntity and subclasses
          
          try {
-         
-         PhysicalEntity[]  PhysicalEntityToTestList = new PhysicalEntity[]{
+             
+             PhysicalEntity.initialize(rtiAmbassador);
+     
+             //  unsure if we need it later
+             /*
+             PhysicalEntity[]  PhysicalEntityToTestList = new PhysicalEntity[]{
                  new Aircraft(),
                  new AmphibiousVehicle(),
                  new GroundVehicle(),
@@ -315,13 +321,121 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
                  new Radio(),
                  new Sensor(),
                  new Supplies()
-         };
-      
-             //  brf   now  subscribe to all Attributes
+         };  */
+             
+         // this may be better   // use a Array to collect all needed Entities        
+         ArrayList<BaseEntity>  entityToTestList = new ArrayList<BaseEntity>(); 
+           
+         phyEntity = new PhysicalEntity();
+         entityToTestList.add(phyEntity);
+             
+         // TODO  brf   now  subscribe to all Attributes
          
-             phyEntity.addSubscribe(BaseEntity.Attributes.EntityIdentifier); // to adjust
-             phyEntity.subscribe();
-
+         phyEntity.addSubscribe(BaseEntity.Attributes.EntityIdentifier);
+         phyEntity.addSubscribe(BaseEntity.Attributes.EntityType);          
+         phyEntity.addSubscribe(BaseEntity.Attributes.Spatial);
+         
+         phyEntity.addSubscribe(PhysicalEntity.Attributes.CamouflageType);
+         phyEntity.addSubscribe(PhysicalEntity.Attributes.DamageState);
+         phyEntity.addSubscribe(PhysicalEntity.Attributes.EngineSmokeOn);
+         phyEntity.addSubscribe(PhysicalEntity.Attributes.FirePowerDisabled);
+         phyEntity.addSubscribe(PhysicalEntity.Attributes.FlamesPresent);
+         phyEntity.addSubscribe(PhysicalEntity.Attributes.Immobilized);
+         phyEntity.addSubscribe(PhysicalEntity.Attributes.IsConcealed);
+         phyEntity.addSubscribe(PhysicalEntity.Attributes.PowerPlantOn);
+         phyEntity.addSubscribe(PhysicalEntity.Attributes.SmokePlumePresent);
+         phyEntity.addSubscribe(PhysicalEntity.Attributes.TentDeployed);
+         phyEntity.addSubscribe(PhysicalEntity.Attributes.TrailingEffectsCode);
+         
+         // TODO   PhysicalEntity further  attributes
+         /* 
+         AcousticSignatureIndex                    0
+         *  AlternateEntityType                       BaseEntity.EntityType
+         *  ArticulatedParametersArray                Empty
+         *  CamouflageType                            Uniform Paint Scheme
+         *  DamageState                               No Damage
+         *  EngineSmokeOn                             False
+         *  FirePowerDisabled                         False
+         *  FlamesPresent                             False
+         *  ForceIdentifier                           Other
+         *  HasAmmunitionSupplyCap                    False
+         *  HasFuelSupplyCap                          False
+         *  HasRecoveryCap                            False
+         *  HasRepairCap                              False
+         *  Immobilized                               False
+         *  InfraredSignatureIndex                     0
+         *  IsConcealed                               False
+         *  LiveEntityMeasuredSpeed                   0
+         *  Marking                                   Empty
+         *  PowerPlantOn                              False
+         *  PropulsionSystemsData                     Empty
+         *  RadarCrossSectionSignatureIndex           0
+         *  SmokePlumePresent                         False                      
+         *  TentDeployed                              False
+         *  TrailingEffectsCode                      False
+         *  VectoringNozzleSystemData                 Empty
+         */
+         
+         
+        Platform  platfEntity = new Platform();
+        entityToTestList.add(platfEntity);
+        
+        platfEntity.addSubscribe(Platform.Attributes.AfterburnerOn);
+        platfEntity.addSubscribe(Platform.Attributes.AntiCollisionLightsOn);
+        platfEntity.addSubscribe(Platform.Attributes.BlackOutBrakeLightsOn);
+        platfEntity.addSubscribe(Platform.Attributes.BlackOutLightsOn);
+        platfEntity.addSubscribe(Platform.Attributes.BrakeLightsOn);
+        platfEntity.addSubscribe(Platform.Attributes.FormationLightsOn);
+        platfEntity.addSubscribe(Platform.Attributes.HatchState);
+        platfEntity.addSubscribe(Platform.Attributes.HeadLightsOn);
+        platfEntity.addSubscribe(Platform.Attributes.InteriorLightsOn);
+        platfEntity.addSubscribe(Platform.Attributes.LandingLightsOn);
+        platfEntity.addSubscribe(Platform.Attributes.LauncherRaised);
+        platfEntity.addSubscribe(Platform.Attributes.NavigationLightsOn);
+        platfEntity.addSubscribe(Platform.Attributes.RampDeployed);
+        platfEntity.addSubscribe(Platform.Attributes.RunningLightsOn);
+        platfEntity.addSubscribe(Platform.Attributes.SpotLightsOn);
+        platfEntity.addSubscribe(Platform.Attributes.TailLightsOn);
+        
+        
+         Lifeform lifeFormEntity = new Lifeform();
+         entityToTestList.add(lifeFormEntity);
+         
+         lifeFormEntity.addSubscribe(Lifeform.Attributes.FlashLightsOn);
+         // TODO   4 further  attributes
+         /*  StanceCode,                    // StanceCodeEnum32
+         PrimaryWeaponState,           // WeaponStateEnum32
+         SecondaryWeaponState,         // WeaponStateEnum32
+         ComplianceState                // ComplianceStateEnum32  */
+         
+        Sensor  sensoreEntity = new Sensor();
+        entityToTestList.add(sensoreEntity);
+        
+        sensoreEntity.addSubscribe(Sensor.Attributes.AntennaRaised);
+        sensoreEntity.addSubscribe(Sensor.Attributes.BlackoutLightsOn);
+        sensoreEntity.addSubscribe(Sensor.Attributes.LightsOn);
+        sensoreEntity.addSubscribe(Sensor.Attributes.InteriorLightsOn);
+        sensoreEntity.addSubscribe(Sensor.Attributes.MissionKill);
+         
+       
+        // cultural Feature   5 attr
+        // Munition           1 attr
+        // Expendables
+        // Radio
+        // Sensor             3 attr
+        // Supplies
+        
+         
+         //phyEntity.subscribe();
+             
+             // we need to subscribe to all Objects
+             
+             for (BaseEntity bE : entityToTestList  ) {
+                 logger.debug("# in performTest subscribing all Elements of PhysicalEntityToTestList now "  +bE.getHlaClassName() );  // Debug
+                 bE.subscribe();
+             }
+             
+            
              boolean gotEnoughAtttributes = true;
              while (!gotEnoughAtttributes) {
                  // the Test ......

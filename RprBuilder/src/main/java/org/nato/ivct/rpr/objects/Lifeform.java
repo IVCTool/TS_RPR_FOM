@@ -14,6 +14,7 @@
 package org.nato.ivct.rpr.objects;
 
 import org.nato.ivct.rpr.RprBuilderException;
+import org.nato.ivct.rpr.objects.Sensor.Attributes;
 
 import hla.rti1516e.encoding.EncoderException;
 import hla.rti1516e.encoding.HLAboolean;
@@ -37,29 +38,51 @@ public class Lifeform extends PhysicalEntity{
 
     public Lifeform() throws RprBuilderException {
         super();
-       
-        // TODO  set the attributes 
-        /*
+
+        // TODO set the attributes
+        // like this, but there may be a newer mechanism
         try {
-            // like this, but there is a newer  mechanism
-            setAttributeValue(Attributes.AfterburnerOn.name(), encoderFactory.createHLAboolean());
-            setAttributeValue(Attributes.AntiCollisionLightsOn.name(), encoderFactory.createHLAboolean());
-            setAttributeValue(Attributes.BlackOutBrakeLightsOn.name(), encoderFactory.createHLAboolean());
-            
-           
+            setAttributeValue(Attributes.FlashLightsOn.name(), encoderFactory.createHLAboolean());
+            // ...
         } catch (NameNotFound | InvalidObjectClassHandle | FederateNotExecutionMember | NotConnected | RTIinternalError
                 | EncoderException e) {
             throw new RprBuilderException("error while creating member attributes", e);
         }
-        */
-        
+    }
+    
+    /**
+     * TODO: Discuss if the pub/sub methods shall be made type safe. In that case
+     * the following two methods shall be private.
+     */
+    public void addSubscribe(Attributes attribute)
+            throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
+        addSubAttribute(attribute.name());
     }
 
+    public void addPublish(Attributes attribute)
+            throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
+        addPubAttribute(attribute.name());
+    }
+
+    
    // TODO   we need the  getter and setter for all attributes
+    
+    public void setFlashLightsOn(boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        HLAboolean holder = (HLAboolean) getAttribute(Attributes.FlashLightsOn.name());
+        holder.setValue(value);
+        setAttributeValue(Attributes.FlashLightsOn.name(), holder);
+    }
+    public boolean  getFlashLightsOn() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        HLAboolean attribute = (HLAboolean) getAttribute(Attributes.FlashLightsOn.name());
+        if (attribute == null) {
+            attribute = encoderFactory.createHLAboolean();
+            setAttributeValue(Attributes.FlashLightsOn.name(), attribute);
+        }
+        return attribute.getValue();
+    }
+    
+    
    
-    
-    
-    
     
 }
 
