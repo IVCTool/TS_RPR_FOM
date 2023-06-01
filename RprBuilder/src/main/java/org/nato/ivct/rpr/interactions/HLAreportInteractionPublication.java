@@ -14,13 +14,14 @@ limitations under the License. */
 
 package org.nato.ivct.rpr.interactions;
 
-import java.util.Map.Entry;
-
+import org.nato.ivct.rpr.HLAroot;
 import org.nato.ivct.rpr.RprBuilderException;
 
 import hla.rti1516e.InteractionClassHandle;
-import hla.rti1516e.ParameterHandle;
-import hla.rti1516e.ParameterHandleValueMap;
+import hla.rti1516e.InteractionClassHandleFactory;
+import hla.rti1516e.encoding.DataElementFactory;
+import hla.rti1516e.encoding.HLAbyte;
+import hla.rti1516e.encoding.HLAvariableArray;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
 import hla.rti1516e.exceptions.NameNotFound;
 import hla.rti1516e.exceptions.NotConnected;
@@ -42,6 +43,14 @@ public class HLAreportInteractionPublication extends HLAreport {
     public HLAreportInteractionPublication()
             throws NameNotFound, FederateNotExecutionMember, NotConnected, RTIinternalError, RprBuilderException {
         super();
+        DataElementFactory<HLAbyte> byteFactory = new DataElementFactory<HLAbyte>()
+        {
+            public HLAbyte createElement(int index)
+            {
+                return HLAroot.getEncoderFactory().createHLAbyte();
+            }
+        };
+        addParameter(Attributes.HLAinteractionClassList.name(), HLAroot.getEncoderFactory().createHLAvariableArray(byteFactory));
     }
 
     public static HLAreportInteractionPublication discover (InteractionClassHandle theInteractionClassHandle) {
@@ -56,11 +65,9 @@ public class HLAreportInteractionPublication extends HLAreport {
         }
         return candidate;
     }
-    
-    public void decode(ParameterHandleValueMap values) {
-        for (Entry<ParameterHandle, byte[]> entry : values.entrySet()) {
-            log.trace("decode {} = {}", entry.getKey(), entry.getValue());
-            
-        }
+
+    public HLAvariableArray<HLAbyte> getHLAinteractionClassList() {
+        HLAvariableArray<HLAbyte> data = (HLAvariableArray<HLAbyte>) getParameter(Attributes.HLAinteractionClassList.name());
+        return data;
     }
 }
