@@ -42,18 +42,20 @@ public class Lifeform extends PhysicalEntity{
         // TODO set the attributes
         // like this, but there may be a newer mechanism
         try {
-            setAttributeValue(Attributes.FlashLightsOn.name(), encoderFactory.createHLAboolean());
+            //setAttributeValue(Attributes.FlashLightsOn.name(), encoderFactory.createHLAboolean());
             // ...
+            getFlashLightsOn();
+            
         } catch (NameNotFound | InvalidObjectClassHandle | FederateNotExecutionMember | NotConnected | RTIinternalError
                 | EncoderException e) {
             throw new RprBuilderException("error while creating member attributes", e);
         }
     }
     
-    /**
-     * TODO: Discuss if the pub/sub methods shall be made type safe. In that case
-     * the following two methods shall be private.
-     */
+    
+    // public void addSubscribe    is inherited from physicalEntity  ???
+    //  TODO  do we need this here ?
+    
     public void addSubscribe(Attributes attribute)
             throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
         addSubAttribute(attribute.name());

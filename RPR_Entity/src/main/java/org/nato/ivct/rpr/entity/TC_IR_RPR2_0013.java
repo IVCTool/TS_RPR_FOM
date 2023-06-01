@@ -154,7 +154,6 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
  *   the Attributes for SubClasses of PhysicalEntity 
     
 * PhysicalEntity-Plattform : Table 8     16 Attributes all Optional
-* Attribute Name         Default Value
 * AfterburnerOn           False
 * AntiCollisionLightsOn   False
 * BlackOutBrakeLightsOn    False
@@ -184,7 +183,6 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
  *   
  * 
  * PhysicalEntity-Lifeform :            5 attributes      Table 10
- * Attribute Name         Default Value
  * FlashLightsOn            False
  * StanceCode               NotApplicable
  * PrimaryWeaponState       NoWeapon
@@ -196,10 +194,9 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
  *      NonHuman            attributless
  *   
  * PhysicalEntity-CulturalFeature       3 Attributes      Table 11
- *  Attribute Name         Default Value
- *  ExternalLightsOn         False
- *  InternalHeatSourceOn     False
- *  InternalLightsOn         False
+ *  ExternalLightsOn         False          RPRboolean
+ *  InternalHeatSourceOn     False          RPRboolean
+ *  InternalLightsOn         False         RPRboolean
  *     
  * PhysicalEntity-Munition   Table 12           
  *  LauncherFlashPresent     False
@@ -294,60 +291,38 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
      @Override
      protected void performTest(Logger logger) throws TcInconclusiveIf, TcFailedIf {
          logger.info("perform test {}", this.getClass().getName());
-         
-    
      
       // we have to subscribe to all Attributes of al   Classes  BaseEntity.PhysicalEntity and subclasses
          
-         try {
-             
-             PhysicalEntity.initialize(rtiAmbassador);
-     
-             //  unsure if we need it later
-             /*
-             PhysicalEntity[]  PhysicalEntityToTestList = new PhysicalEntity[]{
-                 new Aircraft(),
-                 new AmphibiousVehicle(),
-                 new GroundVehicle(),
-                 new MultiDomainPlatform(),
-                 new Spacecraft(),
-                 new SubmersibleVessel(),
-                 new SurfaceVessel(),
-                 new Human(),
-                 new NonHuman(),  
-                 new CulturalFeature(),
-                 new Munition(),
-                 new Expendables(),
-                 new Radio(),
-                 new Sensor(),
-                 new Supplies()
-         };  */
-             
-         // this may be better   // use a Array to collect all needed Entities        
-         ArrayList<BaseEntity>  entityToTestList = new ArrayList<BaseEntity>(); 
-           
-         phyEntity = new PhysicalEntity();
-         entityToTestList.add(phyEntity);
-             
-         // TODO  brf   now  subscribe to all Attributes
+      try {
+
+          PhysicalEntity.initialize(rtiAmbassador);
+
+          // this may be better // use a Array to collect all needed Entities
+          ArrayList<BaseEntity> entityToTestList = new ArrayList<BaseEntity>();
+
+          // TODO brf now subscribe to all Attributes
+
+          phyEntity = new PhysicalEntity();
+          entityToTestList.add(phyEntity);
+
+          phyEntity.addSubscribe(BaseEntity.Attributes.EntityIdentifier);
+          phyEntity.addSubscribe(BaseEntity.Attributes.EntityType);
+          phyEntity.addSubscribe(BaseEntity.Attributes.Spatial);
+
+          phyEntity.addSubscribe(PhysicalEntity.Attributes.CamouflageType);
+          phyEntity.addSubscribe(PhysicalEntity.Attributes.DamageState);
+          phyEntity.addSubscribe(PhysicalEntity.Attributes.EngineSmokeOn);
+          phyEntity.addSubscribe(PhysicalEntity.Attributes.FirePowerDisabled);
+          phyEntity.addSubscribe(PhysicalEntity.Attributes.FlamesPresent);
+          phyEntity.addSubscribe(PhysicalEntity.Attributes.Immobilized);
+          phyEntity.addSubscribe(PhysicalEntity.Attributes.IsConcealed);
+          phyEntity.addSubscribe(PhysicalEntity.Attributes.PowerPlantOn);
+          phyEntity.addSubscribe(PhysicalEntity.Attributes.SmokePlumePresent);
+          phyEntity.addSubscribe(PhysicalEntity.Attributes.TentDeployed);
+          phyEntity.addSubscribe(PhysicalEntity.Attributes.TrailingEffectsCode);
          
-         phyEntity.addSubscribe(BaseEntity.Attributes.EntityIdentifier);
-         phyEntity.addSubscribe(BaseEntity.Attributes.EntityType);          
-         phyEntity.addSubscribe(BaseEntity.Attributes.Spatial);
-         
-         phyEntity.addSubscribe(PhysicalEntity.Attributes.CamouflageType);
-         phyEntity.addSubscribe(PhysicalEntity.Attributes.DamageState);
-         phyEntity.addSubscribe(PhysicalEntity.Attributes.EngineSmokeOn);
-         phyEntity.addSubscribe(PhysicalEntity.Attributes.FirePowerDisabled);
-         phyEntity.addSubscribe(PhysicalEntity.Attributes.FlamesPresent);
-         phyEntity.addSubscribe(PhysicalEntity.Attributes.Immobilized);
-         phyEntity.addSubscribe(PhysicalEntity.Attributes.IsConcealed);
-         phyEntity.addSubscribe(PhysicalEntity.Attributes.PowerPlantOn);
-         phyEntity.addSubscribe(PhysicalEntity.Attributes.SmokePlumePresent);
-         phyEntity.addSubscribe(PhysicalEntity.Attributes.TentDeployed);
-         phyEntity.addSubscribe(PhysicalEntity.Attributes.TrailingEffectsCode);
-         
-         // TODO   PhysicalEntity further  attributes
+         // TODO    PhysicalEntity further  attributes to  addSubscribe
          /* 
          AcousticSignatureIndex                    0
          *  AlternateEntityType                       BaseEntity.EntityType
@@ -377,36 +352,53 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
          */
          
          
-        Platform  platfEntity = new Platform();
-        entityToTestList.add(platfEntity);
-        
-        platfEntity.addSubscribe(Platform.Attributes.AfterburnerOn);
-        platfEntity.addSubscribe(Platform.Attributes.AntiCollisionLightsOn);
-        platfEntity.addSubscribe(Platform.Attributes.BlackOutBrakeLightsOn);
-        platfEntity.addSubscribe(Platform.Attributes.BlackOutLightsOn);
-        platfEntity.addSubscribe(Platform.Attributes.BrakeLightsOn);
-        platfEntity.addSubscribe(Platform.Attributes.FormationLightsOn);
-        platfEntity.addSubscribe(Platform.Attributes.HatchState);
-        platfEntity.addSubscribe(Platform.Attributes.HeadLightsOn);
-        platfEntity.addSubscribe(Platform.Attributes.InteriorLightsOn);
-        platfEntity.addSubscribe(Platform.Attributes.LandingLightsOn);
-        platfEntity.addSubscribe(Platform.Attributes.LauncherRaised);
-        platfEntity.addSubscribe(Platform.Attributes.NavigationLightsOn);
-        platfEntity.addSubscribe(Platform.Attributes.RampDeployed);
-        platfEntity.addSubscribe(Platform.Attributes.RunningLightsOn);
-        platfEntity.addSubscribe(Platform.Attributes.SpotLightsOn);
-        platfEntity.addSubscribe(Platform.Attributes.TailLightsOn);
-        
-        
+         Platform platfEntity = new Platform();
+         entityToTestList.add(platfEntity);
+
+         platfEntity.addSubscribe(Platform.Attributes.AfterburnerOn);
+         platfEntity.addSubscribe(Platform.Attributes.AntiCollisionLightsOn);
+         platfEntity.addSubscribe(Platform.Attributes.BlackOutBrakeLightsOn);
+         platfEntity.addSubscribe(Platform.Attributes.BlackOutLightsOn);
+         platfEntity.addSubscribe(Platform.Attributes.BrakeLightsOn);
+         platfEntity.addSubscribe(Platform.Attributes.FormationLightsOn);
+         platfEntity.addSubscribe(Platform.Attributes.HatchState);
+         platfEntity.addSubscribe(Platform.Attributes.HeadLightsOn);
+         platfEntity.addSubscribe(Platform.Attributes.InteriorLightsOn);
+         platfEntity.addSubscribe(Platform.Attributes.LandingLightsOn);
+         platfEntity.addSubscribe(Platform.Attributes.LauncherRaised);
+         platfEntity.addSubscribe(Platform.Attributes.NavigationLightsOn);
+         platfEntity.addSubscribe(Platform.Attributes.RampDeployed);
+         platfEntity.addSubscribe(Platform.Attributes.RunningLightsOn);
+         platfEntity.addSubscribe(Platform.Attributes.SpotLightsOn);
+         platfEntity.addSubscribe(Platform.Attributes.TailLightsOn);
+         
+         // Lifeform 5 attr
          Lifeform lifeFormEntity = new Lifeform();
          entityToTestList.add(lifeFormEntity);
-         
          lifeFormEntity.addSubscribe(Lifeform.Attributes.FlashLightsOn);
-         // TODO   4 further  attributes
-         /*  StanceCode,                    // StanceCodeEnum32
-         PrimaryWeaponState,           // WeaponStateEnum32
-         SecondaryWeaponState,         // WeaponStateEnum32
-         ComplianceState                // ComplianceStateEnum32  */
+         // TODO 4 further attributes
+         /*
+          * StanceCode,             // StanceCodeEnum32
+          * PrimaryWeaponState,    // WeaponStateEnum32
+          * SecondaryWeaponState, // WeaponStateEnum32
+          * ComplianceState        //ComplianceStateEnum32
+          */
+   
+         // cultural Feature   3 attr
+         CulturalFeature cultFeatEntity = new CulturalFeature();
+         entityToTestList.add(cultFeatEntity);         
+         cultFeatEntity.addSubscribe(CulturalFeature.Attributes.ExternalLightsOn);
+         cultFeatEntity.addSubscribe(CulturalFeature.Attributes.InternalHeatSourceOn);
+         cultFeatEntity.addSubscribe(CulturalFeature.Attributes.InternalLightsOn);
+         
+         
+      // Munition           1 attr
+         
+         
+         
+         // Expendables      0 attributes
+         
+         // Radio            0 attributes
          
         Sensor  sensoreEntity = new Sensor();
         entityToTestList.add(sensoreEntity);
@@ -418,11 +410,6 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
         sensoreEntity.addSubscribe(Sensor.Attributes.MissionKill);
          
        
-        // cultural Feature   5 attr
-        // Munition           1 attr
-        // Expendables
-        // Radio
-        // Sensor             3 attr
         // Supplies
         
          

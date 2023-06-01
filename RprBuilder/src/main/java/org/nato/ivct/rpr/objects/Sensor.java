@@ -42,7 +42,8 @@ public class Sensor extends PhysicalEntity {
           
         try {
             // TODO replace setAttributValue here with  getMethod  like in Physicalentity
-            setAttributeValue(Attributes.AntennaRaised.name(), encoderFactory.createHLAboolean());
+            // TODO rename to addAttribute
+            addAttribute(Attributes.AntennaRaised.name(), encoderFactory.createHLAboolean());
             setAttributeValue(Attributes.BlackoutLightsOn.name(), encoderFactory.createHLAboolean());
             setAttributeValue(Attributes.LightsOn.name(), encoderFactory.createHLAboolean());
             setAttributeValue(Attributes.LightsOn.name(), encoderFactory.createHLAboolean());
@@ -57,6 +58,8 @@ public class Sensor extends PhysicalEntity {
     /**
      * TODO: Discuss if the pub/sub methods shall be made type safe. In that case the following two methods shall be private.
      */
+    
+    // TODO  do we need this here,  addSubsribe should  be inherited from PhysicalEntity ?
     public void addSubscribe(Attributes attribute) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
         addSubAttribute(attribute.name());
     }
@@ -75,6 +78,8 @@ public class Sensor extends PhysicalEntity {
     }
     public boolean  getAntennaRaised() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean attribute = (HLAboolean) getAttribute(Attributes.AntennaRaised.name());
+        
+        // TODO  remove this  in all classes and getter-methods
         if (attribute == null) {
             attribute = encoderFactory.createHLAboolean();
             setAttributeValue(Attributes.AntennaRaised.name(), attribute);
