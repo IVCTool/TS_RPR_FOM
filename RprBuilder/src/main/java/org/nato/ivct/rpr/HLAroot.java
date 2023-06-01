@@ -18,6 +18,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import hla.rti1516e.RTIambassador;
+import hla.rti1516e.RtiFactoryFactory;
+import hla.rti1516e.encoding.EncoderFactory;
+import hla.rti1516e.exceptions.RTIinternalError;
 
 public class HLAroot {
 
@@ -26,9 +29,29 @@ public class HLAroot {
     // reference object to manage common class specific settings
     private static HLAroot anchor;
     protected static RTIambassador rtiAmbassador;
+    protected static EncoderFactory encoderFactory = null;
 
     public static void initialize(RTIambassador rtiAmbassador2Use) {
         rtiAmbassador = rtiAmbassador2Use;
+    }
+
+    public static RTIambassador getRtiAmbassador() throws RprBuilderException {
+        if (rtiAmbassador == null) {
+            log.error("RPR Builder not initialized");
+            throw new RprBuilderException("RPR Builder not initialized");
+        }
+        return rtiAmbassador;
+    }
+
+    public static EncoderFactory getEncoderFactory() throws ExceptionInInitializerError {
+        if (encoderFactory == null) {
+            try {
+                encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory();
+            } catch (RTIinternalError e) {
+                throw new ExceptionInInitializerError(e);
+            }
+        }
+        return encoderFactory;
     }
 
     /**

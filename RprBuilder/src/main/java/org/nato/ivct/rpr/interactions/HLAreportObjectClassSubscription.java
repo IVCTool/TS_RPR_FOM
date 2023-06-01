@@ -14,7 +14,7 @@ limitations under the License. */
 
 package org.nato.ivct.rpr.interactions;
 
-import org.nato.ivct.rpr.OmtBuilder;
+import org.nato.ivct.rpr.HLAroot;
 import org.nato.ivct.rpr.RprBuilderException;
 
 import hla.rti1516e.InteractionClassHandle;
@@ -54,21 +54,21 @@ public class HLAreportObjectClassSubscription extends HLAreport {
         {
             public HLAbyte createElement(int index)
             {
-                return OmtBuilder.getEncoderFactory().createHLAbyte();
+                return HLAroot.getEncoderFactory().createHLAbyte();
             }
         };
         DataElementFactory<HLAoctetPairBE> octedFactory = new DataElementFactory<HLAoctetPairBE>()
         {
             public HLAoctetPairBE createElement(int index)
             {
-                return OmtBuilder.getEncoderFactory().createHLAoctetPairBE();
+                return HLAroot.getEncoderFactory().createHLAoctetPairBE();
             }
         };
         addParameter(Attributes.HLAnumberOfClasses.name(), RtiFactoryFactory.getRtiFactory().getEncoderFactory().createHLAinteger32BE());
-        addParameter(Attributes.HLAobjectClass.name(), OmtBuilder.getEncoderFactory().createHLAvariableArray(byteFactory));
-        addParameter(Attributes.HLAactive.name(), OmtBuilder.getEncoderFactory().createHLAboolean());
-        addParameter(Attributes.HLAmaxUpdateRate.name(), OmtBuilder.getEncoderFactory().createHLAvariableArray(octedFactory));
-        addParameter(Attributes.HLAattributeList.name(), OmtBuilder.getEncoderFactory().createHLAvariableArray(octedFactory));
+        addParameter(Attributes.HLAobjectClass.name(), HLAroot.getEncoderFactory().createHLAvariableArray(byteFactory));
+        addParameter(Attributes.HLAactive.name(), HLAroot.getEncoderFactory().createHLAboolean());
+        addParameter(Attributes.HLAmaxUpdateRate.name(), HLAroot.getEncoderFactory().createHLAvariableArray(octedFactory));
+        addParameter(Attributes.HLAattributeList.name(), HLAroot.getEncoderFactory().createHLAvariableArray(octedFactory));
     }
     
     public static HLAreportObjectClassSubscription discover (InteractionClassHandle theInteractionClassHandle) {

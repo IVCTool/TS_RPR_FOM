@@ -15,7 +15,6 @@ limitations under the License. */
 package org.nato.ivct.rpr.interactions;
 
 import org.nato.ivct.rpr.HLAroot;
-import org.nato.ivct.rpr.OmtBuilder;
 import org.nato.ivct.rpr.RprBuilderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +69,7 @@ public class HLAinteractionRoot extends HLAroot {
      */
     public HLAinteractionRoot() throws NameNotFound, FederateNotExecutionMember, NotConnected, RTIinternalError, RprBuilderException {
         if (interactionClassHandle == null) {
-            interactionClassHandle = OmtBuilder.getRtiAmbassador().getInteractionClassHandle(getHlaClassName());
+            interactionClassHandle = HLAroot.getRtiAmbassador().getInteractionClassHandle(getHlaClassName());
         }
         log.trace("interaction {} created", interactionClassHandle);
     }
@@ -134,7 +133,7 @@ public class HLAinteractionRoot extends HLAroot {
                 nbValues++;
             }
         }
-        ParameterHandleValueMap attributeValues = OmtBuilder.getRtiAmbassador().getParameterHandleValueMapFactory().create(nbValues);
+        ParameterHandleValueMap attributeValues = HLAroot.getRtiAmbassador().getParameterHandleValueMapFactory().create(nbValues);
         for (Entry<String, ParameterHolder> entry: parameterMap.entrySet()) {
             if (entry.getValue().isUpdated) {
                 attributeValues.put(getParameterHandle(entry.getKey()), entry.getValue().data.toByteArray());
@@ -145,22 +144,22 @@ public class HLAinteractionRoot extends HLAroot {
 
 
     public void send() throws InteractionClassNotPublished, InteractionParameterNotDefined, InteractionClassNotDefined, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError, RprBuilderException {
-        OmtBuilder.getRtiAmbassador().sendInteraction(interactionClassHandle, getParameterHandleValueMap(), null);
+        HLAroot.getRtiAmbassador().sendInteraction(interactionClassHandle, getParameterHandleValueMap(), null);
     }
 
     public void subscribe() throws FederateServiceInvocationsAreBeingReportedViaMOM, InteractionClassNotDefined, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError, RprBuilderException {
-        OmtBuilder.getRtiAmbassador().subscribeInteractionClass(interactionClassHandle);
+        HLAroot.getRtiAmbassador().subscribeInteractionClass(interactionClassHandle);
     }
 
     public void publish() throws InteractionClassNotDefined, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError, RprBuilderException {
-        OmtBuilder.getRtiAmbassador().publishInteractionClass(interactionClassHandle);
+        HLAroot.getRtiAmbassador().publishInteractionClass(interactionClassHandle);
     }
 
     public ParameterHandle getParameterHandle(String name) {
         ParameterHandle handle = knownParameterHandles.get(name);
         if (handle == null) {
             try {
-                handle = OmtBuilder.getRtiAmbassador().getParameterHandle(interactionClassHandle, name);
+                handle = HLAroot.getRtiAmbassador().getParameterHandle(interactionClassHandle, name);
             } catch (NameNotFound | InvalidInteractionClassHandle | FederateNotExecutionMember | NotConnected
                     | RTIinternalError | RprBuilderException e) {
                 log.error("Parameter name not found", e);
@@ -184,7 +183,7 @@ public class HLAinteractionRoot extends HLAroot {
             }
         }
         try {
-            String handleName = OmtBuilder.getRtiAmbassador().getParameterName(interactionClassHandle, handle);
+            String handleName = HLAroot.getRtiAmbassador().getParameterName(interactionClassHandle, handle);
             knownParameterHandles.put(handleName, handle);
             return handleName;
         } catch (InteractionParameterNotDefined | InvalidParameterHandle | InvalidInteractionClassHandle

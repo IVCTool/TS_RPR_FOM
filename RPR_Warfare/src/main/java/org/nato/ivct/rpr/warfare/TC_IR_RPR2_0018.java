@@ -24,8 +24,8 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.concurrent.Semaphore;
 
-import org.nato.ivct.rpr.OmtBuilder;
 import org.nato.ivct.rpr.FomFiles;
+import org.nato.ivct.rpr.HLAroot;
 import org.nato.ivct.rpr.RprBuilderException;
 import org.nato.ivct.rpr.interactions.HLAreportInteractionPublication;
 import org.nato.ivct.rpr.interactions.HLAreportInteractionSubscription;
@@ -45,6 +45,7 @@ import hla.rti1516e.CallbackModel;
 import hla.rti1516e.FederateAmbassador;
 import hla.rti1516e.FederateHandle;
 import hla.rti1516e.InteractionClassHandle;
+import hla.rti1516e.InteractionClassHandleFactory;
 import hla.rti1516e.NullFederateAmbassador;
 import hla.rti1516e.ObjectClassHandle;
 import hla.rti1516e.ObjectInstanceHandle;
@@ -56,6 +57,8 @@ import hla.rti1516e.RtiFactoryFactory;
 import hla.rti1516e.TransportationTypeHandle;
 import hla.rti1516e.encoding.DecoderException;
 import hla.rti1516e.encoding.EncoderException;
+import hla.rti1516e.encoding.HLAbyte;
+import hla.rti1516e.encoding.HLAvariableArray;
 import hla.rti1516e.exceptions.AlreadyConnected;
 import hla.rti1516e.exceptions.AttributeNotDefined;
 import hla.rti1516e.exceptions.CallNotAllowedFromWithinCallback;
@@ -173,6 +176,14 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 					logger.info("HLAreportInteractionPublication received");
 					reportPubs.clear();
 					reportPubs.decode(theParameters);
+					HLAvariableArray<HLAbyte> iH = reportPubs.getHLAinteractionClassList();
+					for (HLAbyte i : iH) {
+						logger.info("interaction: {}", i);
+						// InteractionClassHandleFactory x = HLAroot.getRtiAmbassador().getInteractionClassHandleFactory(); 
+						// x.(i);
+						// InteractionClassHandle h = new InteractionClassHandle();
+						// HLAroot.getRtiAmbassador().getInteractionClassName(i);
+					}
 					receivedHLAreportInteractionPublication = true;
 					federateDiscovered.release(1);
 					return;
@@ -246,7 +257,7 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 				rtiAmbassador.createFederationExecution(federationName, fomList);
 			} catch (FederationExecutionAlreadyExists ignored) { }
 			federateHandle = rtiAmbassador.joinFederationExecution(this.getClass().getSimpleName(), federationName, fomList);
-            OmtBuilder.initialize(rtiAmbassador);
+            HLAroot.initialize(rtiAmbassador);
 		} catch (RTIinternalError | ConnectionFailed | InvalidLocalSettingsDesignator | UnsupportedCallbackModel 
 				| AlreadyConnected | CallNotAllowedFromWithinCallback | CouldNotCreateLogicalTimeFactory 
 				| FederationExecutionDoesNotExist | InconsistentFDD | ErrorReadingFDD | CouldNotOpenFDD 

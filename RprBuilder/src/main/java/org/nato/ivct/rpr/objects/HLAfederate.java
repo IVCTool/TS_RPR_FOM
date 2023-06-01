@@ -16,7 +16,7 @@ package org.nato.ivct.rpr.objects;
 
 import java.util.HashMap;
 
-import org.nato.ivct.rpr.OmtBuilder;
+import org.nato.ivct.rpr.HLAroot;
 import org.nato.ivct.rpr.RprBuilderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -127,14 +127,14 @@ public class HLAfederate extends HLAmanager {
         {
             public HLAbyte createElement(int index)
             {
-                return OmtBuilder.getEncoderFactory().createHLAbyte();
+                return HLAroot.getEncoderFactory().createHLAbyte();
             }
         };
-        addAttribute(Attributes.HLAfederateHandle.name(), OmtBuilder.getEncoderFactory().createHLAvariableArray(byteFactory));
-        addAttribute(Attributes.HLAfederateName.name(), OmtBuilder.getEncoderFactory().createHLAunicodeString());
-        addAttribute(Attributes.HLAfederateType.name(), OmtBuilder.getEncoderFactory().createHLAunicodeString());
-        addAttribute(Attributes.HLAfederateHost.name(), OmtBuilder.getEncoderFactory().createHLAunicodeString());
-        addAttribute(Attributes.HLARTIversion.name(), OmtBuilder.getEncoderFactory().createHLAunicodeString());
+        addAttribute(Attributes.HLAfederateHandle.name(), HLAroot.getEncoderFactory().createHLAvariableArray(byteFactory));
+        addAttribute(Attributes.HLAfederateName.name(), HLAroot.getEncoderFactory().createHLAunicodeString());
+        addAttribute(Attributes.HLAfederateType.name(), HLAroot.getEncoderFactory().createHLAunicodeString());
+        addAttribute(Attributes.HLAfederateHost.name(), HLAroot.getEncoderFactory().createHLAunicodeString());
+        addAttribute(Attributes.HLARTIversion.name(), HLAroot.getEncoderFactory().createHLAunicodeString());
     }
 
 
@@ -162,7 +162,7 @@ public class HLAfederate extends HLAmanager {
     public static HLAfederate discover(ObjectInstanceHandle theObject, ObjectClassHandle theObjectClass)
             throws InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError,
             RprBuilderException {
-        String receivedClass = OmtBuilder.getRtiAmbassador().getObjectClassName(theObjectClass);
+        String receivedClass = HLAroot.getRtiAmbassador().getObjectClassName(theObjectClass);
         if (receivedClass.equalsIgnoreCase(anchor.getHlaClassName())) {
             return get(theObject);
         }

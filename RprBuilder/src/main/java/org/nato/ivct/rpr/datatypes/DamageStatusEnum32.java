@@ -14,8 +14,7 @@ limitations under the License. */
 
 package org.nato.ivct.rpr.datatypes;
 
-import org.nato.ivct.rpr.OmtBuilder;
-
+import org.nato.ivct.rpr.HLAroot;
 import hla.rti1516e.encoding.DataElement;
 import hla.rti1516e.encoding.DecoderException;
 import hla.rti1516e.encoding.HLAinteger32BE;
@@ -32,11 +31,11 @@ public enum DamageStatusEnum32 {
     private final HLAinteger32BE value;
  
     private DamageStatusEnum32(int value) {
-        this.value = OmtBuilder.getEncoderFactory().createHLAinteger32BE(value);
+        this.value = HLAroot.getEncoderFactory().createHLAinteger32BE(value);
     }
 
     public static DamageStatusEnum32 decode (byte[] bytes) throws DecoderException {
-        HLAinteger32BE dataElement = OmtBuilder.getEncoderFactory().createHLAinteger32BE();
+        HLAinteger32BE dataElement = HLAroot.getEncoderFactory().createHLAinteger32BE();
         dataElement.decode(bytes);
         switch (dataElement.getValue()) {
             case 0: return NoDamage;

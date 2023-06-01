@@ -3,14 +3,11 @@ package org.nato.ivct.rpr.interactions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.net.URL;
-import java.util.ArrayList;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.nato.ivct.rpr.FomFiles;
-import org.nato.ivct.rpr.OmtBuilder;
+import org.nato.ivct.rpr.HLAroot;
 import org.nato.ivct.rpr.RprBuilderException;
 
 import hla.rti1516e.CallbackModel;
@@ -44,7 +41,7 @@ public class HLAmanagerTest {
             rtiAmbassador.createFederationExecution("TestFederation", fomList);
         } catch (FederationExecutionAlreadyExists ignored) { }
         rtiAmbassador.joinFederationExecution("HLAmanagerTest", "UnitTest", "TestFederation");
-        OmtBuilder.initialize(rtiAmbassador);
+        HLAroot.initialize(rtiAmbassador);
     }
 
     @AfterAll

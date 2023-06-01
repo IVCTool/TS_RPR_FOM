@@ -14,7 +14,7 @@ limitations under the License. */
 
 package org.nato.ivct.rpr.interactions;
 
-import org.nato.ivct.rpr.OmtBuilder;
+import org.nato.ivct.rpr.HLAroot;
 import org.nato.ivct.rpr.RprBuilderException;
 
 import hla.rti1516e.InteractionClassHandle;
@@ -45,10 +45,10 @@ public class HLAreportInteractionSubscription extends HLAreport {
         {
             public HLAbyte createElement(int index)
             {
-                return OmtBuilder.getEncoderFactory().createHLAbyte();
+                return HLAroot.getEncoderFactory().createHLAbyte();
             }
         };
-        addParameter(Attributes.HLAinteractionClassList.name(), OmtBuilder.getEncoderFactory().createHLAvariableArray(byteFactory));
+        addParameter(Attributes.HLAinteractionClassList.name(), HLAroot.getEncoderFactory().createHLAvariableArray(byteFactory));
     }
 
     public static HLAreportInteractionSubscription discover (InteractionClassHandle theInteractionClassHandle) {
