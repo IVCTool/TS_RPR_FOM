@@ -54,24 +54,16 @@ public class PhysicalEntity extends BaseEntity {
         TrailingEffectsCode,
         VectoringNozzleSystemData        
     }
-
+      
     
-    
-    // TODO: create fields
-     
-
     public PhysicalEntity() throws RprBuilderException {
         super();
-        try {
-            getEngineSmokeOn();
-            getFirePowerDisabled();
-            getFlamesPresent();
-            getIsConcealed();
-            getTentDeployed();
-        } catch (NameNotFound | InvalidObjectClassHandle | FederateNotExecutionMember | NotConnected | RTIinternalError
-                | EncoderException e) {
-            throw new RprBuilderException("error while creating member attributes", e);
-        }
+        addAttribute(Attributes.EngineSmokeOn.name(), encoderFactory.createHLAboolean());
+        addAttribute(Attributes.FirePowerDisabled.name(), encoderFactory.createHLAboolean());
+        addAttribute(Attributes.FlamesPresent.name(), encoderFactory.createHLAboolean());
+        addAttribute(Attributes.IsConcealed.name(), encoderFactory.createHLAboolean());
+        addAttribute(Attributes.TentDeployed.name(), encoderFactory.createHLAboolean());
+        // TODO: create remaining fields
     }
 
 
@@ -81,38 +73,27 @@ public class PhysicalEntity extends BaseEntity {
     public void addPublish(Attributes attribute) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError { 
         addPubAttribute(attribute.name()); 
     }
-
+   
     
-
     // attribute setter and getter
 
     public void setEngineSmokeOn(boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
-        // aEngineSmokeOn.setValue(value);
         HLAboolean holder = (HLAboolean) getAttribute(Attributes.EngineSmokeOn.name());
         holder.setValue(value);
         setAttributeValue(Attributes.EngineSmokeOn.name(), holder);
     }
     public boolean  getEngineSmokeOn() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean attribute = (HLAboolean) getAttribute(Attributes.EngineSmokeOn.name());
-        if (attribute == null) {
-            attribute = encoderFactory.createHLAboolean();
-            setAttributeValue(Attributes.EngineSmokeOn.name(), attribute);
-        }
         return attribute.getValue();
     }
     
     public void setFirePowerDisabled(boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
-        // aFirePowerDisabled.setValue(value);
         HLAboolean holder = (HLAboolean) getAttribute(Attributes.FirePowerDisabled.name());
         holder.setValue(value);
         setAttributeValue(Attributes.FirePowerDisabled.name(), holder);
     }
     public boolean  getFirePowerDisabled() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean attribute = (HLAboolean) getAttribute(Attributes.FirePowerDisabled.name());
-        if (attribute == null) {
-            attribute = encoderFactory.createHLAboolean();
-            setAttributeValue(Attributes.FirePowerDisabled.name(), attribute);
-        }
         return attribute.getValue();
     }
     
@@ -123,10 +104,6 @@ public class PhysicalEntity extends BaseEntity {
     }
     public boolean  getFlamesPresent() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean attribute = (HLAboolean) getAttribute(Attributes.FlamesPresent.name());
-        if (attribute == null) {
-            attribute = encoderFactory.createHLAboolean();
-            setAttributeValue(Attributes.FlamesPresent.name(), attribute);
-        }
         return attribute.getValue();
     }
     
@@ -137,10 +114,6 @@ public class PhysicalEntity extends BaseEntity {
     }
     public boolean  getIsConcealed() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean attribute = (HLAboolean) getAttribute(Attributes.IsConcealed.name());
-        if (attribute == null) {
-            attribute = encoderFactory.createHLAboolean();
-            setAttributeValue(Attributes.IsConcealed.name(), attribute);
-        }
         return attribute.getValue();
     }
     
@@ -151,10 +124,6 @@ public class PhysicalEntity extends BaseEntity {
     }
     public boolean  getTentDeployed() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean attribute = (HLAboolean) getAttribute(Attributes.TentDeployed.name());
-        if (attribute == null) {
-            attribute = encoderFactory.createHLAboolean();
-            setAttributeValue(Attributes.TentDeployed.name(), attribute);
-        }
         return attribute.getValue();
     }  
 }

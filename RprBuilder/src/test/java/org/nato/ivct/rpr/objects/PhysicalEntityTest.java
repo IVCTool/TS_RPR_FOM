@@ -6,12 +6,13 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.nato.ivct.rpr.FomFiles;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URL;
-import java.util.ArrayList;
 
+import hla.rti1516e.AttributeHandleValueMap;
 import hla.rti1516e.CallbackModel;
 import hla.rti1516e.FederateAmbassador;
 import hla.rti1516e.NullFederateAmbassador;
@@ -43,18 +44,44 @@ import hla.rti1516e.exceptions.SaveInProgress;
 import hla.rti1516e.exceptions.UnsupportedCallbackModel;
 
 
-public class HLAobjectRootTest {
-  
-    public static final Logger log = LoggerFactory.getLogger(HLAobjectRootTest.class);
+public class PhysicalEntityTest {
+
+    public static final Logger log = LoggerFactory.getLogger(PhysicalEntityTest.class);
     static RTIambassador rtiAmbassador = null;
+
+    @Test
+    void testEncodeDecode() {
+        HLAobjectRoot.initialize(rtiAmbassador);
+        try {
+            PhysicalEntity phy1 = new PhysicalEntity();
+            phy1.setEngineSmokeOn(true);
+            phy1.setFirePowerDisabled(true);
+            phy1.setFlamesPresent(true);
+            phy1.setIsConcealed(true);
+            phy1.setTentDeployed(true);
+
+            AttributeHandleValueMap pdu = phy1.getAttributeValues();
+
+            PhysicalEntity phy2 = new PhysicalEntity();
+            phy2.decode(pdu);
+            assertTrue(phy2.getEngineSmokeOn() == true);
+            assertTrue(phy2.getFirePowerDisabled() == true);
+            assertTrue(phy2.getFlamesPresent() == true);
+            assertTrue(phy2.getIsConcealed() == true);
+            assertTrue(phy2.getTentDeployed() == true);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
 
     @BeforeAll
     static void createRtiAmbassador() throws ConnectionFailed, InvalidLocalSettingsDesignator, UnsupportedCallbackModel, AlreadyConnected, CallNotAllowedFromWithinCallback, RTIinternalError, InconsistentFDD, ErrorReadingFDD, CouldNotOpenFDD, NotConnected, CouldNotCreateLogicalTimeFactory, FederationExecutionDoesNotExist, SaveInProgress, RestoreInProgress, FederateAlreadyExecutionMember {
         RtiFactory rtiFactory = RtiFactoryFactory.getRtiFactory();
         rtiAmbassador = rtiFactory.getRtiAmbassador();
         FederateAmbassador nullAmbassador = new NullFederateAmbassador();
-        URL[] fomList = new FomFiles()
-        .addRPR_BASE()
+         URL[] fomList = new FomFiles()
+            .addRPR_BASE()
             .addRPR_Enumerations()
             .addRPR_Foundation()
             .addRPR_Physical()
@@ -78,16 +105,4 @@ public class HLAobjectRootTest {
         rtiAmbassador.disconnect();
     }
 
-    @Test
-    void createHLAobjectRoot() {
-        try {
-            HLAobjectRoot.initialize(rtiAmbassador);
-            HLAobjectRoot obj = new HLAobjectRoot();
-            assertNotNull(obj.getHlaClassName());
-
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
-
-    }
 }

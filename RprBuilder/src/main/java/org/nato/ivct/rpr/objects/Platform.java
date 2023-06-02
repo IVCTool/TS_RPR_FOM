@@ -49,27 +49,22 @@ public class Platform extends PhysicalEntity{
 
     public Platform() throws RprBuilderException {
         super();
-        try {
-            setAttributeValue(Attributes.AfterburnerOn.name(), encoderFactory.createHLAboolean());
-            setAttributeValue(Attributes.AntiCollisionLightsOn.name(), encoderFactory.createHLAboolean());
-            setAttributeValue(Attributes.BlackOutBrakeLightsOn.name(), encoderFactory.createHLAboolean());
-            setAttributeValue(Attributes.BlackOutLightsOn.name(), encoderFactory.createHLAboolean());
-            setAttributeValue(Attributes.BrakeLightsOn.name(), encoderFactory.createHLAboolean());
-            setAttributeValue(Attributes.FormationLightsOn.name(), encoderFactory.createHLAboolean());
-            setAttributeValue(Attributes.HatchState.name(), encoderFactory.createHLAboolean());
-            setAttributeValue(Attributes.HeadLightsOn.name(), encoderFactory.createHLAboolean());
-            setAttributeValue(Attributes.InteriorLightsOn.name(), encoderFactory.createHLAboolean());
-            setAttributeValue(Attributes.LandingLightsOn.name(), encoderFactory.createHLAboolean());
-            setAttributeValue(Attributes.LauncherRaised.name(), encoderFactory.createHLAboolean());
-            setAttributeValue(Attributes.NavigationLightsOn.name(), encoderFactory.createHLAboolean());
-            setAttributeValue(Attributes.RampDeployed.name(), encoderFactory.createHLAboolean());
-            setAttributeValue(Attributes.RunningLightsOn.name(), encoderFactory.createHLAboolean());
-            setAttributeValue(Attributes.SpotLightsOn.name(), encoderFactory.createHLAboolean());
-            setAttributeValue(Attributes.TailLightsOn.name(), encoderFactory.createHLAboolean());
-        } catch (NameNotFound | InvalidObjectClassHandle | FederateNotExecutionMember | NotConnected | RTIinternalError
-                | EncoderException e) {
-            throw new RprBuilderException("error while creating member attributes", e);
-        }
+        addAttribute(Attributes.AfterburnerOn.name(), encoderFactory.createHLAboolean());
+        addAttribute(Attributes.AntiCollisionLightsOn.name(), encoderFactory.createHLAboolean());
+        addAttribute(Attributes.BlackOutBrakeLightsOn.name(), encoderFactory.createHLAboolean());
+        addAttribute(Attributes.BlackOutLightsOn.name(), encoderFactory.createHLAboolean());
+        addAttribute(Attributes.BrakeLightsOn.name(), encoderFactory.createHLAboolean());
+        addAttribute(Attributes.FormationLightsOn.name(), encoderFactory.createHLAboolean());
+        addAttribute(Attributes.HatchState.name(), encoderFactory.createHLAboolean());
+        addAttribute(Attributes.HeadLightsOn.name(), encoderFactory.createHLAboolean());
+        addAttribute(Attributes.InteriorLightsOn.name(), encoderFactory.createHLAboolean());
+        addAttribute(Attributes.LandingLightsOn.name(), encoderFactory.createHLAboolean());
+        addAttribute(Attributes.LauncherRaised.name(), encoderFactory.createHLAboolean());
+        addAttribute(Attributes.NavigationLightsOn.name(), encoderFactory.createHLAboolean());
+        addAttribute(Attributes.RampDeployed.name(), encoderFactory.createHLAboolean());
+        addAttribute(Attributes.RunningLightsOn.name(), encoderFactory.createHLAboolean());
+        addAttribute(Attributes.SpotLightsOn.name(), encoderFactory.createHLAboolean());
+        addAttribute(Attributes.TailLightsOn.name(), encoderFactory.createHLAboolean());
     }
 
     /**
@@ -105,227 +100,163 @@ public class Platform extends PhysicalEntity{
     // attribute setter and getter
     
     public void setAfterburnerOn (Boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
-        HLAboolean holder = getAfterburnerOn();
+        HLAboolean holder = (HLAboolean) getAttribute(Attributes.AfterburnerOn.name());
         holder.setValue(value);
         setAttributeValue(Attributes.AfterburnerOn.name(), holder);
     }
-    public HLAboolean getAfterburnerOn () throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+    public boolean  getAfterburnerOn () throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean attribute = (HLAboolean) getAttribute(Attributes.AfterburnerOn.name());
-        if (attribute == null) {
-            attribute = encoderFactory.createHLAboolean();
-            setAttributeValue(Attributes.AfterburnerOn.name(), attribute);
-        }
-        return attribute;
+        return attribute.getValue();
     }
     
     public void setAntiCollisionLightsOn (Boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
-        HLAboolean holder = getAfterburnerOn();
+        HLAboolean holder = (HLAboolean) getAttribute(Attributes.AfterburnerOn.name());
         holder.setValue(value);
         setAttributeValue(Attributes.AntiCollisionLightsOn.name(), holder);
     }
-    public HLAboolean getAntiCollisionLightsOn () throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+    public boolean  getAntiCollisionLightsOn () throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean attribute = (HLAboolean) getAttribute(Attributes.AntiCollisionLightsOn.name());
-        if (attribute == null) {
-            attribute = encoderFactory.createHLAboolean();
-            setAttributeValue(Attributes.AntiCollisionLightsOn.name(), attribute);
-        }
-        return attribute;
+        return attribute.getValue();
     }
     
     public void setBlackOutBrakeLightsOn (Boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
-        HLAboolean holder = getBlackOutBrakeLightsOn();
+        HLAboolean holder = (HLAboolean) getAttribute(Attributes.BlackOutBrakeLightsOn.name());
         holder.setValue(value);
         setAttributeValue(Attributes.BlackOutBrakeLightsOn.name(), holder);
     }
-    public HLAboolean getBlackOutBrakeLightsOn () throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+    public boolean  getBlackOutBrakeLightsOn () throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean attribute = (HLAboolean) getAttribute(Attributes.BlackOutBrakeLightsOn.name());
-        if (attribute == null) {
-            attribute = encoderFactory.createHLAboolean();
-            setAttributeValue(Attributes.BlackOutBrakeLightsOn.name(), attribute);
-        }
-        return attribute;
+        return attribute.getValue();
     }
     
     public void setBlackOutLightsOn (Boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
-        HLAboolean holder = getBlackOutLightsOn();
+        HLAboolean holder = (HLAboolean) getAttribute(Attributes.BlackOutLightsOn.name());
         holder.setValue(value);
         setAttributeValue(Attributes.BlackOutLightsOn.name(), holder);
     }
-    public HLAboolean getBlackOutLightsOn () throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+    public boolean  getBlackOutLightsOn () throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean attribute = (HLAboolean) getAttribute(Attributes.BlackOutLightsOn.name());
-        if (attribute == null) {
-            attribute = encoderFactory.createHLAboolean();
-            setAttributeValue(Attributes.BlackOutLightsOn.name(), attribute);
-        }
-        return attribute;
+        return attribute.getValue();
     }
     
     public void setBrakeLightsOn (Boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
-        HLAboolean holder = getBrakeLightsOn();
+        HLAboolean holder = (HLAboolean) getAttribute(Attributes.BrakeLightsOn.name());
         holder.setValue(value);
         setAttributeValue(Attributes.BrakeLightsOn.name(), holder);
     }
-    public HLAboolean getBrakeLightsOn () throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+    public boolean  getBrakeLightsOn () throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean attribute = (HLAboolean) getAttribute(Attributes.BrakeLightsOn.name());
-        if (attribute == null) {
-            attribute = encoderFactory.createHLAboolean();
-            setAttributeValue(Attributes.BrakeLightsOn.name(), attribute);
-        }
-        return attribute;
+        return attribute.getValue();
     }
     
     public void setFormationLightsOn (Boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
-        HLAboolean holder = getFormationLightsOn();
+        HLAboolean holder = (HLAboolean) getAttribute(Attributes.FormationLightsOn.name());
         holder.setValue(value);
         setAttributeValue(Attributes.FormationLightsOn.name(), holder);
     }
-    public HLAboolean getFormationLightsOn () throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+    public boolean  getFormationLightsOn () throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean attribute = (HLAboolean) getAttribute(Attributes.FormationLightsOn.name());
-        if (attribute == null) {
-            attribute = encoderFactory.createHLAboolean();
-            setAttributeValue(Attributes.FormationLightsOn.name(), attribute);
-        }
-        return attribute;
+        return attribute.getValue();
     }
     
     public void setHatchState (Boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
-        HLAboolean holder = getHatchState();
+        HLAboolean holder = (HLAboolean) getAttribute(Attributes.HatchState.name());
         holder.setValue(value);
         setAttributeValue(Attributes.HatchState.name(), holder);
     }
-    public HLAboolean getHatchState () throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+    public boolean  getHatchState () throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean attribute = (HLAboolean) getAttribute(Attributes.HatchState.name());
-        if (attribute == null) {
-            attribute = encoderFactory.createHLAboolean();
-            setAttributeValue(Attributes.HatchState.name(), attribute);
-        }
-        return attribute;
+        return attribute.getValue();
     }
     
     public void setHeadLightsOn (Boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
-        HLAboolean holder = getHeadLightsOn();
+        HLAboolean holder = (HLAboolean) getAttribute(Attributes.HeadLightsOn.name());
         holder.setValue(value);
         setAttributeValue(Attributes.HeadLightsOn.name(), holder);
     }
-    public HLAboolean getHeadLightsOn () throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+    public boolean  getHeadLightsOn () throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean attribute = (HLAboolean) getAttribute(Attributes.HeadLightsOn.name());
-        if (attribute == null) {
-            attribute = encoderFactory.createHLAboolean();
-            setAttributeValue(Attributes.HeadLightsOn.name(), attribute);
-        }
-        return attribute;
+        return attribute.getValue();
     }
     
     public void setInteriorLightsOn (Boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
-        HLAboolean holder = getInteriorLightsOn();
+        HLAboolean holder = (HLAboolean) getAttribute(Attributes.InteriorLightsOn.name());
         holder.setValue(value);
         setAttributeValue(Attributes.InteriorLightsOn.name(), holder);
     }
-    public HLAboolean getInteriorLightsOn () throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+    public boolean  getInteriorLightsOn () throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean attribute = (HLAboolean) getAttribute(Attributes.InteriorLightsOn.name());
-        if (attribute == null) {
-            attribute = encoderFactory.createHLAboolean();
-            setAttributeValue(Attributes.InteriorLightsOn.name(), attribute);
-        }
-        return attribute;
+        return attribute.getValue();
     }
     
     public void setLandingLightsOn (Boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
-        HLAboolean holder = getLandingLightsOn();
+        HLAboolean holder = (HLAboolean) getAttribute(Attributes.LandingLightsOn.name());
         holder.setValue(value);
         setAttributeValue(Attributes.LandingLightsOn.name(), holder);
     }
-    public HLAboolean getLandingLightsOn () throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+    public boolean  getLandingLightsOn () throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean attribute = (HLAboolean) getAttribute(Attributes.LandingLightsOn.name());
-        if (attribute == null) {
-            attribute = encoderFactory.createHLAboolean();
-            setAttributeValue(Attributes.LandingLightsOn.name(), attribute);
-        }
-        return attribute;
+        return attribute.getValue();
     }
     
     public void setLauncherRaised (Boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
-        HLAboolean holder = getLauncherRaised();
+        HLAboolean holder = (HLAboolean) getAttribute(Attributes.LauncherRaised.name());
         holder.setValue(value);
         setAttributeValue(Attributes.LauncherRaised.name(), holder);
     }
-    public HLAboolean getLauncherRaised () throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+    public boolean  getLauncherRaised () throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean attribute = (HLAboolean) getAttribute(Attributes.LauncherRaised.name());
-        if (attribute == null) {
-            attribute = encoderFactory.createHLAboolean();
-            setAttributeValue(Attributes.LauncherRaised.name(), attribute);
-        }
-        return attribute;
+        return attribute.getValue();
     }
     
     public void setNavigationLightsOn (Boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
-        HLAboolean holder = getNavigationLightsOn();
+        HLAboolean holder = (HLAboolean) getAttribute(Attributes.NavigationLightsOn.name());
         holder.setValue(value);
         setAttributeValue(Attributes.NavigationLightsOn.name(), holder);
     }
-    public HLAboolean getNavigationLightsOn () throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+    public boolean  getNavigationLightsOn () throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean attribute = (HLAboolean) getAttribute(Attributes.NavigationLightsOn.name());
-        if (attribute == null) {
-            attribute = encoderFactory.createHLAboolean();
-            setAttributeValue(Attributes.NavigationLightsOn.name(), attribute);
-        }
-        return attribute;
+        return attribute.getValue();
     }
     
     public void setRampDeployed (Boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
-        HLAboolean holder = getRampDeployed();
+        HLAboolean holder = (HLAboolean) getAttribute(Attributes.RampDeployed.name());
         holder.setValue(value);
         setAttributeValue(Attributes.RampDeployed.name(), holder);
     }
-    public HLAboolean getRampDeployed () throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+    public boolean  getRampDeployed () throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean attribute = (HLAboolean) getAttribute(Attributes.RampDeployed.name());
-        if (attribute == null) {
-            attribute = encoderFactory.createHLAboolean();
-            setAttributeValue(Attributes.RampDeployed.name(), attribute);
-        }
-        return attribute;
+        return attribute.getValue();
     }
     
     public void setRunningLightsOn (Boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
-        HLAboolean holder = getRunningLightsOn();
+        HLAboolean holder = (HLAboolean) getAttribute(Attributes.RunningLightsOn.name());
         holder.setValue(value);
         setAttributeValue(Attributes.RunningLightsOn.name(), holder);
     }
-    public HLAboolean getRunningLightsOn () throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+    public boolean  getRunningLightsOn () throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean attribute = (HLAboolean) getAttribute(Attributes.RunningLightsOn.name());
-        if (attribute == null) {
-            attribute = encoderFactory.createHLAboolean();
-            setAttributeValue(Attributes.RunningLightsOn.name(), attribute);
-        }
-        return attribute;
+        return attribute.getValue();
     }
     
     public void setSpotLightsOn (Boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
-        HLAboolean holder = getSpotLightsOn();
+        HLAboolean holder = (HLAboolean) getAttribute(Attributes.SpotLightsOn.name());
         holder.setValue(value);
         setAttributeValue(Attributes.SpotLightsOn.name(), holder);
     }
-    public HLAboolean getSpotLightsOn () throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+    public boolean  getSpotLightsOn () throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean attribute = (HLAboolean) getAttribute(Attributes.SpotLightsOn.name());
-        if (attribute == null) {
-            attribute = encoderFactory.createHLAboolean();
-            setAttributeValue(Attributes.SpotLightsOn.name(), attribute);
-        }
-        return attribute;
+        return attribute.getValue();
     }
     
     public void setTailLightsOn (Boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
-        HLAboolean holder = getTailLightsOn();
+        HLAboolean holder = (HLAboolean) getAttribute(Attributes.TailLightsOn.name());
         holder.setValue(value);
         setAttributeValue(Attributes.TailLightsOn.name(), holder);
     }
-    public HLAboolean getTailLightsOn () throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+    public boolean  getTailLightsOn () throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean attribute = (HLAboolean) getAttribute(Attributes.TailLightsOn.name());
-        if (attribute == null) {
-            attribute = encoderFactory.createHLAboolean();
-            setAttributeValue(Attributes.TailLightsOn.name(), attribute);
-        }
-        return attribute;
+        return attribute.getValue();
     }
 }
 

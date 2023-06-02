@@ -34,12 +34,7 @@ public class Munition extends PhysicalEntity{
 
     public Munition() throws RprBuilderException {
         super();
-        try {
-            setAttributeValue(Attributes.LauncherFlashPresent.name(), encoderFactory.createHLAboolean());
-        } catch (NameNotFound | InvalidObjectClassHandle | FederateNotExecutionMember | NotConnected | RTIinternalError
-                | EncoderException e) {
-        throw new RprBuilderException("error while creating member attributes", e);
-       }
+        addAttribute(Attributes.LauncherFlashPresent.name(), encoderFactory.createHLAboolean());
     }
 
 
@@ -74,10 +69,6 @@ public class Munition extends PhysicalEntity{
     }
     public HLAboolean getLauncherFlashPresent() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean attribute = (HLAboolean) getAttribute(Attributes.LauncherFlashPresent.name());
-        if (attribute == null) {
-            attribute = encoderFactory.createHLAboolean();
-            setAttributeValue(Attributes.LauncherFlashPresent.name(), attribute);
-        }
         return attribute;
     }
 

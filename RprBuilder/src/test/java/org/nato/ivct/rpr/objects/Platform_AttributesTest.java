@@ -133,22 +133,22 @@ public class Platform_AttributesTest {
             assertEquals(p2.getSpatial().getSpatialStatic().getWorldLocation().getX(), 1.1);
             assertEquals(p2.getSpatial().getSpatialStatic().getWorldLocation().getY(), 2.2);
             assertEquals(p2.getSpatial().getSpatialStatic().getWorldLocation().getZ(), 3.3);
-            assertEquals(p2.getAfterburnerOn().getValue(), true);
-            assertEquals(p2.getAntiCollisionLightsOn().getValue(), true);
-            assertEquals(p2.getBlackOutBrakeLightsOn().getValue(), true);
-            assertEquals(p2.getBlackOutLightsOn().getValue(), true);
-            assertEquals(p2.getBrakeLightsOn().getValue(), true);
-            assertEquals(p2.getFormationLightsOn().getValue(), true);
-            assertEquals(p2.getHatchState().getValue(), true);
-            assertEquals(p2.getHeadLightsOn().getValue(), true);
-            assertEquals(p2.getInteriorLightsOn().getValue(), true);
-            assertEquals(p2.getLandingLightsOn().getValue(), true);
-            assertEquals(p2.getLauncherRaised().getValue(), true);
-            assertEquals(p2.getNavigationLightsOn().getValue(), true);
-            assertEquals(p2.getRampDeployed().getValue(), true);
-            assertEquals(p2.getRunningLightsOn().getValue(), true);
-            assertEquals(p2.getSpotLightsOn().getValue(), true);
-            assertEquals(p2.getTailLightsOn().getValue(), true);
+            assertEquals(p2.getAfterburnerOn(), true);
+            assertEquals(p2.getAntiCollisionLightsOn(), true);
+            assertEquals(p2.getBlackOutBrakeLightsOn(), true);
+            assertEquals(p2.getBlackOutLightsOn(), true);
+            assertEquals(p2.getBrakeLightsOn(), true);
+            assertEquals(p2.getFormationLightsOn(), true);
+            assertEquals(p2.getHatchState(), true);
+            assertEquals(p2.getHeadLightsOn(), true);
+            assertEquals(p2.getInteriorLightsOn(), true);
+            assertEquals(p2.getLandingLightsOn(), true);
+            assertEquals(p2.getLauncherRaised(), true);
+            assertEquals(p2.getNavigationLightsOn(), true);
+            assertEquals(p2.getRampDeployed(), true);
+            assertEquals(p2.getRunningLightsOn(), true);
+            assertEquals(p2.getSpotLightsOn(), true);
+            assertEquals(p2.getTailLightsOn(), true);
 
         } catch ( DecoderException | RprBuilderException | RTIinternalError | NameNotFound | InvalidObjectClassHandle | FederateNotExecutionMember | NotConnected | EncoderException e) {
             fail(e.getMessage());

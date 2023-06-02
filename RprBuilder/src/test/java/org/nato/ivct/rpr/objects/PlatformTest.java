@@ -6,12 +6,13 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.nato.ivct.rpr.FomFiles;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URL;
-import java.util.ArrayList;
 
+import hla.rti1516e.AttributeHandleValueMap;
 import hla.rti1516e.CallbackModel;
 import hla.rti1516e.FederateAmbassador;
 import hla.rti1516e.NullFederateAmbassador;
@@ -42,19 +43,78 @@ import hla.rti1516e.exceptions.RestoreInProgress;
 import hla.rti1516e.exceptions.SaveInProgress;
 import hla.rti1516e.exceptions.UnsupportedCallbackModel;
 
+public class PlatformTest {
 
-public class HLAobjectRootTest {
-  
-    public static final Logger log = LoggerFactory.getLogger(HLAobjectRootTest.class);
+    public static final Logger log = LoggerFactory.getLogger(PlatformTest.class);
     static RTIambassador rtiAmbassador = null;
+
+    @Test
+    void testEncodeDecode() {
+        HLAobjectRoot.initialize(rtiAmbassador);
+        try {
+            Platform p1 = new Platform();
+            // set PhysicalEntity inherited attributes
+            p1.setEngineSmokeOn(true);
+            p1.setFirePowerDisabled(true);
+            p1.setFlamesPresent(true);
+            p1.setIsConcealed(true);
+            p1.setTentDeployed(true);
+            // set Platform native attributes
+            p1.setAfterburnerOn(true);
+            p1.setAntiCollisionLightsOn(true);
+            p1.setBlackOutBrakeLightsOn(true);
+            p1.setBlackOutLightsOn(true);
+            p1.setBrakeLightsOn(true);
+            p1.setFormationLightsOn(true);
+            p1.setHatchState(true);
+            p1.setInteriorLightsOn(true);
+            p1.setLandingLightsOn(true);
+            p1.setLauncherRaised(true);
+            p1.setNavigationLightsOn(true);
+            p1.setRampDeployed(true);
+            p1.setRunningLightsOn(true);
+            p1.setSpotLightsOn(true);
+            p1.setTailLightsOn(true);
+
+            AttributeHandleValueMap pdu = p1.getAttributeValues();
+
+            Platform p2 = new Platform();
+            p2.decode(pdu);
+            assertTrue(p2.getEngineSmokeOn() == true);
+            assertTrue(p2.getFirePowerDisabled() == true);
+            assertTrue(p2.getFlamesPresent() == true);
+            assertTrue(p2.getIsConcealed() == true);
+            assertTrue(p2.getTentDeployed() == true);
+
+            assertTrue(p2.getAfterburnerOn() == true);
+            assertTrue(p2.getAntiCollisionLightsOn() == true);
+            assertTrue(p2.getBlackOutBrakeLightsOn() == true);
+            assertTrue(p2.getBlackOutLightsOn() == true);
+            assertTrue(p2.getBrakeLightsOn() == true);
+            assertTrue(p2.getFormationLightsOn() == true);
+            assertTrue(p2.getHatchState() == true);
+            assertTrue(p2.getInteriorLightsOn() == true);
+            assertTrue(p2.getLandingLightsOn() == true);
+            assertTrue(p2.getLauncherRaised() == true);
+            assertTrue(p2.getNavigationLightsOn() == true);
+            assertTrue(p2.getRampDeployed() == true);
+            assertTrue(p2.getRunningLightsOn() == true);
+            assertTrue(p2.getSpotLightsOn() == true);
+            assertTrue(p2.getTailLightsOn() == true);
+
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
 
     @BeforeAll
     static void createRtiAmbassador() throws ConnectionFailed, InvalidLocalSettingsDesignator, UnsupportedCallbackModel, AlreadyConnected, CallNotAllowedFromWithinCallback, RTIinternalError, InconsistentFDD, ErrorReadingFDD, CouldNotOpenFDD, NotConnected, CouldNotCreateLogicalTimeFactory, FederationExecutionDoesNotExist, SaveInProgress, RestoreInProgress, FederateAlreadyExecutionMember {
         RtiFactory rtiFactory = RtiFactoryFactory.getRtiFactory();
         rtiAmbassador = rtiFactory.getRtiAmbassador();
         FederateAmbassador nullAmbassador = new NullFederateAmbassador();
-        URL[] fomList = new FomFiles()
-        .addRPR_BASE()
+         URL[] fomList = new FomFiles()
+            .addRPR_BASE()
             .addRPR_Enumerations()
             .addRPR_Foundation()
             .addRPR_Physical()
@@ -76,18 +136,5 @@ public class HLAobjectRootTest {
             log.trace("leave federation open for remaining federates");
         }
         rtiAmbassador.disconnect();
-    }
-
-    @Test
-    void createHLAobjectRoot() {
-        try {
-            HLAobjectRoot.initialize(rtiAmbassador);
-            HLAobjectRoot obj = new HLAobjectRoot();
-            assertNotNull(obj.getHlaClassName());
-
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
-
     }
 }
