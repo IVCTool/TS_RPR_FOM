@@ -14,13 +14,14 @@ limitations under the License. */
 
 package org.nato.ivct.rpr.interactions;
 
-import org.nato.ivct.rpr.OmtBuilder;
+import org.nato.ivct.rpr.HLAroot;
 import org.nato.ivct.rpr.RprBuilderException;
 
 import hla.rti1516e.InteractionClassHandle;
-import hla.rti1516e.ParameterHandleValueMap;
-import hla.rti1516e.encoding.ByteWrapper;
-import hla.rti1516e.encoding.DecoderException;
+import hla.rti1516e.RtiFactoryFactory;
+import hla.rti1516e.encoding.DataElementFactory;
+import hla.rti1516e.encoding.HLAbyte;
+import hla.rti1516e.encoding.HLAoctetPairBE;
 import hla.rti1516e.encoding.HLAinteger32BE;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
 import hla.rti1516e.exceptions.NameNotFound;
@@ -43,25 +44,27 @@ public class HLAreportObjectClassPublication extends HLAreport {
         HLAattributeList
     }
 
-    private HLAinteger32BE aHLAnumberOfClasses;
-    public int getaHLAnumberOfClasses() {
-        return aHLAnumberOfClasses.getValue();
-    }
-
-    private byte[] aHLAobjectClass;
-    public byte[] getHLAobjectClass() {
-        return aHLAobjectClass;
-    }
-
-    private byte[] aHLAattributeList;
-    public byte [] getHLAattributeList() {
-        return aHLAattributeList;
-    }
 
     public HLAreportObjectClassPublication()
             throws NameNotFound, FederateNotExecutionMember, NotConnected, RTIinternalError, RprBuilderException {
         super();
-        aHLAnumberOfClasses = OmtBuilder.getEncoderFactory().createHLAinteger32BE();
+        DataElementFactory<HLAbyte> byteFactory = new DataElementFactory<HLAbyte>()
+        {
+            public HLAbyte createElement(int index)
+            {
+                return HLAroot.getEncoderFactory().createHLAbyte();
+            }
+        };
+        DataElementFactory<HLAoctetPairBE> octedFactory = new DataElementFactory<HLAoctetPairBE>()
+        {
+            public HLAoctetPairBE createElement(int index)
+            {
+                return HLAroot.getEncoderFactory().createHLAoctetPairBE();
+            }
+        };
+        addParameter(Attributes.HLAnumberOfClasses.name(), RtiFactoryFactory.getRtiFactory().getEncoderFactory().createHLAinteger32BE());
+        addParameter(Attributes.HLAobjectClass.name(), HLAroot.getEncoderFactory().createHLAvariableArray(byteFactory));
+        addParameter(Attributes.HLAattributeList.name(), HLAroot.getEncoderFactory().createHLAvariableArray(octedFactory));
     }
     
     public static HLAreportObjectClassPublication discover (InteractionClassHandle theInteractionClassHandle) {
@@ -76,19 +79,17 @@ public class HLAreportObjectClassPublication extends HLAreport {
         }
         return candidate;
     }
+
     
-    public void decode(ParameterHandleValueMap values) {
-        super.decode(values);
-        try {
-            ByteWrapper value = values.getValueReference(getParameterHandle(Attributes.HLAnumberOfClasses.name()));
-            if (value != null) {
-                aHLAnumberOfClasses.decode(value);
-            }
-        } catch (DecoderException e) {
-            log.error ("error in decode", e);
-        }
-        aHLAobjectClass = values.get(getParameterHandle(Attributes.HLAobjectClass.name()));
-        aHLAattributeList = values.get(getParameterHandle(Attributes.HLAattributeList.name()));
+    public int getaHLAnumberOfClasses() {
+        return ((HLAinteger32BE) getParameter(Attributes.HLAnumberOfClasses.name())).getValue();
     }
 
+    public byte[] getHLAobjectClass() {
+        return getParameter(Attributes.HLAobjectClass.name()).toByteArray();
+    }
+
+    public byte [] getHLAattributeList() {
+        return getParameter(Attributes.HLAattributeList.name()).toByteArray();
+    }
 }

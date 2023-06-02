@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.nato.ivct.rpr.FomFiles;
-import org.nato.ivct.rpr.OmtBuilder;
+import org.nato.ivct.rpr.HLAroot;
 import org.nato.ivct.rpr.RprBuilderException;
 
 import hla.rti1516e.CallbackModel;
@@ -32,20 +32,20 @@ public class HLAreportInteractionPublicationTest {
         RtiFactory rtiFactory = RtiFactoryFactory.getRtiFactory();
         rtiAmbassador = rtiFactory.getRtiAmbassador();
         FederateAmbassador nullAmbassador = new NullFederateAmbassador();
-        ArrayList<URL> fomList = new FomFiles()
+        URL[] fomList = new FomFiles()
             .addRPR_BASE()
             .addRPR_Enumerations()
             .addRPR_Foundation()
             .addRPR_Physical()
             .addRPR_Switches()
-            .get();
+            .getArray();
 
         rtiAmbassador.connect(nullAmbassador, CallbackModel.HLA_IMMEDIATE);
         try {
-            rtiAmbassador.createFederationExecution("TestFederation", fomList.toArray(new URL[fomList.size()]));
+            rtiAmbassador.createFederationExecution("TestFederation", fomList);
         } catch (FederationExecutionAlreadyExists ignored) { }
         rtiAmbassador.joinFederationExecution("HLAreportInteractionPublicationTest", "UnitTest", "TestFederation");
-        OmtBuilder.initialize(rtiAmbassador);
+        HLAroot.initialize(rtiAmbassador);
     }
 
     @AfterAll

@@ -259,7 +259,7 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
      protected void preambleAction(Logger logger) throws TcInconclusiveIf {
          RtiFactory rtiFactory;
          logger.info("preamble action for test {}", this.getClass().getName());
-
+       
          try {
              rtiFactory = RtiFactoryFactory.getRtiFactory();
              rtiAmbassador = rtiFactory.getRtiAmbassador();

@@ -270,5 +270,4 @@ public class TC_IR_RPR2_0015 extends AbstractTestCaseIf {
         // TODO Auto-generated method stub
 
     }
-
 }

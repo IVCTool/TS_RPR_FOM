@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import org.nato.ivct.rpr.HLAroot;
-import org.nato.ivct.rpr.OmtBuilder;
 import org.nato.ivct.rpr.RprBuilderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,6 +77,8 @@ public class HLAobjectRoot extends HLAroot {
     private HashMap<String, AttributeHolder> attributeMap = new HashMap<>();
     private Boolean isRegistered = false;
     protected EncoderFactory encoderFactory;
+    // reference object to manage common class specific settings
+    protected static HLAobjectRoot anchor;
     
     /**
      * Base constructor for HLAobject elements. It will initialize the generic attribute support elements
@@ -88,7 +89,7 @@ public class HLAobjectRoot extends HLAroot {
      */
     public HLAobjectRoot() throws RprBuilderException {
         if (rtiAmbassador == null) {
-            rtiAmbassador = OmtBuilder.getRtiAmbassador();
+            rtiAmbassador = HLAroot.getRtiAmbassador();
             if (rtiAmbassador == null) throw new RprBuilderException("HLAobjectRoot not initialized"); 
         } 
         if (thisClassHandle == null) { 
@@ -152,7 +153,6 @@ public class HLAobjectRoot extends HLAroot {
     }
 
     /**
-     * 
      * Add a given attribute name to the set of published attributes. This publication set
      * will be valid for all instances of the current object class.
      * @param attributeName

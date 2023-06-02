@@ -33,6 +33,7 @@ import org.nato.ivct.rpr.datatypes.EntityIdentifierStruct;
 import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
 import org.nato.ivct.rpr.datatypes.SpatialStaticStruct;
 import org.nato.ivct.rpr.datatypes.SpatialVariantStruct;
+import org.nato.ivct.rpr.interactions.WeaponFire;
 import org.nato.ivct.rpr.objects.Aircraft;
 import org.nato.ivct.rpr.objects.HLAobjectRoot;
 import org.nato.ivct.rpr.objects.Munition;
@@ -201,7 +202,10 @@ public class AircraftApp extends NullFederateAmbassador {
             munitionProxy.addPublish(BaseEntity.Attributes.EntityIdentifier);
 			munitionProxy.publishLauncherFlashPresent();
 			munitionProxy.publish();
-			munitionProxy.register();			
+			munitionProxy.register();
+			
+			WeaponFire wf = new WeaponFire();
+			wf.publish();
 
 			EntityIdentifierStruct entityIdentifier = aircraft.getEntityIdentifier();
 			entityIdentifier.setEntityNumber((short) 1);

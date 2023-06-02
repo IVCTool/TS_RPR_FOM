@@ -15,7 +15,6 @@ limitations under the License. */
 package org.nato.ivct.rpr.interactions;
 
 import org.nato.ivct.rpr.HLAroot;
-import org.nato.ivct.rpr.OmtBuilder;
 import org.nato.ivct.rpr.RprBuilderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +23,8 @@ import java.util.Map.Entry;
 
 import hla.rti1516e.ParameterHandle;
 import hla.rti1516e.ParameterHandleValueMap;
-import hla.rti1516e.encoding.EncoderException;
+import hla.rti1516e.encoding.DataElement;
+import hla.rti1516e.encoding.DecoderException;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
 import hla.rti1516e.exceptions.FederateServiceInvocationsAreBeingReportedViaMOM;
 import hla.rti1516e.exceptions.InteractionClassNotDefined;
@@ -41,17 +41,26 @@ import hla.rti1516e.InteractionClassHandle;
 
 public class HLAinteractionRoot extends HLAroot {
 
-    protected static final Logger log = LoggerFactory.getLogger(HLAinteractionRoot.class);
+    class ParameterHolder {
+        ParameterHandle handle;
+        DataElement data;
+        Boolean isUpdated;
+        public ParameterHolder(DataElement value) {
+            data = value;
+            isUpdated = false;
+            handle = null;
+        }
+    }
 
+    protected static final Logger log = LoggerFactory.getLogger(HLAinteractionRoot.class);
+    private static HashMap<String,ParameterHandle> knownParameterHandles = new HashMap<>();  // known attribute handles
+    private HashMap<String, ParameterHolder> parameterMap = new HashMap<>();
     private InteractionClassHandle interactionClassHandle = null;
+
 
     public InteractionClassHandle getInteractionClassHandle() {
         return interactionClassHandle;
     }
-
-    /** Private Field **/
-    private static HashMap<String,ParameterHandle> knownParameterHandles = new HashMap<>();  // known attribute handles
-    private ParameterHandleValueMap parameters = null;
 
 
     /**
@@ -60,38 +69,97 @@ public class HLAinteractionRoot extends HLAroot {
      */
     public HLAinteractionRoot() throws NameNotFound, FederateNotExecutionMember, NotConnected, RTIinternalError, RprBuilderException {
         if (interactionClassHandle == null) {
-            interactionClassHandle = OmtBuilder.getRtiAmbassador().getInteractionClassHandle(getHlaClassName());
+            interactionClassHandle = HLAroot.getRtiAmbassador().getInteractionClassHandle(getHlaClassName());
         }
-        parameters = OmtBuilder.getRtiAmbassador().getParameterHandleValueMapFactory().create(0);
         log.trace("interaction {} created", interactionClassHandle);
     }
 
-    protected void setParameter (String parameterName, byte[] value) throws NameNotFound, InvalidInteractionClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException, RprBuilderException {
-        parameters.put(getParameterHandle(parameterName), value);
-        log.trace("set parameter {}->{} = {}", this.getHlaClassName(), parameterName, value.toString());
+    public void decode (ParameterHandleValueMap theParameters) throws DecoderException {
+        log.trace("decoding interaction class {} ", getHlaClassName());
+        for (Entry<ParameterHandle, byte[]> entry : theParameters.entrySet()) {
+            ParameterHolder holder = parameterMap.get(getHandleString(entry.getKey()));
+            if (holder == null) {
+                log.warn("unknown parameter handle {}. Decoding skipped.", entry.getKey());
+                continue;
+            }
+            holder.data.decode(entry.getValue());
+            holder.isUpdated = true;
+        }
     }
 
-    protected byte[] getParameter (String parameterName) throws NameNotFound, InvalidInteractionClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, RprBuilderException {
-        return parameters.get(getParameterHandle(parameterName));
+    protected void setParameter (String parameterName, byte[] value) {
+        ParameterHolder dataHolder = parameterMap.get(parameterName);
+        if (dataHolder != null) {
+            log.trace("set parameter {}->{} = {}", this.getHlaClassName(), parameterName, value.toString());
+            try {
+                dataHolder.data.decode(value);
+                dataHolder.isUpdated = true;
+            } catch (DecoderException e) {
+                log.error("set failed to decode for parameter {}->{}", this.getHlaClassName(), parameterName);
+            }
+        } else {
+            log.error("set failed for unknown parameter {}->{}", this.getHlaClassName(), parameterName);
+        }
     }
+
+    protected void addParameter (String parameterName, DataElement value) {
+        parameterMap.put(parameterName, new ParameterHolder(value));
+        log.trace("add parameter {}->{} = {}", this.getHlaClassName(), parameterName, value.toString());
+    }
+
+    protected DataElement getParameter (String parameterName) {
+        ParameterHolder holder = parameterMap.get(parameterName);
+        if (holder != null) {
+            return holder.data;
+        }
+        return null;
+    }
+
+    /**
+     * The clear method will reset the update status of all known parameter holders. Values encoded 
+     * in the DataElements will be kept. 
+     */
+    public void clear() {
+        log.trace("reset update status {} ", this.getHlaClassName());
+        for (Entry<String, ParameterHolder> parameter: parameterMap.entrySet()) {
+            parameter.getValue().isUpdated = false;
+        }
+    }
+
+    protected ParameterHandleValueMap getParameterHandleValueMap() throws FederateNotExecutionMember, NotConnected, RprBuilderException {
+        int nbValues = 0;
+        for (Entry<String, ParameterHolder> entry: parameterMap.entrySet()) {
+            if (entry.getValue().isUpdated) {
+                nbValues++;
+            }
+        }
+        ParameterHandleValueMap attributeValues = HLAroot.getRtiAmbassador().getParameterHandleValueMapFactory().create(nbValues);
+        for (Entry<String, ParameterHolder> entry: parameterMap.entrySet()) {
+            if (entry.getValue().isUpdated) {
+                attributeValues.put(getParameterHandle(entry.getKey()), entry.getValue().data.toByteArray());
+            }
+        }
+        return attributeValues;        
+    }
+
 
     public void send() throws InteractionClassNotPublished, InteractionParameterNotDefined, InteractionClassNotDefined, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError, RprBuilderException {
-        OmtBuilder.getRtiAmbassador().sendInteraction(interactionClassHandle, parameters, null);
+        HLAroot.getRtiAmbassador().sendInteraction(interactionClassHandle, getParameterHandleValueMap(), null);
     }
 
     public void subscribe() throws FederateServiceInvocationsAreBeingReportedViaMOM, InteractionClassNotDefined, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError, RprBuilderException {
-        OmtBuilder.getRtiAmbassador().subscribeInteractionClass(interactionClassHandle);
+        HLAroot.getRtiAmbassador().subscribeInteractionClass(interactionClassHandle);
     }
 
     public void publish() throws InteractionClassNotDefined, SaveInProgress, RestoreInProgress, FederateNotExecutionMember, NotConnected, RTIinternalError, RprBuilderException {
-        OmtBuilder.getRtiAmbassador().publishInteractionClass(interactionClassHandle);
+        HLAroot.getRtiAmbassador().publishInteractionClass(interactionClassHandle);
     }
 
     public ParameterHandle getParameterHandle(String name) {
         ParameterHandle handle = knownParameterHandles.get(name);
         if (handle == null) {
             try {
-                handle = OmtBuilder.getRtiAmbassador().getParameterHandle(interactionClassHandle, name);
+                handle = HLAroot.getRtiAmbassador().getParameterHandle(interactionClassHandle, name);
             } catch (NameNotFound | InvalidInteractionClassHandle | FederateNotExecutionMember | NotConnected
                     | RTIinternalError | RprBuilderException e) {
                 log.error("Parameter name not found", e);
@@ -115,7 +183,7 @@ public class HLAinteractionRoot extends HLAroot {
             }
         }
         try {
-            String handleName = OmtBuilder.getRtiAmbassador().getParameterName(interactionClassHandle, handle);
+            String handleName = HLAroot.getRtiAmbassador().getParameterName(interactionClassHandle, handle);
             knownParameterHandles.put(handleName, handle);
             return handleName;
         } catch (InteractionParameterNotDefined | InvalidParameterHandle | InvalidInteractionClassHandle
