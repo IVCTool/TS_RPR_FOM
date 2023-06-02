@@ -188,6 +188,7 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 							objectInstanceHandlesAndobjectClassHandle.put(theObjectInstanceH, theObjectClassH);							
 						}
 						
+						// TODO  unclear
 						for (ObjectInstanceHandle iH :  objectInstanceHandlesAndobjectClassHandle.keySet() ) {
 							logger.debug("#discoverObjectInstance: is something in objectInstanceHandlesAndobjectClassHandle ? : " +objectInstanceHandlesAndobjectClassHandle );
 						}			
