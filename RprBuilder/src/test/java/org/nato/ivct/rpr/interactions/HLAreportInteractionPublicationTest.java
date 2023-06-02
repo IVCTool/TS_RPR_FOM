@@ -38,7 +38,7 @@ public class HLAreportInteractionPublicationTest {
             .addRPR_Foundation()
             .addRPR_Physical()
             .addRPR_Switches()
-            .getArray();
+            .get();
 
         rtiAmbassador.connect(nullAmbassador, CallbackModel.HLA_IMMEDIATE);
         try {

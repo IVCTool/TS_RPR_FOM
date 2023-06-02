@@ -158,7 +158,7 @@ public class AircraftApp extends NullFederateAmbassador {
 				.addTmpRPR_Foundation()
 				.addTmpRPR_Warfare()
 				.addTmpRPR_Physical()
-				.getArray();
+				.get();
 
 			rtiAmbassador.connect(nullAmbassador, CallbackModel.HLA_IMMEDIATE);
 			try {

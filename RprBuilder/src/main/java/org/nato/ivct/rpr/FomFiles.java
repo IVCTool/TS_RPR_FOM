@@ -146,14 +146,7 @@ public class FomFiles {
         return this;
     }
 
-    // this method will be replaced by getArray
-    @Deprecated
-    public ArrayList<URL> get() {
-        return fomList;
-    }
-    
-    // FIXME: simplify name to just 'get' after removing deprecated method
-    public URL[] getArray() {
+    public URL[] get() {
         return fomList.toArray(new URL[fomList.size()]);
     }
     

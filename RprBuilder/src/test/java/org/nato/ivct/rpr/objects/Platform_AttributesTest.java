@@ -66,7 +66,7 @@ public class Platform_AttributesTest {
             .addTmpRPR_Foundation()
             .addTmpRPR_Physical()
             .addTmpRPR_Switches()
-            .getArray();
+            .get();
 
         rtiAmbassador.connect(nullAmbassador, CallbackModel.HLA_IMMEDIATE);
         try {

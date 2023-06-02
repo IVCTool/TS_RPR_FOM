@@ -270,7 +270,7 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
                  .addRPR_Foundation()
                  .addRPR_Physical()
                  .addRPR_Switches()
-                 .getArray();
+                 .get();
 
              rtiAmbassador.connect(tcAmbassador, CallbackModel.HLA_IMMEDIATE);
              try {

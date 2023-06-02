@@ -250,7 +250,7 @@ public class TC_IR_RPR2_0018 extends AbstractTestCaseIf {
 				.addTmpRPR_Physical()
 				.addTmpRPR_Switches()
 				.addTmpRPR_Warfare()
-				.getArray();
+				.get();
 
 			rtiAmbassador.connect(tcAmbassador, CallbackModel.HLA_IMMEDIATE);
 			try {
