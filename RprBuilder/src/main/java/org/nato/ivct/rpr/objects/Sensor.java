@@ -17,8 +17,6 @@
 package org.nato.ivct.rpr.objects;
 
 import org.nato.ivct.rpr.RprBuilderException;
-import org.nato.ivct.rpr.objects.PhysicalEntity.Attributes;
-
 import hla.rti1516e.encoding.EncoderException;
 import hla.rti1516e.encoding.HLAboolean;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
@@ -30,36 +28,23 @@ import hla.rti1516e.exceptions.RTIinternalError;
 public class Sensor extends PhysicalEntity {
     
     public enum Attributes {
-    AntennaRaised,
-    BlackoutLightsOn,
-    LightsOn,
-    InteriorLightsOn,
-    MissionKill    
+        AntennaRaised,
+        BlackoutLightsOn,
+        LightsOn,
+        InteriorLightsOn,
+        MissionKill    
     }
       
     public Sensor() throws RprBuilderException {
         super();
-          
-        try {
-            // TODO replace setAttributValue here with  getMethod  like in Physicalentity
-            // TODO rename to addAttribute
-            addAttribute(Attributes.AntennaRaised.name(), encoderFactory.createHLAboolean());
-            setAttributeValue(Attributes.BlackoutLightsOn.name(), encoderFactory.createHLAboolean());
-            setAttributeValue(Attributes.LightsOn.name(), encoderFactory.createHLAboolean());
-            setAttributeValue(Attributes.LightsOn.name(), encoderFactory.createHLAboolean());
-            setAttributeValue(Attributes.MissionKill.name(), encoderFactory.createHLAboolean());
-        } catch (NameNotFound | InvalidObjectClassHandle | FederateNotExecutionMember | NotConnected
-                | RTIinternalError e) {
-            throw new RprBuilderException("error while creating member attributes", e);
-        }
+        addAttribute(Attributes.AntennaRaised.name(), encoderFactory.createHLAboolean());
+        addAttribute(Attributes.BlackoutLightsOn.name(), encoderFactory.createHLAboolean());
+        addAttribute(Attributes.LightsOn.name(), encoderFactory.createHLAboolean());
+        addAttribute(Attributes.InteriorLightsOn.name(), encoderFactory.createHLAboolean());
+        addAttribute(Attributes.MissionKill.name(), encoderFactory.createHLAboolean());
     }
     
-    
-    /**
-     * TODO: Discuss if the pub/sub methods shall be made type safe. In that case the following two methods shall be private.
-     */
-    
-    // TODO  do we need this here,  addSubsribe should  be inherited from PhysicalEntity ?
+   
     public void addSubscribe(Attributes attribute) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
         addSubAttribute(attribute.name());
     }
@@ -67,9 +52,8 @@ public class Sensor extends PhysicalEntity {
         addPubAttribute(attribute.name()); 
     }
     
-    
-    
-    // TODO   we need getter and setter for all the attributes
+
+    //  getter and setter for all the attributes
     
     public void setAntennaRaised(boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean holder = (HLAboolean) getAttribute(Attributes.AntennaRaised.name());
@@ -78,17 +62,52 @@ public class Sensor extends PhysicalEntity {
     }
     public boolean  getAntennaRaised() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean attribute = (HLAboolean) getAttribute(Attributes.AntennaRaised.name());
-        
-        // TODO  remove this  in all classes and getter-methods
-        if (attribute == null) {
-            attribute = encoderFactory.createHLAboolean();
-            setAttributeValue(Attributes.AntennaRaised.name(), attribute);
-        }
+        return attribute.getValue();
+    }    
+    
+
+    public void setBlackoutLightsOn(boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        HLAboolean holder = (HLAboolean) getAttribute(Attributes.BlackoutLightsOn.name());
+        holder.setValue(value);
+        setAttributeValue(Attributes.BlackoutLightsOn.name(), holder);
+    }
+    public boolean  getBlackoutLightsOn() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        HLAboolean attribute = (HLAboolean) getAttribute(Attributes.BlackoutLightsOn.name());
+        return attribute.getValue();
+    }
+    
+
+    public void setLightsOn(boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        HLAboolean holder = (HLAboolean) getAttribute(Attributes.LightsOn.name());
+        holder.setValue(value);
+        setAttributeValue(Attributes.LightsOn.name(), holder);
+    }
+    public boolean  getLightsOn() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        HLAboolean attribute = (HLAboolean) getAttribute(Attributes.LightsOn.name());
+        return attribute.getValue();
+    }
+    
+  
+    public void setInteriorLightsOn(boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        HLAboolean holder = (HLAboolean) getAttribute(Attributes.InteriorLightsOn.name());
+        holder.setValue(value);
+        setAttributeValue(Attributes.InteriorLightsOn.name(), holder);
+    }
+    public boolean  getInteriorLightsOn() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        HLAboolean attribute = (HLAboolean) getAttribute(Attributes.InteriorLightsOn.name());
         return attribute.getValue();
     }
     
     
-    
+    public void setMissionKill(boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        HLAboolean holder = (HLAboolean) getAttribute(Attributes.MissionKill.name());
+        holder.setValue(value);
+        setAttributeValue(Attributes.MissionKill.name(), holder);
+    }
+    public boolean  getMissionKill() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        HLAboolean attribute = (HLAboolean) getAttribute(Attributes.MissionKill.name());
+        return attribute.getValue();
+    }
     
     
     
