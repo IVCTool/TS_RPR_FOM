@@ -97,7 +97,7 @@ public class HLAfederate extends HLAmanager {
     }
 
     private static final Logger log = LoggerFactory.getLogger(HLAfederate.class);
-    private static HLAfederate anchor;
+    // private static HLAfederate anchor;
     public static HashMap<ObjectInstanceHandle, HLAfederate> knownObjects = new HashMap<>();
 
 

@@ -26,8 +26,6 @@ public class HLAroot {
 
     private static final Logger log = LoggerFactory.getLogger(HLAroot.class);
 
-    // reference object to manage common class specific settings
-    private static HLAroot anchor;
     protected static RTIambassador rtiAmbassador;
     protected static EncoderFactory encoderFactory = null;
 

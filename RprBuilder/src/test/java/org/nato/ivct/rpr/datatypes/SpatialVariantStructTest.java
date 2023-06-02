@@ -62,7 +62,7 @@ public class SpatialVariantStructTest {
         assert(spatial.getSpatialFPW().getOrientation().getPhi() == 2.1f);
         assert(spatial.getSpatialFPW().getOrientation().getPsi() == 2.2f);
         assert(spatial.getSpatialFPW().getOrientation().getTheta() == 2.3f);
-        assertNotNull(spatial.getSpatialFPW().getVelocityVector());
+        assertNotNull(vel);
 
     }
 

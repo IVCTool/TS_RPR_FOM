@@ -77,6 +77,8 @@ public class HLAobjectRoot extends HLAroot {
     private HashMap<String, AttributeHolder> attributeMap = new HashMap<>();
     private Boolean isRegistered = false;
     protected EncoderFactory encoderFactory;
+    // reference object to manage common class specific settings
+    protected static HLAobjectRoot anchor;
     
     /**
      * Base constructor for HLAobject elements. It will initialize the generic attribute support elements
