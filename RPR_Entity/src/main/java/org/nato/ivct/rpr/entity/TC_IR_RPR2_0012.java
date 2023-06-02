@@ -303,21 +303,20 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
 			rtiFactory = RtiFactoryFactory.getRtiFactory();
 			rtiAmbassador = rtiFactory.getRtiAmbassador();
 			tcAmbassador = new TestCaseAmbassador();
-			ArrayList<URL> fomList = new FomFiles()
-					.addRPR_BASE()
-					.addRPR_Enumerations()
-					.addRPR_Foundation()
-					.addRPR_Physical()
-					.addRPR_Switches()
-					.get();
+			URL[] fomList = new FomFiles()
+				.addRPR_BASE()
+				.addRPR_Enumerations()
+				.addRPR_Foundation()
+				.addRPR_Physical()
+				.addRPR_Switches()
+				.getArray();
 
 			rtiAmbassador.connect(tcAmbassador, CallbackModel.HLA_IMMEDIATE);
 			try {
-				rtiAmbassador.createFederationExecution(federationName, fomList.toArray(new URL[fomList.size()]));
+				rtiAmbassador.createFederationExecution(federationName, fomList);
 			} catch (FederationExecutionAlreadyExists ignored) { }
 
-			rtiAmbassador.joinFederationExecution(this.getClass().getSimpleName(), federationName,
-					fomList.toArray(new URL[fomList.size()]));
+			rtiAmbassador.joinFederationExecution(this.getClass().getSimpleName(), federationName, fomList);
 
 		} catch (RTIinternalError | ConnectionFailed | InvalidLocalSettingsDesignator | UnsupportedCallbackModel
 				| AlreadyConnected | CallNotAllowedFromWithinCallback | CouldNotCreateLogicalTimeFactory

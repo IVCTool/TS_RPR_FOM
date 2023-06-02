@@ -56,7 +56,7 @@ public class FomFiles {
     }
 
     /** 
-     * thats the way, it should be done - but the temporary file names causes issues with the MAK RTI ?!?
+     * FIXME: thats the way, it should be done - but the temporary file names causes issues with the MAK RTI ?!?
      */
     private URL createTempFileTheStandardWay (String resource, String suffix) {
         try {
@@ -152,6 +152,7 @@ public class FomFiles {
         return fomList;
     }
     
+    // FIXME: simplify name to just 'get' after removing deprecated method
     public URL[] getArray() {
         return fomList.toArray(new URL[fomList.size()]);
     }

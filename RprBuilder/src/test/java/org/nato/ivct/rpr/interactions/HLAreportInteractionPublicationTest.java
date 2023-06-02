@@ -32,17 +32,17 @@ public class HLAreportInteractionPublicationTest {
         RtiFactory rtiFactory = RtiFactoryFactory.getRtiFactory();
         rtiAmbassador = rtiFactory.getRtiAmbassador();
         FederateAmbassador nullAmbassador = new NullFederateAmbassador();
-        ArrayList<URL> fomList = new FomFiles()
+        URL[] fomList = new FomFiles()
             .addRPR_BASE()
             .addRPR_Enumerations()
             .addRPR_Foundation()
             .addRPR_Physical()
             .addRPR_Switches()
-            .get();
+            .getArray();
 
         rtiAmbassador.connect(nullAmbassador, CallbackModel.HLA_IMMEDIATE);
         try {
-            rtiAmbassador.createFederationExecution("TestFederation", fomList.toArray(new URL[fomList.size()]));
+            rtiAmbassador.createFederationExecution("TestFederation", fomList);
         } catch (FederationExecutionAlreadyExists ignored) { }
         rtiAmbassador.joinFederationExecution("HLAreportInteractionPublicationTest", "UnitTest", "TestFederation");
         HLAroot.initialize(rtiAmbassador);
