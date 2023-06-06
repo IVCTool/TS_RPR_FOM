@@ -14,3 +14,15 @@
 
 # IVCT specific 
 **/resources/testCaseBuild.properties
+
+# exclude all local  eclipse and other files
+.project
+.settings
+*/.classpath
+*/.project
+*/.classpath
+
+logback.xml
+*/logback.xml
+**/logback.xml
+**/**/logback.xml

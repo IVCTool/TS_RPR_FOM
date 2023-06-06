@@ -298,7 +298,7 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
 
           PhysicalEntity.initialize(rtiAmbassador);
 
-          // this may be better // use a Array to collect all needed Entities
+          // use a Array to collect all needed Entities
           ArrayList<BaseEntity> entityToTestList = new ArrayList<BaseEntity>();
 
           // TODO brf now subscribe to all Attributes
@@ -351,10 +351,9 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
          *  VectoringNozzleSystemData                 Empty
          */
          
-         
+         // Plattform  16 attributes
          Platform platfEntity = new Platform();
          entityToTestList.add(platfEntity);
-
          platfEntity.addSubscribe(Platform.Attributes.AfterburnerOn);
          platfEntity.addSubscribe(Platform.Attributes.AntiCollisionLightsOn);
          platfEntity.addSubscribe(Platform.Attributes.BlackOutBrakeLightsOn);
@@ -383,40 +382,42 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
           * SecondaryWeaponState, // WeaponStateEnum32
           * ComplianceState        //ComplianceStateEnum32
           */
-   
+ 
+         
          // cultural Feature   3 attr
          CulturalFeature cultFeatEntity = new CulturalFeature();
          entityToTestList.add(cultFeatEntity);         
          cultFeatEntity.addSubscribe(CulturalFeature.Attributes.ExternalLightsOn);
          cultFeatEntity.addSubscribe(CulturalFeature.Attributes.InternalHeatSourceOn);
-         cultFeatEntity.addSubscribe(CulturalFeature.Attributes.InternalLightsOn);
+         cultFeatEntity.addSubscribe(CulturalFeature.Attributes.InternalLightsOn);         
          
-         
-      // Munition           1 attr
-         
-         
+         // Munition           1 attr
+         Munition munitionEntity = new Munition();
+         entityToTestList.add(munitionEntity);
+         munitionEntity.addSubscribe(Munition.Attributes.LauncherFlashPresent);         
          
          // Expendables      0 attributes
+         Expendables expendabEntity = new Expendables();
+         entityToTestList.add(expendabEntity);
          
          // Radio            0 attributes
-         
-        Sensor  sensoreEntity = new Sensor();
-        entityToTestList.add(sensoreEntity);
+         Radio radioEntity = new Radio();
+         entityToTestList.add(radioEntity);
         
+        // Sensor  5 attributes
+        Sensor  sensoreEntity = new Sensor();
+        entityToTestList.add(sensoreEntity);        
         sensoreEntity.addSubscribe(Sensor.Attributes.AntennaRaised);
         sensoreEntity.addSubscribe(Sensor.Attributes.BlackoutLightsOn);
         sensoreEntity.addSubscribe(Sensor.Attributes.LightsOn);
         sensoreEntity.addSubscribe(Sensor.Attributes.InteriorLightsOn);
         sensoreEntity.addSubscribe(Sensor.Attributes.MissionKill);
          
-       
-        // Supplies
+        // Supplies  0 attributes
+        Supplies suppliesEntity = new Supplies();
+        entityToTestList.add(suppliesEntity);
         
-         
-         //phyEntity.subscribe();
-             
-             // we need to subscribe to all Objects
-             
+        // we need to subscribe to all Objects             
              for (BaseEntity bE : entityToTestList  ) {
                  logger.debug("# in performTest subscribing all Elements of PhysicalEntityToTestList now "  +bE.getHlaClassName() );  // Debug
                  bE.subscribe();
