@@ -123,11 +123,11 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
  *   
  *   
  * PhysicalEntity Attributes:  SISO-STD-001  P. 44  Table 6  25 attributes   all Optional
- *  Attribute Name                           Default Value
- *  AcousticSignatureIndex                    0
- *  AlternateEntityType                       BaseEntity.EntityType
- *  ArticulatedParametersArray                Empty
- *  CamouflageType                            Uniform Paint Scheme
+ *  Attribute Name                           Default Value             DataType
+ *  AcousticSignatureIndex                    0                        Integer16
+ *  AlternateEntityType                       BaseEntity.EntityType    EntityTypeStruct
+ *  ArticulatedParametersArray                Empty                    ArticulatedParameterStructLengthlessArray
+ *  CamouflageType                            Uniform Paint Scheme     CamouflageEnum32    
  *  DamageState                               No Damage
  *  EngineSmokeOn                             False
  *  FirePowerDisabled                         False
@@ -153,7 +153,7 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
  *    
  *   the Attributes for SubClasses of PhysicalEntity 
     
-* PhysicalEntity-Plattform : Table 8     16 Attributes all Optional
+* PhysicalEntity-Plattform : Table 8     16 Attributes all Optional all Boolean
 * AfterburnerOn           False
 * AntiCollisionLightsOn   False
 * BlackOutBrakeLightsOn    False

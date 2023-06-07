@@ -28,10 +28,10 @@ import hla.rti1516e.exceptions.RTIinternalError;
 public class PhysicalEntity extends BaseEntity {
 	
     public enum Attributes {
-        AcousticSignatureIndex,
-        AlternateEntityType,
-        ArticulatedParametersArray,
-        CamouflageType,
+        AcousticSignatureIndex,         // Integer16
+        AlternateEntityType,            // EntityTypeStruct
+        ArticulatedParametersArray,    // ArticulatedParameterStructLengthlessArray
+        CamouflageType,                  // CamouflageEnum32
         DamageState,
         EngineSmokeOn,
         FirePowerDisabled,
@@ -63,7 +63,15 @@ public class PhysicalEntity extends BaseEntity {
         addAttribute(Attributes.FlamesPresent.name(), encoderFactory.createHLAboolean());
         addAttribute(Attributes.IsConcealed.name(), encoderFactory.createHLAboolean());
         addAttribute(Attributes.TentDeployed.name(), encoderFactory.createHLAboolean());
+        
         // TODO: create remaining fields
+        //  further attributes  have different Datatypes
+        addAttribute(Attributes.AcousticSignatureIndex.name(),encoderFactory.createHLAinteger16BE());
+        //addAttribute(Attributes.AlternateEntityType.name(), encoderFactory. );
+                
+        //addAttribute(Attributes.ArticulatedParametersArray.name(), encoderFactory.create
+        
+  
     }
 
 
