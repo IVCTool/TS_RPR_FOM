@@ -14,8 +14,6 @@
 package org.nato.ivct.rpr.objects;
 
 import org.nato.ivct.rpr.RprBuilderException;
-import org.nato.ivct.rpr.objects.Sensor.Attributes;
-
 import hla.rti1516e.encoding.EncoderException;
 import hla.rti1516e.encoding.HLAboolean;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;

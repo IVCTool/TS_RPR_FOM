@@ -20,6 +20,7 @@ import hla.rti1516e.RTIambassador;
 import hla.rti1516e.ResignAction;
 import hla.rti1516e.RtiFactory;
 import hla.rti1516e.RtiFactoryFactory;
+import hla.rti1516e.encoding.HLAinteger16BE;
 import hla.rti1516e.exceptions.AlreadyConnected;
 import hla.rti1516e.exceptions.CallNotAllowedFromWithinCallback;
 import hla.rti1516e.exceptions.ConnectionFailed;
@@ -59,6 +60,10 @@ public class PhysicalEntityTest {
             phy1.setFlamesPresent(true);
             phy1.setIsConcealed(true);
             phy1.setTentDeployed(true);
+            phy1.setAcousticSignatureIndex((short) 3);
+            // this test my not be enough
+            //phy1.setAlternateEntityType(null);
+            
 
             AttributeHandleValueMap pdu = phy1.getAttributeValues();
 
@@ -69,6 +74,11 @@ public class PhysicalEntityTest {
             assertTrue(phy2.getFlamesPresent() == true);
             assertTrue(phy2.getIsConcealed() == true);
             assertTrue(phy2.getTentDeployed() == true);
+            
+            // TODO this test should fail, but it doesn't ?
+            //assertTrue(phy2.getAcousticSignatureIndex() == (short) 0);            
+            log.info(" TestEncodingDecode after assertTrue Statements");
+                        
         } catch (Exception e) {
             fail(e.getMessage());
         }

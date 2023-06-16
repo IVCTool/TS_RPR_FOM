@@ -17,8 +17,12 @@
  package org.nato.ivct.rpr.objects;
 
 import org.nato.ivct.rpr.RprBuilderException;
+import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
+import org.nato.ivct.rpr.objects.BaseEntity.Attributes;
+
 import hla.rti1516e.encoding.EncoderException;
 import hla.rti1516e.encoding.HLAboolean;
+import hla.rti1516e.encoding.HLAinteger16BE;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
 import hla.rti1516e.exceptions.InvalidObjectClassHandle;
 import hla.rti1516e.exceptions.NameNotFound;
@@ -28,9 +32,9 @@ import hla.rti1516e.exceptions.RTIinternalError;
 public class PhysicalEntity extends BaseEntity {
 	
     public enum Attributes {
-        AcousticSignatureIndex,         // Integer16
+        AcousticSignatureIndex,         // Integer16   HLAinteger16BE
         AlternateEntityType,            // EntityTypeStruct
-        ArticulatedParametersArray,    // ArticulatedParameterStructLengthlessArray
+        ArticulatedParametersArray,      // ArticulatedParameterStructLengthlessArray
         CamouflageType,                  // CamouflageEnum32
         DamageState,
         EngineSmokeOn,
@@ -57,21 +61,23 @@ public class PhysicalEntity extends BaseEntity {
       
     
     public PhysicalEntity() throws RprBuilderException {
-        super();
+        super();        
+     // TODO: create remaining fields     //  further attributes  have different Datatypes
+        
+        addAttribute(Attributes.AcousticSignatureIndex.name(),encoderFactory.createHLAinteger16BE());
+       
+        // TODO correct in this way ?    
+        try {
+        addAttribute(Attributes.AlternateEntityType.name(), new EntityTypeStruct());
+        } catch (RTIinternalError e) {
+            throw new RprBuilderException(e.getMessage());
+        }
+        
         addAttribute(Attributes.EngineSmokeOn.name(), encoderFactory.createHLAboolean());
         addAttribute(Attributes.FirePowerDisabled.name(), encoderFactory.createHLAboolean());
         addAttribute(Attributes.FlamesPresent.name(), encoderFactory.createHLAboolean());
         addAttribute(Attributes.IsConcealed.name(), encoderFactory.createHLAboolean());
         addAttribute(Attributes.TentDeployed.name(), encoderFactory.createHLAboolean());
-        
-        // TODO: create remaining fields
-        //  further attributes  have different Datatypes
-        addAttribute(Attributes.AcousticSignatureIndex.name(),encoderFactory.createHLAinteger16BE());
-        //addAttribute(Attributes.AlternateEntityType.name(), encoderFactory. );
-                
-        //addAttribute(Attributes.ArticulatedParametersArray.name(), encoderFactory.create
-        
-  
     }
 
 
@@ -84,6 +90,25 @@ public class PhysicalEntity extends BaseEntity {
    
     
     // attribute setter and getter
+    
+    public void setAcousticSignatureIndex(short value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+    	HLAinteger16BE holder = (HLAinteger16BE) getAttribute(Attributes.AcousticSignatureIndex.name());
+        holder.setValue(value);
+        setAttributeValue(Attributes.AcousticSignatureIndex.name(), holder);
+    }
+    public short getAcousticSignatureIndex() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+    	HLAinteger16BE attribute = (HLAinteger16BE) getAttribute(Attributes.AcousticSignatureIndex.name());
+        return (short) attribute.getValue();
+    }
+    
+    
+    public void setAlternateEntityType (EntityTypeStruct value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        setAttributeValue(Attributes.AlternateEntityType.name(), value);
+    }
+    public EntityTypeStruct getAlternateEntityType() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
+        EntityTypeStruct aEntityType = (EntityTypeStruct) getAttribute(Attributes.AlternateEntityType.name());
+        return (aEntityType);
+    }
 
     public void setEngineSmokeOn(boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean holder = (HLAboolean) getAttribute(Attributes.EngineSmokeOn.name());
