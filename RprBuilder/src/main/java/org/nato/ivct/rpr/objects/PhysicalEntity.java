@@ -18,7 +18,6 @@
 
 import org.nato.ivct.rpr.RprBuilderException;
 import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
-import org.nato.ivct.rpr.objects.BaseEntity.Attributes;
 
 import hla.rti1516e.encoding.EncoderException;
 import hla.rti1516e.encoding.HLAboolean;
@@ -61,14 +60,13 @@ public class PhysicalEntity extends BaseEntity {
       
     
     public PhysicalEntity() throws RprBuilderException {
-        super();        
-     // TODO: create remaining fields     //  further attributes  have different Datatypes
+        super();
+        // TODO: create remaining fields     //  further attributes  have different Datatypes
         
         addAttribute(Attributes.AcousticSignatureIndex.name(),encoderFactory.createHLAinteger16BE());
        
-        // TODO correct in this way ?    
         try {
-        addAttribute(Attributes.AlternateEntityType.name(), new EntityTypeStruct());
+            addAttribute(Attributes.AlternateEntityType.name(), new EntityTypeStruct());
         } catch (RTIinternalError e) {
             throw new RprBuilderException(e.getMessage());
         }
@@ -79,7 +77,6 @@ public class PhysicalEntity extends BaseEntity {
         addAttribute(Attributes.IsConcealed.name(), encoderFactory.createHLAboolean());
         addAttribute(Attributes.TentDeployed.name(), encoderFactory.createHLAboolean());
     }
-
 
     public void addSubscribe(Attributes attribute) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
         addSubAttribute(attribute.name());
