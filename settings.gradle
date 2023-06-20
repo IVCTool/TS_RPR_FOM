@@ -10,6 +10,9 @@
 rootProject.name = 'TS_RPR_FOM'
 include('RprBuilder')
 include('RPR_Entity')
+include('RPR_Aggregate')
+include('RPR_Communication')
 include('RPR_Warfare')
 include('RPR_Physical')
+include('RPR_DistributedEmissionRegeneration')
 include('RefFedAircraft')
