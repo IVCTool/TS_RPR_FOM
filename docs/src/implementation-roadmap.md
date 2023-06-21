@@ -21,7 +21,7 @@ The prioritization of the test case implementation is given by the requirements 
 | TC_IR_RPR_0009 | template | Test case template provided. |
 | TC_IR_RPR_0010 | [complete](/RPR_Entity/src/main/java/org/nato/ivct/rpr/entity/TC_IR_RPR2_0011.java) | Registration of _PhysicalEntity_ subclass and publication of _EntityIdentifier_, _EntityType_, and _Spatial_ is tested. |
 | TC_IR_RPR_0011 | template |   |
-| TC_IR_RPR_0012 | template |   |
+| TC_IR_RPR_0012 | [basic](/RPR_Entity/src/main/java/org/nato/ivct/rpr/entity/TC_IR_RPR2_0012.java)| prepared for Aircraft and AmphibiousVehicle, testet some Attributes with Aircraft   |
 | TC_IR_RPR_0013 | template |   |
 | TC_IR_RPR_0014 | template |   |
 | TC_IR_RPR_0015 | template |   |
