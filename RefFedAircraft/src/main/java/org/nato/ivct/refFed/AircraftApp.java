@@ -186,17 +186,13 @@ public class AircraftApp extends NullFederateAmbassador {
             
             aircraft.register();
 
-            // --- added by brf
-           //  the 'simple'  boolean Attributes
-            // for other Attributes e.g. CamouflageType we may need  a Struct
-            
+            //  the 'simple'  boolean Attributes
+            // for other Attributes e.g. CamouflageType we may need  a Struct            
             aircraft.setEngineSmokeOn(true);            
             aircraft.setFirePowerDisabled(true);            
             aircraft.setFlamesPresent(true);           
             aircraft.setIsConcealed(true);          
             aircraft.setTentDeployed(true);                
-            // end of  added by brf
-            
       
 			Munition munitionProxy = new Munition();
             munitionProxy.addPublish(BaseEntity.Attributes.EntityIdentifier);

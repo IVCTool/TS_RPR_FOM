@@ -14,8 +14,6 @@
 package org.nato.ivct.rpr.objects;
 
 import org.nato.ivct.rpr.RprBuilderException;
-import org.nato.ivct.rpr.objects.Sensor.Attributes;
-
 import hla.rti1516e.encoding.EncoderException;
 import hla.rti1516e.encoding.HLAboolean;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
@@ -38,24 +36,11 @@ public class Lifeform extends PhysicalEntity{
 
     public Lifeform() throws RprBuilderException {
         super();
-
-        // TODO set the attributes
-        // like this, but there may be a newer mechanism
-        try {
-            //setAttributeValue(Attributes.FlashLightsOn.name(), encoderFactory.createHLAboolean());
-            // ...
-            getFlashLightsOn();
-            
-        } catch (NameNotFound | InvalidObjectClassHandle | FederateNotExecutionMember | NotConnected | RTIinternalError
-                | EncoderException e) {
-            throw new RprBuilderException("error while creating member attributes", e);
-        }
+        addAttribute(Attributes.FlashLightsOn.name(), encoderFactory.createHLAboolean());
+        // TODO set the other 4 attributes
     }
     
-    
-    // public void addSubscribe    is inherited from physicalEntity  ???
-    //  TODO  do we need this here ?
-    
+       
     public void addSubscribe(Attributes attribute)
             throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
         addSubAttribute(attribute.name());
@@ -76,15 +61,8 @@ public class Lifeform extends PhysicalEntity{
     }
     public boolean  getFlashLightsOn() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean attribute = (HLAboolean) getAttribute(Attributes.FlashLightsOn.name());
-        if (attribute == null) {
-            attribute = encoderFactory.createHLAboolean();
-            setAttributeValue(Attributes.FlashLightsOn.name(), attribute);
-        }
         return attribute.getValue();
     }
-    
-    
-   
     
 }
 

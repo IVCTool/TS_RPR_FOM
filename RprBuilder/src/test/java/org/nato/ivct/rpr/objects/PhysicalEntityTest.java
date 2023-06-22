@@ -6,6 +6,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.nato.ivct.rpr.FomFiles;
+import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
 
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -59,7 +60,12 @@ public class PhysicalEntityTest {
             phy1.setFlamesPresent(true);
             phy1.setIsConcealed(true);
             phy1.setTentDeployed(true);
-
+            phy1.setAcousticSignatureIndex((short) 3);
+            // Struct types can not be set in that simple way because the struct doesn't know about the attribute changing
+            EntityTypeStruct tempStruct= phy1.getAlternateEntityType();
+            tempStruct.setCountryCode((short)3);
+            phy1.setAlternateEntityType(tempStruct);
+            
             AttributeHandleValueMap pdu = phy1.getAttributeValues();
 
             PhysicalEntity phy2 = new PhysicalEntity();
@@ -69,6 +75,10 @@ public class PhysicalEntityTest {
             assertTrue(phy2.getFlamesPresent() == true);
             assertTrue(phy2.getIsConcealed() == true);
             assertTrue(phy2.getTentDeployed() == true);
+            assertTrue(phy2.getAcousticSignatureIndex() == (short) 3);             
+            assertTrue(phy2.getAlternateEntityType().getCountryCode() == (short) 3);
+                     
+            log.info("End of TestEncodingDecode after assertTrue Statements");                        
         } catch (Exception e) {
             fail(e.getMessage());
         }

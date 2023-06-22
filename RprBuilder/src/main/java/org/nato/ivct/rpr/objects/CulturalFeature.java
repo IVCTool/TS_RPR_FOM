@@ -17,8 +17,6 @@
 package org.nato.ivct.rpr.objects;
 
 import org.nato.ivct.rpr.RprBuilderException;
-import org.nato.ivct.rpr.objects.PhysicalEntity.Attributes;
-
 import hla.rti1516e.encoding.EncoderException;
 import hla.rti1516e.encoding.HLAboolean;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
@@ -30,27 +28,18 @@ import hla.rti1516e.exceptions.RTIinternalError;
 public class CulturalFeature extends PhysicalEntity {
 
     public enum Attributes {
-        ExternalLightsOn,
-        InternalHeatSourceOn,
-        InternalLightsOn
+        ExternalLightsOn,                // boolean
+        InternalHeatSourceOn,           // boolean
+        InternalLightsOn                // boolean
     }
 
-    
     public CulturalFeature() throws RprBuilderException {
         super();
-        
-        try {
-            getExternalLightsOn();
-            getInternalHeatSourceOn();
-            getInternalLightsOn();
-        } catch (NameNotFound | InvalidObjectClassHandle | FederateNotExecutionMember | NotConnected | RTIinternalError
-                | EncoderException e) {
-            throw new RprBuilderException("error while creating member attributes", e);
-        }
-        
+        addAttribute(Attributes.ExternalLightsOn.name(), encoderFactory.createHLAboolean());
+        addAttribute(Attributes.InternalHeatSourceOn.name(), encoderFactory.createHLAboolean());
+        addAttribute(Attributes.InternalLightsOn.name(), encoderFactory.createHLAboolean());
     }
     
-    // public void addSubscribe    is inherited from physicalEntity  ?
     public void addSubscribe(Attributes attribute) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
         addSubAttribute(attribute.name());
     }
@@ -67,10 +56,6 @@ public class CulturalFeature extends PhysicalEntity {
     }    
     public boolean  getExternalLightsOn() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean attribute = (HLAboolean) getAttribute(Attributes.ExternalLightsOn.name());
-        if (attribute == null) {
-            attribute = encoderFactory.createHLAboolean();
-            setAttributeValue(Attributes.ExternalLightsOn.name(), attribute);
-        }
         return attribute.getValue();
     }
 
@@ -82,12 +67,9 @@ public class CulturalFeature extends PhysicalEntity {
     }    
     public boolean  getInternalHeatSourceOn() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean attribute = (HLAboolean) getAttribute(Attributes.InternalHeatSourceOn.name());
-        if (attribute == null) {
-            attribute = encoderFactory.createHLAboolean();
-            setAttributeValue(Attributes.InternalHeatSourceOn.name(), attribute);
-        }
         return attribute.getValue();
     }
+    
     
     public void setInternalLightsOn(boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean holder = (HLAboolean) getAttribute(Attributes.InternalLightsOn.name());
@@ -96,12 +78,7 @@ public class CulturalFeature extends PhysicalEntity {
     }    
     public boolean  getInternalLightsOn() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean attribute = (HLAboolean) getAttribute(Attributes.InternalLightsOn.name());
-        if (attribute == null) {
-            attribute = encoderFactory.createHLAboolean();
-            setAttributeValue(Attributes.InternalLightsOn.name(), attribute);
-        }
         return attribute.getValue();
     }
-    
      
 }
