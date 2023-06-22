@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.concurrent.Semaphore;
 
 import org.nato.ivct.rpr.FomFiles;
-import org.nato.ivct.rpr.objects.BaseEntity;
 import org.nato.ivct.rpr.objects.PhysicalEntity;
 import org.slf4j.Logger;
 import de.fraunhofer.iosb.tc_lib_if.AbstractTestCaseIf;
