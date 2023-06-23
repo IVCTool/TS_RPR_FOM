@@ -81,66 +81,78 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
  *  "Need to investigate how this could be tested. One option is to create/publish all defined attributes to stress the SuT"
  *  
  *  
- *   But what is the meaning of  "all defined Attributes" 
- *   all attributes defined in   RPR-Physical_v2.0  ?
+ *   But what is the meaning of  "all defined Attributes"    all attributes defined in   RPR-Physical_v2.0  ?
  *   
- *   in SISO-STD-001  P. 44  Table 6   "PhysicalEntity Attributes"  they are listed
- *   AcousticSignatureIndex   AlternateEntityType   ArticulatedParametersArray
- *   CamouflageType    DamageState  EngineSmokeOn   FirePowerDisabled  FlamesPresent
- *   ForceIdentifier  
- *   HasAmmunitionSupplyCap  HasFuelSupplyCap  HasRecoveryCap  HasRepairCap
- *   Immobilized  InfraredSignatureIndex   IsConcealed  LiveEntityMeasuredSpeed
- *   Marking   PowerPlantOn  PropulsionSystemsData  RadarCrossSectionSignatureIndex
- *   SmokePlumePresent    TentDeployed   TrailingEffectsCode   VectoringNozzleSystemData
- *          
+ * PhysicalEntity Attributes:  SISO-STD-001  P. 44  Table 6  25 attributes   all Optional
+ *  Attribute Name                     Default Value             DataType
+ *  AcousticSignatureIndex             0                        Integer16
+ *  AlternateEntityType                BaseEntity.EntityType    EntityTypeStruct
+ *  ArticulatedParametersArray         Empty                    ArticulatedParameterStructLengthlessArray
+ *  CamouflageType                     Uniform Paint Scheme     CamouflageEnum32    
+ *  DamageState                        No Damage
+ *  EngineSmokeOn                      False
+ *  FirePowerDisabled                  False
+ *  FlamesPresent                      False
+ *  ForceIdentifier                    other
+ *  HasAmmunitionSupplyCap             False
+ *  HasFuelSupplyCap                   False
+ *  HasRecoveryCap                     False
+ *  HasRepairCap                       False
+ *  Immobilized                        False
+ *  InfraredSignatureIndex             0
+ *  IsConcealed                        False
+ *  LiveEntityMeasuredSpeed            0
+ *  Marking                            Empty
+ *  PowerPlantOn                       False
+ *  PropulsionSystemsData              Empty
+ *  RadarCrossSectionSignatureIndex    0
+ *  SmokePlumePresent                  False                      
+ *  TentDeployed                       False
+ *  TrailingEffectsCode                False
+ *  VectoringNozzleSystemData        Empty
+ *  
+ *  so first we have to describe to all attributes
+ *   
  * 
  */
 
 public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
-	RTIambassador rtiAmbassador = null;
-	FederateAmbassador tcAmbassador = null;
+    RTIambassador rtiAmbassador = null;
+    FederateAmbassador tcAmbassador = null;
     Logger logger = null;
-    
-	Semaphore physicalEntityDiscovered = new Semaphore(0);
-	
+
+    Semaphore physicalEntityDiscovered = new Semaphore(0);
+
     HashMap<ObjectInstanceHandle, PhysicalEntity> knownPhysicalEntitys = new HashMap<>();
-    
+
     ObjectClassHandle temp_objectClassHandle;
-    
+
     PhysicalEntity phyEntity;
 
-
     class TestCaseAmbassador extends NullFederateAmbassador {
-    	
-		@Override
-		public void discoverObjectInstance(
-				ObjectInstanceHandle theObject, 
-				ObjectClassHandle theObjectClass,
-				String objectName) throws FederateInternalError {
-			logger.trace("discoverObjectInstance {}", theObject);			
-			
-			// Tests and Debug
-			try {
-			logger.info("discoverObjectInstance rtiAmbassador.getObjectInstanceName: " +  rtiAmbassador.getObjectInstanceName(theObject) );
-			logger.info("discoverObjectInstance rtiAmbassador.getObjectClassName: "    +  rtiAmbassador.getObjectClassName(theObjectClass ) );
-			}  catch ( ObjectInstanceNotKnown |  FederateNotExecutionMember | NotConnected | RTIinternalError |InvalidObjectClassHandle e) {
-				logger.error("discoverObjectInstance received Exception", e  ); 
-			}
-			
+
+        @Override
+        public void discoverObjectInstance(ObjectInstanceHandle theObjectInstanceH, ObjectClassHandle theObjectClassH, String objectName) throws FederateInternalError {
+            logger.trace("discoverObjectInstance {}",  theObjectInstanceH);
+
+            // Tests and Debug
+            try {
+                logger.debug("# discoverObjectInstance: reveived ObjectInstanceHandle with ObjectInstanceName:  "
+                        +  rtiAmbassador.getObjectInstanceName(theObjectInstanceH)); // Debug
+                
+                logger.debug("# discoverObjectInstance: reveived ObjectClassHandle with rti-ObjectClassName:  "
+                        + rtiAmbassador.getObjectClassName(theObjectClassH)); // Debug
+                
+            } catch (ObjectInstanceNotKnown | FederateNotExecutionMember | NotConnected | RTIinternalError
+                    | InvalidObjectClassHandle e) {
+                logger.error("discoverObjectInstance received Exception", e);
+            }
+		
 			try {			
-                String receivedClass = rtiAmbassador.getObjectClassName(theObjectClass);
+                String receivedClass = rtiAmbassador.getObjectClassName(theObjectClassH);
                 
-                // to Do
-                // not yet  implanted,  incorrect Klassnames ..... 
-                
-                if (receivedClass.equals(phyEntity.getHlaClassName())) {
-					// create the helper object
-                    PhysicalEntity obj = new PhysicalEntity();
-                    obj.setObjectHandle(theObject);
-                    knownPhysicalEntitys.put(theObject, obj);
-                    
-                   temp_objectClassHandle = theObjectClass;     // debug  testing                    
-                } 
+                // TODO                // not yet  implanted,  
+       
 			} catch (Exception e) {
 				logger.warn("discovered object instance, but federate {} is not connected", getSutFederateName());
 			}
@@ -192,18 +204,7 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
 			try {			
 			// we have to store the incoming Information to analyse it later
 			System.out.println("\n# ---------   Testing and Debugging --------------------------------"); 	
-			logger.info("reflectAttributeValues: Amount of transmitted  attributes: " +theAttributes.size());			
-		    System.out.println("# reflectAttributeValues: got  ObjectInstanceHandle  theObject: " +theObject ); // Debug		    
-		    System.out.println("# reflectAttributeValues: rti-objectInstanceName of theObject:  \t" + rtiAmbassador.getObjectInstanceName(theObject));  // Debug
-		    
-		    System.out.println("\n# reflectAttributeValues:   AttributHandleValueMap theAttributes:  "+ theAttributes);  // Debug
-		    System.out.println("#reflectAttributeValues:  the Keys in AttributHandleValueMap  : " + theAttributes.keySet() );
-		    
-		    // we need the Names of the Attributes 
-		 	System.out.println("# reflectAttributeValues: Names of received Attributes ");
-		 		for ( AttributeHandle a : theAttributes.keySet() ) {
-		 			System.out.println(rtiAmbassador.getAttributeName(temp_objectClassHandle, a) );
-		 		}
+			logger.info("reflectAttributeValues: Amount of transmitted  attributes: " +theAttributes.size());
 		    
 			
 			if (phyEntity.getHlaClassName().equals(rtiAmbassador.getObjectClassName(temp_objectClassHandle))) {					
@@ -213,8 +214,8 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
 			}
 			
 			
-			
-			} catch ( FederateNotExecutionMember | NotConnected | RTIinternalError | AttributeNotDefined | InvalidAttributeHandle | InvalidObjectClassHandle | ObjectInstanceNotKnown  e) 
+	        //} catch ( FederateNotExecutionMember | NotConnected | RTIinternalError | AttributeNotDefined | InvalidAttributeHandle | InvalidObjectClassHandle | ObjectInstanceNotKnown  e) 
+			} catch ( FederateNotExecutionMember | NotConnected | RTIinternalError |  InvalidObjectClassHandle  e) 
 			{ 	};
 			
 			// (ObjectInstanceNotKnown | FederateNotExecutionMember | NotConnected | RTIinternalError | AttributeNotDefined | InvalidAttributeHandle | InvalidObjectClassHandle    e
