@@ -21,7 +21,10 @@ import java.util.HashMap;
 import java.util.concurrent.Semaphore;
 
 import org.nato.ivct.rpr.FomFiles;
+import org.nato.ivct.rpr.objects.Aircraft;
+import org.nato.ivct.rpr.objects.AmphibiousVehicle;
 import org.nato.ivct.rpr.objects.PhysicalEntity;
+import org.nato.ivct.rpr.objects.Platform;
 import org.slf4j.Logger;
 import de.fraunhofer.iosb.tc_lib_if.AbstractTestCaseIf;
 import de.fraunhofer.iosb.tc_lib_if.TcFailedIf;
@@ -270,9 +273,18 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
 	@Override
 	protected void performTest(Logger logger) throws TcInconclusiveIf, TcFailedIf {
         logger.info("perform test {}", this.getClass().getName());
+        
+        PhysicalEntity.initialize(rtiAmbassador);
+        
+        
+        
 		try {
-			PhysicalEntity.initialize(rtiAmbassador);
-			phyEntity = new PhysicalEntity();			
+		    
+		    // To Test Entity   ?????????????????
+		    PhysicalEntity[] toBeTestetEntityList = {new Aircraft(), new AmphibiousVehicle() } ;
+		    
+		
+		    phyEntity = new PhysicalEntity();   
 			
 			//phyEntity.addSubscribe(BaseEntity.Attributes.EntityIdentifier);			
 			
@@ -306,8 +318,17 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
 			phyEntity.addSubscribe(PhysicalEntity.Attributes.TrailingEffectsCode);
 			phyEntity.addSubscribe(PhysicalEntity.Attributes.VectoringNozzleSystemData);
 			
-			phyEntity.subscribe();
+			for (PhysicalEntity p : toBeTestetEntityList) {
+                logger.debug(
+                        "# in performTest subscribing all Elements of platformWorkList now " + p.getHlaClassName()); // Debug
+                p.subscribe();
+            }
 			
+			// so we have subcribed to all attributes
+            // next Step is to verify if they  ar used #################  brf  23.06.2023
+			
+		
+			/*
 			// temp_objectClassHandle
 			
 			AttributeHandle _AcousticSignatureIndex ;
@@ -333,10 +354,13 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
 			
 			// wait until object is discovered
 			
-			boolean gotEnoughAtttributes = true;
-            while (! gotEnoughAtttributes) {
-                // the Test ......
-            }
+			*/
+ 
+            for (int i = 0; i < 10; i++) {  // Testing for 10 Sec
+                //DOTO Testing something here
+                // ...
+               Thread.sleep(1000);
+               }
     
 			
 		} catch (Exception e) {
