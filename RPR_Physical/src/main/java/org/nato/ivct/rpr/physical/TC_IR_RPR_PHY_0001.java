@@ -23,8 +23,21 @@ import java.util.concurrent.Semaphore;
 import org.nato.ivct.rpr.FomFiles;
 import org.nato.ivct.rpr.objects.Aircraft;
 import org.nato.ivct.rpr.objects.AmphibiousVehicle;
+import org.nato.ivct.rpr.objects.CulturalFeature;
+import org.nato.ivct.rpr.objects.Expendables;
+import org.nato.ivct.rpr.objects.GroundVehicle;
+import org.nato.ivct.rpr.objects.Human;
+import org.nato.ivct.rpr.objects.MultiDomainPlatform;
+import org.nato.ivct.rpr.objects.Munition;
+import org.nato.ivct.rpr.objects.NonHuman;
 import org.nato.ivct.rpr.objects.PhysicalEntity;
 import org.nato.ivct.rpr.objects.Platform;
+import org.nato.ivct.rpr.objects.Radio;
+import org.nato.ivct.rpr.objects.Sensor;
+import org.nato.ivct.rpr.objects.Spacecraft;
+import org.nato.ivct.rpr.objects.SubmersibleVessel;
+import org.nato.ivct.rpr.objects.Supplies;
+import org.nato.ivct.rpr.objects.SurfaceVessel;
 import org.slf4j.Logger;
 import de.fraunhofer.iosb.tc_lib_if.AbstractTestCaseIf;
 import de.fraunhofer.iosb.tc_lib_if.TcFailedIf;
@@ -114,7 +127,10 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
  *  TrailingEffectsCode                False
  *  VectoringNozzleSystemData        Empty
  *  
- *  so first we have to describe to all attributes
+ *  so first we have to add all attributes to the subscribedAttribute-Hash of HLAobjectRoot
+ *   this ist done  by addSubscribe of PhysicalEntity
+ *  
+ *  and subscribe to all possible entities to the RTI, whith subsrcibe (HLAobjectRoot)
  *   
  * 
  */
@@ -123,8 +139,6 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
     RTIambassador rtiAmbassador = null;
     FederateAmbassador tcAmbassador = null;
     Logger logger = null;
-
-    Semaphore physicalEntityDiscovered = new Semaphore(0);
 
     HashMap<ObjectInstanceHandle, PhysicalEntity> knownPhysicalEntitys = new HashMap<>();
 
@@ -135,21 +149,29 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
     class TestCaseAmbassador extends NullFederateAmbassador {
 
         @Override
-        public void discoverObjectInstance(ObjectInstanceHandle theObjectInstanceH, ObjectClassHandle theObjectClassH, String objectName) throws FederateInternalError {
+        public void discoverObjectInstance(
+                         ObjectInstanceHandle theObjectInstanceH,
+                         ObjectClassHandle theObjectClassH,
+                         String objectName) throws FederateInternalError {
             logger.trace("discoverObjectInstance {}",  theObjectInstanceH);
-
+            
+            logger.info("# discoverObjectInstance without FederateHandle ");
+            
             // Tests and Debug
             try {
                 logger.debug("# discoverObjectInstance: reveived ObjectInstanceHandle with ObjectInstanceName:  "
-                        +  rtiAmbassador.getObjectInstanceName(theObjectInstanceH)); // Debug
-                
+                        + rtiAmbassador.getObjectInstanceName(theObjectInstanceH)); // Debug
                 logger.debug("# discoverObjectInstance: reveived ObjectClassHandle with rti-ObjectClassName:  "
                         + rtiAmbassador.getObjectClassName(theObjectClassH)); // Debug
-                
             } catch (ObjectInstanceNotKnown | FederateNotExecutionMember | NotConnected | RTIinternalError
                     | InvalidObjectClassHandle e) {
                 logger.error("discoverObjectInstance received Exception", e);
             }
+            
+                      
+            //    Now we have to store this information in some  Table .........  brf  26.06.2023
+            
+            /*
 		
 			try {			
                 String receivedClass = rtiAmbassador.getObjectClassName(theObjectClassH);
@@ -159,7 +181,7 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
 			} catch (Exception e) {
 				logger.warn("discovered object instance, but federate {} is not connected", getSutFederateName());
 			}
-			physicalEntityDiscovered.release(1);
+			*/
 		}
 
 		@Override
@@ -200,10 +222,10 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
                 TransportationTypeHandle theTransport,
                 SupplementalReflectInfo reflectInfo) throws FederateInternalError {
 			
-			System.out.println(""); // Debug
+		    //logger.info(""); // Debug
 			logger.trace("reflectAttributeValues without  LogicalTime,  MessageRetractionHandle  ");
-			//semaphore.release(1);
 			
+			/*
 			try {			
 			// we have to store the incoming Information to analyse it later
 			System.out.println("\n# ---------   Testing and Debugging --------------------------------"); 	
@@ -218,11 +240,9 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
 			
 			
 	        //} catch ( FederateNotExecutionMember | NotConnected | RTIinternalError | AttributeNotDefined | InvalidAttributeHandle | InvalidObjectClassHandle | ObjectInstanceNotKnown  e) 
-			} catch ( FederateNotExecutionMember | NotConnected | RTIinternalError |  InvalidObjectClassHandle  e) 
-			{ 	};
-			
-			// (ObjectInstanceNotKnown | FederateNotExecutionMember | NotConnected | RTIinternalError | AttributeNotDefined | InvalidAttributeHandle | InvalidObjectClassHandle    e
-			
+			} catch ( FederateNotExecutionMember | NotConnected | RTIinternalError |  InvalidObjectClassHandle  e) {
+			}
+			*/
 			
 		}
 		
@@ -280,14 +300,17 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
         
 		try {
 		    
-		    // To Test Entity   ?????????????????
 		    PhysicalEntity[] toBeTestetEntityList = {new Aircraft(), new AmphibiousVehicle() } ;
+		    /*
+	         PhysicalEntity[] toBeTestetEntityList = {new Aircraft() , new AmphibiousVehicle(), new GroundVehicle(), new MultiDomainPlatform(),
+	                                                  new Spacecraft(), new SubmersibleVessel(), new SurfaceVessel(),
+	                                                  new Human(), new NonHuman(), new CulturalFeature(), new  Munition(),
+	                                                  new Expendables(), new Radio(), new Sensor(), new Supplies() } ;
+	         */
 		    
-		
-		    phyEntity = new PhysicalEntity();   
+		    phyEntity = new PhysicalEntity();  
 			
-			//phyEntity.addSubscribe(BaseEntity.Attributes.EntityIdentifier);			
-			
+		    //  add all attributes to the subscribedAttribute-Hash of PhysicalEntity ( HLAobjectRoot)
 			phyEntity.addSubscribe(PhysicalEntity.Attributes.AcousticSignatureIndex);
 			phyEntity.addSubscribe(PhysicalEntity.Attributes.AlternateEntityType);
 			phyEntity.addSubscribe(PhysicalEntity.Attributes.ArticulatedParametersArray);			
@@ -328,6 +351,7 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
             // next Step is to verify if they  ar used #################  brf  23.06.2023
 			
 		
+			
 			/*
 			// temp_objectClassHandle
 			
