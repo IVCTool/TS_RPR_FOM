@@ -143,6 +143,7 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
     
     PhysicalEntity phyEntity;
     PhysicalEntity[] toBeTestetEntityList;
+    PhysicalEntity[] listOfPossibleEntities;
    
     HashMap<ObjectInstanceHandle, PhysicalEntity> announcedPhysicalEntitys = new HashMap<>();
 
@@ -165,45 +166,31 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
                 logger.debug("# discoverObjectInstance: reveived ObjectClassHandle with rti-ObjectClassName:  "     + rtiAmbassador.getObjectClassName(theObjectClassH)); // Debug
 
                 // Now we have to store this information in some Table ......... brf 26.06.2023
-                // but we have not only one physical entity but a lot of entities . so we take  our List of toBeTestetEntityList to test if we get the classnames..
+                // but we have not only one physical entity but a lot of entities. so we take a copy our List  toBeTestetEntityList to test if we get the classnames..
 
-                for (PhysicalEntity toBeTestedElement : toBeTestetEntityList) {
-                    logger.debug("# discoverObjectInstance: Element of toBeTestetEntityList has HLA-Classname: " + toBeTestedElement.getHlaClassName()); // DEBUG
+                for (PhysicalEntity toBeTestedElement : listOfPossibleEntities) {
+                    //logger.debug("# discoverObjectInstance: Element of listOfPossibleEntities has HLA-Classname: " + toBeTestedElement.getHlaClassName()); // DEBUG
+                    
                     // if the objectClassName match with the ObjectClassName of the received  ObjectClassHandle,
-                    
-                    // we associate the receiced ObjectInstanceHandle to our toBeTestetEntity  Element
-                    // doubt if that is the right way, because we want to work whith the objects sended by SUT ?
-                    /*
-                    if (phyEntTemp.getHlaClassName().equals(rtiAmbassador.getObjectClassName(theObjectClassH))) {
-                        phyEntTemp.setObjectHandle(theObjectInstanceH);
-                        // And store it in  the map knownPhysicalEntitys with the ObjectInstanceHandle as  Key  ###########  brf 27.06.2023r                         
-                    } */
-                    
-                    // another aproach is to create new entities and  'give' them the ObjectInstanceHandle 
-                    // but is it possible to create  all whith physicalEntity  ?
                     if (toBeTestedElement.getHlaClassName().equals(rtiAmbassador.getObjectClassName(theObjectClassH))) {
-                        PhysicalEntity newPhEntity = new PhysicalEntity();            
-                        newPhEntity.setObjectHandle(theObjectInstanceH);
-                        // And store it in  the map  announcedPhysicalEntitys  with the ObjectInstanceHandle as  Key                       
-                        announcedPhysicalEntitys.put(theObjectInstanceH, newPhEntity  );
-                        // Test this in performTest   TODO brf  27.06.2023
-                        
-                       // it is necessary to test if  it exists,  or better to overwrite it ?
-                        /*
+                        // we associate the receiced ObjectInstanceHandle to our toBeTestetEntity  Element 
+                        toBeTestedElement.setObjectHandle(theObjectInstanceH);
+                        // And store it in  the map announcedPhysicalEntitys (knownPhysicalEntitys) with the ObjectInstanceHandle as  Key     
+                        announcedPhysicalEntitys.put(theObjectInstanceH, toBeTestedElement  );                                            
+                    }
+                    // we have to test  if we get the full Classnames  from the elements in this  map    brf  29.06.2023
+                    
+                    
+                    /*   it is necessary to test if  it exists,  or  overwrite it ?                        
                         for (ObjectInstanceHandle _iH : announcedPhysicalEntitys.keySet() ) {
                             if (announcedPhysicalEntitys.get(_iH)  == null ){
                                 announcedPhysicalEntitys.put(theObjectInstanceH, newPhEntity   );
                             }
-                        } */
-               
-                    } 
-                    
-                    
-                    
+                        }     */
                     
                 }
             } catch (ObjectInstanceNotKnown | FederateNotExecutionMember | NotConnected | RTIinternalError
-                    | InvalidObjectClassHandle | RprBuilderException e) {
+                    | InvalidObjectClassHandle e) {
                 logger.error("discoverObjectInstance received Exception", e);
             }    
           
@@ -332,6 +319,12 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
 	                                                  new Human(), new NonHuman(), new CulturalFeature(), new  Munition(),
 	                                                  new Expendables(), new Radio(), new Sensor(), new Supplies() } ;
 	         
+	         // we make a copie of the List  to work with it
+	         listOfPossibleEntities = new PhysicalEntity[toBeTestetEntityList.length];
+	         for (int i =0; i < toBeTestetEntityList.length ; i++ ) {
+	             listOfPossibleEntities[i] =  toBeTestetEntityList[i];
+	         }
+		         
 		    
 		    phyEntity = new PhysicalEntity();  
 			
@@ -395,8 +388,11 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
                     String  hlaClassname = announcedPhysicalEntitys.get(_OIH).getHlaClassName();
                     logger.info("performTest:  testing announcedPhysicalEntitys:  got from element with ObjectInstanceHandle " +_OIH +" HlaClassname"    + hlaClassname);
                 }
-                // We got only  "HlaClassnameHLAobjectRoot.BaseEntity.PhysicalEntity"  so we have to store the Entities more specific   brf 27.03.2023
+                // ok, now we get  "HlaClassnameHLAobjectRoot.BaseEntity.PhysicalEntity.Platform.Aircraft"  brf  29.06.2023
+               
+                // why  we get only Aircraft,  what's about munition ?
                 
+                // what to Do now    ? look which attributes are sended     brf 29.06.2023
                 
                 
                 // ...
