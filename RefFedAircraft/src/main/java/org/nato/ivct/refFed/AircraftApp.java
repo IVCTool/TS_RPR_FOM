@@ -196,7 +196,9 @@ public class AircraftApp extends NullFederateAmbassador {
       
 			Munition munitionProxy = new Munition();
             munitionProxy.addPublish(BaseEntity.Attributes.EntityIdentifier);
-			munitionProxy.publishLauncherFlashPresent();
+            // try if we get this in TC_IR_RPR_PHY_0001
+            //munitionProxy.addPublish(PhysicalEntity.Attributes.CamouflageType);  // DEBUG
+            munitionProxy.publishLauncherFlashPresent();
 			munitionProxy.publish();
 			munitionProxy.register();
 			

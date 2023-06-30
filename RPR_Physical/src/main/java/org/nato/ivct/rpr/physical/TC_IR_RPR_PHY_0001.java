@@ -16,6 +16,7 @@ limitations under the License. */
 package org.nato.ivct.rpr.physical;
 
 import java.net.URL;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.Semaphore;
@@ -160,40 +161,31 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
             
             logger.info("# discoverObjectInstance without FederateHandle ");
             
-            // Tests and Debug
+           
             try {
-                logger.debug("# discoverObjectInstance: reveived ObjectInstanceHandle with ObjectInstanceName:  " + rtiAmbassador.getObjectInstanceName(theObjectInstanceH)); // Debug
-                logger.debug("# discoverObjectInstance: reveived ObjectClassHandle with rti-ObjectClassName:  "     + rtiAmbassador.getObjectClassName(theObjectClassH)); // Debug
+                // Tests and Debug
+                logger.debug("# discoverObjectInstance: reveived ObjectInstanceHandle with ObjectInstanceName:  "
+                                                                             + rtiAmbassador.getObjectInstanceName(theObjectInstanceH)); // Debug
+                logger.debug("# discoverObjectInstance: reveived ObjectClassHandle with rti-ObjectClassName:  " 
+                                                                             + rtiAmbassador.getObjectClassName(theObjectClassH)); // Debug
 
-                // Now we have to store this information in some Table ......... brf 26.06.2023
-                // but we have not only one physical entity but a lot of entities. so we take a copy our List  toBeTestetEntityList to test if we get the classnames..
-
-                for (PhysicalEntity toBeTestedElement : listOfPossibleEntities) {
+                // Now we have to store this information in some Table 
+                // but we have not only one physical entity but a lot of entities. so we take a copy our List  toBeTestetEntityList to test if we get the classnames.
+                for (PhysicalEntity possibleElement : listOfPossibleEntities) {
                     //logger.debug("# discoverObjectInstance: Element of listOfPossibleEntities has HLA-Classname: " + toBeTestedElement.getHlaClassName()); // DEBUG
                     
                     // if the objectClassName match with the ObjectClassName of the received  ObjectClassHandle,
-                    if (toBeTestedElement.getHlaClassName().equals(rtiAmbassador.getObjectClassName(theObjectClassH))) {
+                    if (possibleElement.getHlaClassName().equals(rtiAmbassador.getObjectClassName(theObjectClassH))) {
                         // we associate the receiced ObjectInstanceHandle to our toBeTestetEntity  Element 
-                        toBeTestedElement.setObjectHandle(theObjectInstanceH);
+                        possibleElement.setObjectHandle(theObjectInstanceH);
                         // And store it in  the map announcedPhysicalEntitys (knownPhysicalEntitys) with the ObjectInstanceHandle as  Key     
-                        announcedPhysicalEntitys.put(theObjectInstanceH, toBeTestedElement  );                                            
+                        announcedPhysicalEntitys.put(theObjectInstanceH, possibleElement  );                                            
                     }
-                    // we have to test  if we get the full Classnames  from the elements in this  map    brf  29.06.2023
-                    
-                    
-                    /*   it is necessary to test if  it exists,  or  overwrite it ?                        
-                        for (ObjectInstanceHandle _iH : announcedPhysicalEntitys.keySet() ) {
-                            if (announcedPhysicalEntitys.get(_iH)  == null ){
-                                announcedPhysicalEntitys.put(theObjectInstanceH, newPhEntity   );
-                            }
-                        }     */
-                    
                 }
             } catch (ObjectInstanceNotKnown | FederateNotExecutionMember | NotConnected | RTIinternalError
                     | InvalidObjectClassHandle e) {
                 logger.error("discoverObjectInstance received Exception", e);
             }    
-          
 		}
 
 		@Override
@@ -227,34 +219,38 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
 		
 		
 		@Override
-        public void reflectAttributeValues(ObjectInstanceHandle theObject,
-        		AttributeHandleValueMap theAttributes,
-                byte[] userSuppliedTag,
-                OrderType sentOrdering,
-                TransportationTypeHandle theTransport,
+        public void reflectAttributeValues(ObjectInstanceHandle theObjectInstanceH,  AttributeHandleValueMap attributeHandleVM,
+                byte[] userSuppliedTag,  OrderType sentOrdering, TransportationTypeHandle theTransport,
                 SupplementalReflectInfo reflectInfo) throws FederateInternalError {
 			
 		    //logger.info(""); // Debug
 			logger.trace("reflectAttributeValues without  LogicalTime,  MessageRetractionHandle  ");
+			 logger.debug("# reflectAttributeValues: AttributHandleValueMap \"attributeHandleVM\":  " + attributeHandleVM); // Debug
 			
-			/*
-			try {			
-			// we have to store the incoming Information to analyse it later
-			System.out.println("\n# ---------   Testing and Debugging --------------------------------"); 	
-			logger.info("reflectAttributeValues: Amount of transmitted  attributes: " +theAttributes.size());
-		    
+			// what are the attributes we get ?   here we get  ObjectInstanceHandle   and  AttributeHandleValueMap			
+			logger.debug("# reflectAttributeValues: got  ObjectInstanceHandle  theObject: " + theObjectInstanceH); // Debug
 			
-			if (phyEntity.getHlaClassName().equals(rtiAmbassador.getObjectClassName(temp_objectClassHandle))) {					
-				System.out.println("# class names are equal, do here something"); // Debug
-				
-				// eg.  write the Informations to    known_Instance_AttrValueMap
+			
+			// so we can store both  neither in a new map.   or  in our map  announcedPhysicalEntitys ?
+			// is there a method to associate a AttributeHandleValueMap  to a  entity-Object ?
+			// not in that simple  manner
+			// but there is a method  "decode" that do  something  ?????  and give it back ???? or store it ?????
+			
+			// so do for each  Entity ....
+			for (ObjectInstanceHandle _obIHandl   : announcedPhysicalEntitys.keySet() ) {
+			    // if the ObjectInstanceHandle  equals
+			    if (_obIHandl == theObjectInstanceH) {
+			        try {
+			        announcedPhysicalEntitys.get(_obIHandl).decode(attributeHandleVM);
+			        } catch (Exception e) {
+			            logger.error("reflectAttributeValues received Exception", e);
+			        }
+			    }
 			}
+		   
+			// Most of them  " Decoding skipped       what to Do now    brf  30.06.2023
 			
 			
-	        //} catch ( FederateNotExecutionMember | NotConnected | RTIinternalError | AttributeNotDefined | InvalidAttributeHandle | InvalidObjectClassHandle | ObjectInstanceNotKnown  e) 
-			} catch ( FederateNotExecutionMember | NotConnected | RTIinternalError |  InvalidObjectClassHandle  e) {
-			}
-			*/
 			
 		}
 		
@@ -319,11 +315,9 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
 	                                                  new Human(), new NonHuman(), new CulturalFeature(), new  Munition(),
 	                                                  new Expendables(), new Radio(), new Sensor(), new Supplies() } ;
 	         
-	         // we make a copie of the List  to work with it
-	         listOfPossibleEntities = new PhysicalEntity[toBeTestetEntityList.length];
-	         for (int i =0; i < toBeTestetEntityList.length ; i++ ) {
-	             listOfPossibleEntities[i] =  toBeTestetEntityList[i];
-	         }
+	         // we make a copie of the List  to work with it	       	         
+	         listOfPossibleEntities = new PhysicalEntity[toBeTestetEntityList.length];	         
+	         System.arraycopy(toBeTestetEntityList  , 0,   listOfPossibleEntities,   0, listOfPossibleEntities.length );
 		         
 		    
 		    phyEntity = new PhysicalEntity();  
@@ -358,39 +352,26 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
 			phyEntity.addSubscribe(PhysicalEntity.Attributes.TentDeployed);			
 			phyEntity.addSubscribe(PhysicalEntity.Attributes.TrailingEffectsCode);
 			phyEntity.addSubscribe(PhysicalEntity.Attributes.VectoringNozzleSystemData);
+
+			// trie what's about munition
 			
 			for (PhysicalEntity p : toBeTestetEntityList) {
                 logger.debug(
                         "# in performTest subscribing all Elements of platformWorkList now " + p.getHlaClassName()); // Debug
                 p.subscribe();
             }
-			
-			// so we have subcribed to all attributes
-            // next Step is to verify if they  ar used #################  brf  23.06.2023
-			
-			
-			
+						
             for (int i = 0; i < 10; i++) {  // Testing for 10 Sec
-                //DOTO Testing something here
-                               
-             // Test  if  objectInstanceHandles are associated with our  Entities ( in discoverObjectInstance )
-                /*  nicht aktuell
-                logger.debug("## performTests:  test the objectinstancehandle in every Element of our toBeTestetEntityList ");
-                for (PhysicalEntity phyEntTemp : toBeTestetEntityList) {
-                    logger.debug(phyEntTemp.getHlaClassName() +" : " +    phyEntTemp.getObjectHandle()  );   // Debug
-                } */
-                
-                // Test if we got with discoverObjectHandle more than physicalEntities, e.g. Aircraft   TODO  brf  27.06.2023
-                //announcedPhysicalEntitys
-                
-                logger.info( "### Test if in announcedPhysicalEntitys (builded in discoverObjectHandle) are more than physicalEntities, eg. Aircraft "  );
-                for (ObjectInstanceHandle _OIH : announcedPhysicalEntitys.keySet() ) {
+                                               
+                // Test if we got with discoverObjectHandle more than physicalEntities, e.g. Aircraft   TODO  brf  27.06.2023                
+                //logger.info( "### Test if in announcedPhysicalEntitys (builded in discoverObjectHandle) are more than physicalEntities, eg. Aircraft "  );
+                for (ObjectInstanceHandle _OIH : announcedPhysicalEntitys.keySet() ) {                               // DEBUG
                     String  hlaClassname = announcedPhysicalEntitys.get(_OIH).getHlaClassName();
-                    logger.info("performTest:  testing announcedPhysicalEntitys:  got from element with ObjectInstanceHandle " +_OIH +" HlaClassname"    + hlaClassname);
+                    //logger.info("performTest:  testing announcedPhysicalEntitys:  got from element with ObjectInstanceHandle " +_OIH +" HlaClassname"    + hlaClassname);
                 }
-                // ok, now we get  "HlaClassnameHLAobjectRoot.BaseEntity.PhysicalEntity.Platform.Aircraft"  brf  29.06.2023
-               
-                // why  we get only Aircraft,  what's about munition ?
+                // why  we get only Aircraft,  what's about munition ?   -> when in e.g. AircraftApp  a Attribut of physicalEntity is 'added' we get munition in DiscoverObjectHandle
+                
+                
                 
                 // what to Do now    ? look which attributes are sended     brf 29.06.2023
                 
