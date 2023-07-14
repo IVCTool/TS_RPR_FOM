@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.Semaphore;
 
+import javax.naming.NameNotFoundException;
+
 import org.nato.ivct.rpr.FomFiles;
 import org.nato.ivct.rpr.RprBuilderException;
 import org.nato.ivct.rpr.objects.Aircraft;
@@ -28,6 +30,9 @@ import org.nato.ivct.rpr.objects.AmphibiousVehicle;
 import org.nato.ivct.rpr.objects.CulturalFeature;
 import org.nato.ivct.rpr.objects.Expendables;
 import org.nato.ivct.rpr.objects.GroundVehicle;
+import org.nato.ivct.rpr.objects.HLAmanager;
+import org.nato.ivct.rpr.objects.HLAfederate;
+import org.nato.ivct.rpr.objects.HLAobjectRoot;
 import org.nato.ivct.rpr.objects.Human;
 import org.nato.ivct.rpr.objects.MultiDomainPlatform;
 import org.nato.ivct.rpr.objects.Munition;
@@ -40,6 +45,7 @@ import org.nato.ivct.rpr.objects.Spacecraft;
 import org.nato.ivct.rpr.objects.SubmersibleVessel;
 import org.nato.ivct.rpr.objects.Supplies;
 import org.nato.ivct.rpr.objects.SurfaceVessel;
+import org.nato.ivct.rpr.objects.HLAfederate.Attributes;
 import org.slf4j.Logger;
 import de.fraunhofer.iosb.tc_lib_if.AbstractTestCaseIf;
 import de.fraunhofer.iosb.tc_lib_if.TcFailedIf;
@@ -61,6 +67,7 @@ import hla.rti1516e.ResignAction;
 import hla.rti1516e.RtiFactory;
 import hla.rti1516e.RtiFactoryFactory;
 import hla.rti1516e.TransportationTypeHandle;
+import hla.rti1516e.encoding.DecoderException;
 import hla.rti1516e.FederateAmbassador.SupplementalReflectInfo;
 import hla.rti1516e.exceptions.AlreadyConnected;
 import hla.rti1516e.exceptions.AttributeNotDefined;
@@ -143,12 +150,18 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
     Logger logger = null;
     
     PhysicalEntity phyEntity;
-    PhysicalEntity[] toBeTestetEntityList;
-    PhysicalEntity[] listOfPossibleEntities;
-   
-    HashMap<ObjectInstanceHandle, PhysicalEntity> announcedPhysicalEntitys = new HashMap<>();
-
+    //PhysicalEntity[] toBeTestetEntityList;
+    HLAobjectRoot[] toBeTestetEntityList;
     
+    //PhysicalEntity[] listOfPossibleEntities;  // listOfPossibleEntities is a Copy of toBeTestetEntityList
+    HLAobjectRoot[] listOfPossibleEntities;  // listOfPossibleEntities is a Copy of toBeTestetEntityList
+    
+    //HashMap<ObjectInstanceHandle, PhysicalEntity> announcedPhysicalEntitys = new HashMap<>();
+    HashMap<ObjectInstanceHandle, HLAobjectRoot > announcedEntitys = new HashMap<>();
+    
+    HLAmanager[] toTestHLAmanagerClasses;
+    HashMap<ObjectInstanceHandle, HLAmanager> announcedHLAmanagerEntitys = new HashMap<>();
+        
 
     class TestCaseAmbassador extends NullFederateAmbassador {
 
@@ -159,31 +172,35 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
                          String objectName) throws FederateInternalError {
             logger.trace("discoverObjectInstance {}",  theObjectInstanceH);
             
-            logger.info("# discoverObjectInstance without FederateHandle ");
-            
+            logger.info("### discoverObjectInstance without FederateHandle ");            
            
             try {
                 // Tests and Debug
-                logger.debug("# discoverObjectInstance: reveived ObjectInstanceHandle with ObjectInstanceName:  "
+                logger.debug("# discoverObjectInstance: reveived ObjectInstanceHandle:  " + theObjectInstanceH ) ; // Debug
+                logger.debug("# discoverObjectInstance: reveived ObjectInstanceHandle with Name:  "
                                                                              + rtiAmbassador.getObjectInstanceName(theObjectInstanceH)); // Debug
                 logger.debug("# discoverObjectInstance: reveived ObjectClassHandle with rti-ObjectClassName:  " 
                                                                              + rtiAmbassador.getObjectClassName(theObjectClassH)); // Debug
 
                 // Now we have to store this information in some Table 
-                // but we have not only one physical entity but a lot of entities. so we take a copy our List  toBeTestetEntityList to test if we get the classnames.
-                for (PhysicalEntity possibleElement : listOfPossibleEntities) {
-                    //logger.debug("# discoverObjectInstance: Element of listOfPossibleEntities has HLA-Classname: " + toBeTestedElement.getHlaClassName()); // DEBUG
+                // but we have not only one (physical or other) entity but a lot. so we take a copy our List  toBeTestetEntityList to test if we get the classnames.
+                
+                // We  consider all as   HLARoot.entities
+                //for (PhysicalEntity possibleElement : listOfPossibleEntities) {
+                for (HLAobjectRoot possibleElement : listOfPossibleEntities) {
                     
                     // if the objectClassName match with the ObjectClassName of the received  ObjectClassHandle,
                     if (possibleElement.getHlaClassName().equals(rtiAmbassador.getObjectClassName(theObjectClassH))) {
                         // we associate the receiced ObjectInstanceHandle to our toBeTestetEntity  Element 
                         possibleElement.setObjectHandle(theObjectInstanceH);
                         // And store it in  the map announcedPhysicalEntitys (knownPhysicalEntitys) with the ObjectInstanceHandle as  Key     
-                        announcedPhysicalEntitys.put(theObjectInstanceH, possibleElement  );                                            
+                        announcedEntitys.put(theObjectInstanceH, possibleElement  );
+                        logger.debug("# discoverObjectInstance:  stored objectInstanceHandle and  Entity-Element in announcedEntitys :  " 
+                                + theObjectInstanceH+ " and  Element:  "    +  possibleElement.getHlaClassName()      ); // Debug
                     }
                 }
-            } catch (ObjectInstanceNotKnown | FederateNotExecutionMember | NotConnected | RTIinternalError
-                    | InvalidObjectClassHandle e) {
+                
+            } catch (ObjectInstanceNotKnown | FederateNotExecutionMember | NotConnected | RTIinternalError | InvalidObjectClassHandle e) {
                 logger.error("discoverObjectInstance received Exception", e);
             }    
 		}
@@ -195,6 +212,7 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
 				String objectName,
 				FederateHandle producingFederate) throws FederateInternalError {
 			logger.trace("discoverObjectInstance {} with producingFederate {}", theObject, producingFederate);
+			 logger.info("# discoverObjectInstance with FederateHandle ");  
 			discoverObjectInstance(theObject, theObjectClass, objectName);
 		}
 		
@@ -219,45 +237,70 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
 		
 		
 		@Override
-        public void reflectAttributeValues(ObjectInstanceHandle theObjectInstanceH,  AttributeHandleValueMap attributeHandleVM,
-                byte[] userSuppliedTag,  OrderType sentOrdering, TransportationTypeHandle theTransport,
-                SupplementalReflectInfo reflectInfo) throws FederateInternalError {
-			
-		    //logger.info(""); // Debug
-			logger.trace("reflectAttributeValues without  LogicalTime,  MessageRetractionHandle  ");
-			 logger.debug("# reflectAttributeValues: AttributHandleValueMap \"attributeHandleVM\":  " + attributeHandleVM); // Debug
-			
-			// what are the attributes we get ?   here we get  ObjectInstanceHandle   and  AttributeHandleValueMap			
-			logger.debug("# reflectAttributeValues: got  ObjectInstanceHandle  theObject: " + theObjectInstanceH); // Debug
-			
-			
-			// so we can store both  neither in a new map.   or  in our map  announcedPhysicalEntitys ?
-			// is there a method to associate a AttributeHandleValueMap  to a  entity-Object ?
-			// not in that simple  manner
-			// but there is a method  "decode" that do  something  ?????  and give it back ???? or store it ?????
-			
-			// so do for each  Entity ....
-			for (ObjectInstanceHandle _obIHandl   : announcedPhysicalEntitys.keySet() ) {
-			    // if the ObjectInstanceHandle  equals
-			    if (_obIHandl == theObjectInstanceH) {
-			        try {
-			        announcedPhysicalEntitys.get(_obIHandl).decode(attributeHandleVM);
-			        } catch (Exception e) {
-			            logger.error("reflectAttributeValues received Exception", e);
-			        }
-			    }
-			}
-		   
-			// Most of them  " Decoding skipped       what to Do now    brf  30.06.2023
-			
-			
+        public void reflectAttributeValues(ObjectInstanceHandle theObjectInstanceH, 
+                AttributeHandleValueMap attributeHandleVM,  byte[] userSuppliedTag,  OrderType sentOrdering, 
+                TransportationTypeHandle theTransport,  SupplementalReflectInfo reflectInfo)
+                 throws FederateInternalError {
+		
+            logger.trace("reflectAttributeValues without  LogicalTime,  MessageRetractionHandle  ");
+
+            // what are the attributes we get ? here we get ObjectInstanceHandle and  AttributeHandleValueMap
+            logger.debug("# reflectAttributeValues: got  ObjectInstanceHandle  \"theObjectInstanceH\" : " + theObjectInstanceH
+                                                                       + " with AttributHandleValueMap :   " + attributeHandleVM); // Debug	
+						
+			// so we can store both  neither in a new map.  or  in our map  announcedPhysicalEntitys ?
+			// or try to decode  the atttibutes here ?
+         
+	       // look in     TC_IR_RPR2_0018   brf 07.07.2023
+			    
+                try {
+                    // so do for each  Entity  of all kinds of  known Entities                     
+                    //  discover     is a method which  do useful  work  for the  job here  ????                        
+                    
+                    for (ObjectInstanceHandle _obIHandl   : announcedEntitys.keySet() ) {
+                    logger.debug("# reflectAttributeValues: show all  ObjectInstanceHandle in  announcedEntitys " +  _obIHandl );  // Debug
+                    }                    
+                 
+                    //get the entities ( classnames etc.    from announcedEntitys 
+                    for (ObjectInstanceHandle _obIHandl : announcedEntitys.keySet()) {
+                        // ObjectClassHandle tempobjectClassHandle =
+                        // announcedPhysicalEntitys.get(_obIHandl).getClassHandle();
+                        // String toTestObjectClassname =
+                        // announcedEntitys.get(_obIHandl).getHlaClassName();
+
+                        // decode is a method prepared in HLAobjectRoot // but what is it doing ? "  unknown attribute ... Decoding skipped"
+                        // logger.debug("# reflectAttributeValues: trying decode with : " +  announcedEntitys.get(_obIHandl) );
+                        // announcedEntitys.get(_obIHandl).decode(attributeHandleVM);
+
+                        if (theObjectInstanceH.equals(_obIHandl)) {
+
+                            ObjectClassHandle toTestObjectClassHandle = announcedEntitys.get(_obIHandl).getClassHandle();
+
+                            for (AttributeHandle a : attributeHandleVM.keySet()) {
+                                String tempAttributname = rtiAmbassador.getAttributeName(toTestObjectClassHandle, a);
+                                logger.debug(" # reflectAttributeValues: get Attributnames " + tempAttributname);
+                                
+                                // case tempAttributname ........................
+                                // Our interest here is to get  Attributes from HLAfederate
+                                
+                                // evtl.  die attributHandleValuemap  irgendwie an die Klasse in  announcedEntitys anbinden
+                                //announcedEntitys.get(_obIHandl).  addAttribute(tempAttributname, attributeHandleVM.get(a.)); 
+                                
+                                
+                                
+                            }
+                        }
+                    }
+                    
+                } catch (FederateNotExecutionMember | NameNotFound | NotConnected | RTIinternalError |
+                            AttributeNotDefined | InvalidAttributeHandle | InvalidObjectClassHandle e) {
+                            //AttributeNotDefined | InvalidAttributeHandle | InvalidObjectClassHandle| DecoderException e) {
+                }
+                
+                
+                
 			
 		}
-		
-		
-		
-		
-		
 
     }
     
@@ -302,88 +345,148 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
 	protected void performTest(Logger logger) throws TcInconclusiveIf, TcFailedIf {
         logger.info("perform test {}", this.getClass().getName());
         
-        PhysicalEntity.initialize(rtiAmbassador);
+        HLAobjectRoot.initialize(rtiAmbassador);
         
-        
-        
-		try {
-		    
-		    // PhysicalEntity[] toBeTestetEntityList = {new Aircraft(), new AmphibiousVehicle() } ;
-		    
-	         toBeTestetEntityList =new PhysicalEntity[]  {new Aircraft() , new AmphibiousVehicle(), new GroundVehicle(), new MultiDomainPlatform(),
-	                                                  new Spacecraft(), new SubmersibleVessel(), new SurfaceVessel(),
-	                                                  new Human(), new NonHuman(), new CulturalFeature(), new  Munition(),
-	                                                  new Expendables(), new Radio(), new Sensor(), new Supplies() } ;
-	         
-	         // we make a copie of the List  to work with it	       	         
-	         listOfPossibleEntities = new PhysicalEntity[toBeTestetEntityList.length];	         
-	         System.arraycopy(toBeTestetEntityList  , 0,   listOfPossibleEntities,   0, listOfPossibleEntities.length );
-		         
-		    
-		    phyEntity = new PhysicalEntity();  
-			
-		    //  add all attributes to the subscribedAttribute-Hash of PhysicalEntity ( HLAobjectRoot)
-			phyEntity.addSubscribe(PhysicalEntity.Attributes.AcousticSignatureIndex);
-			phyEntity.addSubscribe(PhysicalEntity.Attributes.AlternateEntityType);
-			phyEntity.addSubscribe(PhysicalEntity.Attributes.ArticulatedParametersArray);			
-			phyEntity.addSubscribe(PhysicalEntity.Attributes.CamouflageType);
-			phyEntity.addSubscribe(PhysicalEntity.Attributes.DamageState);
-			
-			phyEntity.addSubscribe(PhysicalEntity.Attributes.EngineSmokeOn);
-			phyEntity.addSubscribe(PhysicalEntity.Attributes.FirePowerDisabled);
-			phyEntity.addSubscribe(PhysicalEntity.Attributes.FlamesPresent);			
-			phyEntity.addSubscribe(PhysicalEntity.Attributes.ForceIdentifier);  
-			phyEntity.addSubscribe(PhysicalEntity.Attributes.HasAmmunitionSupplyCap);
-			
-			phyEntity.addSubscribe(PhysicalEntity.Attributes.HasFuelSupplyCap);
-			phyEntity.addSubscribe(PhysicalEntity.Attributes.HasRecoveryCap);
-			phyEntity.addSubscribe(PhysicalEntity.Attributes.HasRepairCap);			
-			phyEntity.addSubscribe(PhysicalEntity.Attributes.Immobilized);			
-			phyEntity.addSubscribe(PhysicalEntity.Attributes.InfraredSignatureIndex);
-			
-			phyEntity.addSubscribe(PhysicalEntity.Attributes.IsConcealed);			
-			phyEntity.addSubscribe(PhysicalEntity.Attributes.LiveEntityMeasuredSpeed);
-			phyEntity.addSubscribe(PhysicalEntity.Attributes.Marking);			
-			phyEntity.addSubscribe(PhysicalEntity.Attributes.PowerPlantOn);			
-			phyEntity.addSubscribe(PhysicalEntity.Attributes.PropulsionSystemsData);
-			
-			phyEntity.addSubscribe(PhysicalEntity.Attributes.RadarCrossSectionSignatureIndex);			
-			phyEntity.addSubscribe(PhysicalEntity.Attributes.SmokePlumePresent);
-			phyEntity.addSubscribe(PhysicalEntity.Attributes.TentDeployed);			
-			phyEntity.addSubscribe(PhysicalEntity.Attributes.TrailingEffectsCode);
-			phyEntity.addSubscribe(PhysicalEntity.Attributes.VectoringNozzleSystemData);
+     try {
+        //toBeTestetEntityList = new PhysicalEntity[] { new Aircraft(), new AmphibiousVehicle() };
+         // try to make a List of  HLAobjectRoot entities for all kind of Entities
+         toBeTestetEntityList = new HLAobjectRoot[] { new Aircraft(), new AmphibiousVehicle(), new HLAfederate() };
+       
+         // we make a copie of the List to work with it
+         //listOfPossibleEntities = new PhysicalEntity[toBeTestetEntityList.length];
+         listOfPossibleEntities = new HLAobjectRoot[toBeTestetEntityList.length];      
+         System.arraycopy(toBeTestetEntityList, 0, listOfPossibleEntities, 0, listOfPossibleEntities.length);
+         
+         // only to test if we get Informations obout Objects and Attributes
+         phyEntity = new PhysicalEntity();
+         phyEntity.addSubscribe(PhysicalEntity.Attributes.EngineSmokeOn);      
+         phyEntity.addSubscribe(PhysicalEntity.Attributes.FirePowerDisabled);         
+         phyEntity.addSubscribe(PhysicalEntity.Attributes.FlamesPresent);
+         phyEntity.addSubscribe(PhysicalEntity.Attributes.IsConcealed);
+         phyEntity.addSubscribe(PhysicalEntity.Attributes.TentDeployed);
+         
+         // TODO  we look for a posibility to subscribe to  management Objects from the RTI / Federation   
+         
+         // something like     // aircraft_FederateHandle.addSubscribe(HLAreportObjectClassPublication);     
+         /*
+         HLAfederate tempHLAfederate = new HLAfederate();
+         tempHLAfederate.addSubscribe(Attributes.HLAfederateHandle);
+         tempHLAfederate.addSubscribe(Attributes.HLAfederateState);  
+         tempHLAfederate.addSubscribe(Attributes.HLAfederateName); 
+         tempHLAfederate.addSubscribe(Attributes.HLAfederateType);
+         tempHLAfederate.addSubscribe(Attributes.HLAfederateHost);
+         tempHLAfederate.addSubscribe(Attributes.HLARTIversion);
+         */
+          // try to analyse other Test to use the HLAfederate specific  methods   brf  10.07.2023
+         
+         HLAfederate.addSub(HLAfederate.Attributes.HLAfederateHandle) ;
+         HLAfederate.addSub(HLAfederate.Attributes.HLAfederateState) ;
+         HLAfederate.addSub(HLAfederate.Attributes.HLAfederateName) ;
+         HLAfederate.addSub(HLAfederate.Attributes.HLAfederateType) ;
+         HLAfederate.addSub(HLAfederate.Attributes.HLAfederateHost) ;
+         HLAfederate.addSub(HLAfederate.Attributes.HLARTIversion) ;
+         
+         HLAfederate.sub();
+         // Seems if we get now 2 HLAfederate Instances in discoverObjectInstance
+         
+         
+          // do we get now  something over discoverObjectInstance ?   yes, and now  what are the attributes we get ?
+           //toTestHLAmanagerClasses = new HLAmanager[] { new HLAfederate() }; 
+              
+         
+         // how to get informations about the  federation an other federates
+         String  hlaVersion = rtiAmbassador.getHLAversion();
+         logger.debug("#### in performTest:  first Try to communicate direkt to RTI getHLAVersion: " +  hlaVersion );
+         
+         String  rtiAmbassadorInfos = rtiAmbassador.toString() ;
+         logger.debug("#### in performTest:  what shows us rtiAmbassador.toString(): " +  rtiAmbassadorInfos );
+                 
+         // may be we have to get something with discoverObjectInstance ( with federateHandle ?)
+         // try to askt rtiAmbassodor for  more)
+         FederateHandle  aircraft_FederateHandle = rtiAmbassador.getFederateHandle("Aircraft");         
+         logger.debug("#### in performTest:  rtiAmbassador.getFederateHandle(sutFederateName) gives us. " + aircraft_FederateHandle );
+         logger.debug("#### in performTest:  what we get with aircraft_FederateHandle.getClass();  "+ aircraft_FederateHandle.getClass() );
+         
+         
 
-			// trie what's about munition
-			
-			for (PhysicalEntity p : toBeTestetEntityList) {
-                logger.debug(
-                        "# in performTest subscribing all Elements of platformWorkList now " + p.getHlaClassName()); // Debug
-                p.subscribe();
+         //for (PhysicalEntity p : toBeTestetEntityList) {
+         for (HLAobjectRoot hlaRootEnt : toBeTestetEntityList) {
+             logger.debug("# in performTest subscribing all Elements of platformWorkList now " + hlaRootEnt.getHlaClassName()); // Debug
+             hlaRootEnt.subscribe();
+         }
+         
+         /*
+         // for testing  we have to send all attributes from physical entity
+         phyEntity.addPublish(PhysicalEntity.Attributes.AcousticSignatureIndex);
+         phyEntity.addPublish(PhysicalEntity.Attributes.AlternateEntityType);
+         phyEntity.addPublish(PhysicalEntity.Attributes.ArticulatedParametersArray);
+         phyEntity.addPublish(PhysicalEntity.Attributes.CamouflageType);
+         phyEntity.addPublish(PhysicalEntity.Attributes.DamageState);
+
+         phyEntity.addPublish(PhysicalEntity.Attributes.EngineSmokeOn);
+         phyEntity.addPublish(PhysicalEntity.Attributes.FirePowerDisabled);
+         phyEntity.addPublish(PhysicalEntity.Attributes.FlamesPresent);
+         phyEntity.addPublish(PhysicalEntity.Attributes.ForceIdentifier);
+         phyEntity.addPublish(PhysicalEntity.Attributes.HasAmmunitionSupplyCap);
+
+         phyEntity.addPublish(PhysicalEntity.Attributes.HasFuelSupplyCap);
+         phyEntity.addPublish(PhysicalEntity.Attributes.HasRecoveryCap);
+         phyEntity.addPublish(PhysicalEntity.Attributes.HasRepairCap);
+         phyEntity.addPublish(PhysicalEntity.Attributes.Immobilized);
+         phyEntity.addPublish(PhysicalEntity.Attributes.InfraredSignatureIndex);
+
+         phyEntity.addPublish(PhysicalEntity.Attributes.IsConcealed);
+         phyEntity.addPublish(PhysicalEntity.Attributes.LiveEntityMeasuredSpeed);
+         phyEntity.addPublish(PhysicalEntity.Attributes.Marking);
+         phyEntity.addPublish(PhysicalEntity.Attributes.PowerPlantOn);
+         phyEntity.addPublish(PhysicalEntity.Attributes.PropulsionSystemsData);
+
+         phyEntity.addPublish(PhysicalEntity.Attributes.RadarCrossSectionSignatureIndex);
+         phyEntity.addPublish(PhysicalEntity.Attributes.SmokePlumePresent);
+         phyEntity.addPublish(PhysicalEntity.Attributes.TentDeployed);
+         phyEntity.addPublish(PhysicalEntity.Attributes.TrailingEffectsCode);
+         phyEntity.addPublish(PhysicalEntity.Attributes.VectoringNozzleSystemData);
+
+         phyEntity.register();
+         */
+  
+        /*
+    //  and change some 'simple'  boolean Attributes          // for other Attributes e.g. CamouflageType we may need  a Struct    
+       phyEntity.setEngineSmokeOn(true);            
+       //phyEntity.setFirePowerDisabled(true);            
+       //phyEntity.setFlamesPresent(true);           
+       //phyEntity.setIsConcealed(true);          
+       //phyEntity.setTentDeployed(true);
+       phyEntity.update();
+       */
+        
+        
+        for (int i = 0; i < 5; i++) {  // Testing for 10 Sec
+            logger.debug("# performTest: cycle " +i );
+            
+            // show me what is now in the List  announcedentities 
+            //for (ObjectInstanceHandle _OIH : announcedPhysicalEntitys.keySet() ) {                  // DEBUG
+            for (ObjectInstanceHandle _OIH : announcedEntitys.keySet() ) {                               // DEBUG
+                String  temp_objectInstanceHandleName = rtiAmbassador.getObjectInstanceName(_OIH) ;
+                String element_Classname = announcedEntitys.get(_OIH).getHlaClassName();
+                //logger.info("performTest:  see in announcedEntitys : ObjectInstanceHandleName  and  HLARootEntity " + temp_objectInstanceHandleName + " with " + element_Classname );
+                 logger.info("performTest:  see in announcedEntitys : ObjectInstanceHandle  and  HLARootEntity:     " + _OIH + " with " + element_Classname );
             }
-						
-            for (int i = 0; i < 10; i++) {  // Testing for 10 Sec
-                                               
-                // Test if we got with discoverObjectHandle more than physicalEntities, e.g. Aircraft   TODO  brf  27.06.2023                
-                //logger.info( "### Test if in announcedPhysicalEntitys (builded in discoverObjectHandle) are more than physicalEntities, eg. Aircraft "  );
-                for (ObjectInstanceHandle _OIH : announcedPhysicalEntitys.keySet() ) {                               // DEBUG
-                    String  hlaClassname = announcedPhysicalEntitys.get(_OIH).getHlaClassName();
-                    //logger.info("performTest:  testing announcedPhysicalEntitys:  got from element with ObjectInstanceHandle " +_OIH +" HlaClassname"    + hlaClassname);
-                }
-                // why  we get only Aircraft,  what's about munition ?   -> when in e.g. AircraftApp  a Attribut of physicalEntity is 'added' we get munition in DiscoverObjectHandle
-                
-                
-                
-                // what to Do now    ? look which attributes are sended     brf 29.06.2023
-                
-                
-                // ...
-               Thread.sleep(1000);
-               }
-    
-			
-		} catch (Exception e) {
-			throw new TcInconclusiveIf(e.getMessage());
-		}
+            
+            // there are different  ObjectIntsnceHandleNames   so we try it with the objectInstancehandels of the element directls
+            //for (ObjectInstanceHandle _OIH : announcedEntitys.keySet() ) { 
+            
+            
+            
+            
+            Thread.sleep(1000);
+        }
+        
+        //   TODO  change this to a specifig  Exception 
+        } catch (Exception e) {
+            throw new TcInconclusiveIf("performTest received Exception: ",  e);
+        }
+  	
         logger.info("test {} passed", this.getClass().getName());
 	}
 
@@ -391,7 +494,8 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
 	protected void postambleAction(Logger logger) throws TcInconclusiveIf {
         logger.info("postamble action for test {}", this.getClass().getName());
         try {
-            rtiAmbassador.resignFederationExecution(ResignAction.NO_ACTION);
+            rtiAmbassador.resignFederationExecution(ResignAction.DELETE_OBJECTS);
+            //rtiAmbassador.resignFederationExecution(ResignAction.NO_ACTION);
         } catch (InvalidResignAction | OwnershipAcquisitionPending | FederateOwnsAttributes | FederateNotExecutionMember
                 | NotConnected | CallNotAllowedFromWithinCallback | RTIinternalError e) {
             throw new TcInconclusiveIf(e.getMessage());
