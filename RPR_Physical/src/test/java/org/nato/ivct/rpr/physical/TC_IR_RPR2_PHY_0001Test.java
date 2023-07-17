@@ -19,7 +19,7 @@ public class TC_IR_RPR2_PHY_0001Test {
 
     @Test
     void performTest() {
-        TC_IR_RPR_PHY_0001 tc = new TC_IR_RPR_PHY_0001();
+        TC_IR_RPR2_PHY_0001 tc = new TC_IR_RPR2_PHY_0001();
         tc.setSutFederateName("Flyer1");
         tc.setFederationName("TestFederation");
         tc.setSkipOperatorMsg(true);

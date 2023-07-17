@@ -25,6 +25,8 @@ import javax.naming.NameNotFoundException;
 
 import org.nato.ivct.rpr.FomFiles;
 import org.nato.ivct.rpr.RprBuilderException;
+import org.nato.ivct.rpr.interactions.HLAreportObjectClassPublication;
+import org.nato.ivct.rpr.interactions.HLAreportObjectClassSubscription;
 import org.nato.ivct.rpr.objects.Aircraft;
 import org.nato.ivct.rpr.objects.AmphibiousVehicle;
 import org.nato.ivct.rpr.objects.CulturalFeature;
@@ -144,7 +146,7 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
  * 
  */
 
-public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
+public class TC_IR_RPR2_PHY_0001 extends AbstractTestCaseIf {
     RTIambassador rtiAmbassador = null;
     FederateAmbassador tcAmbassador = null;
     Logger logger = null;
@@ -161,6 +163,8 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
     
     HLAmanager[] toTestHLAmanagerClasses;
     HashMap<ObjectInstanceHandle, HLAmanager> announcedHLAmanagerEntitys = new HashMap<>();
+    private HashMap<ObjectInstanceHandle, Boolean> requestReport = new HashMap<>();
+    private Semaphore federateDiscovered = new Semaphore(0);
         
 
     class TestCaseAmbassador extends NullFederateAmbassador {
@@ -177,10 +181,11 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
             try {
                 // Tests and Debug
                 logger.debug("# discoverObjectInstance: reveived ObjectInstanceHandle:  " + theObjectInstanceH ) ; // Debug
-                logger.debug("# discoverObjectInstance: reveived ObjectInstanceHandle with Name:  "
-                                                                             + rtiAmbassador.getObjectInstanceName(theObjectInstanceH)); // Debug
-                logger.debug("# discoverObjectInstance: reveived ObjectClassHandle with rti-ObjectClassName:  " 
-                                                                             + rtiAmbassador.getObjectClassName(theObjectClassH)); // Debug
+                String receivedObjectInstanceHandleName = rtiAmbassador.getObjectInstanceName(theObjectInstanceH) ;
+                logger.debug("# discoverObjectInstance: reveived ObjectInstanceHandle with Name:  " + receivedObjectInstanceHandleName);  // Debug
+                
+                String receivedClassName =  rtiAmbassador.getObjectClassName(theObjectClassH);
+                logger.debug("# discoverObjectInstance: reveived ObjectClassHandle with rti-ObjectClassName:  "  + receivedClassName);  // Debug
 
                 // Now we have to store this information in some Table 
                 // but we have not only one (physical or other) entity but a lot. so we take a copy our List  toBeTestetEntityList to test if we get the classnames.
@@ -200,7 +205,18 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
                     }
                 }
                 
-            } catch (ObjectInstanceNotKnown | FederateNotExecutionMember | NotConnected | RTIinternalError | InvalidObjectClassHandle e) {
+                // at this point  HLAfederate.discover  could be used, because the published attributes should be reached over the anchor
+                HLAfederate fed = HLAfederate.discover(theObjectInstanceH, theObjectClassH);                
+                if (fed != null) {
+                    //logger.trace("discovered HLAfederate object : {}({})", theObjectInstanceH, receivedClassName);
+                    logger.debug("# discoverObjectInstance:  discovered HLAfederate object : {}({})", theObjectInstanceH, receivedClassName);
+                    requestReport.put(theObjectInstanceH, true);
+                    federateDiscovered.release(1);
+                } 
+                // ok,   here ist something  done,  may be we have a HLAfederate in the hashmap knownObjects ?
+                // but what to do with it ?   use it in  reflectAttributValues    with decode  anchor   ?
+                
+            } catch (ObjectInstanceNotKnown | FederateNotExecutionMember | NotConnected | RTIinternalError | InvalidObjectClassHandle| RprBuilderException e) {
                 logger.error("discoverObjectInstance received Exception", e);
             }    
 		}
@@ -254,46 +270,40 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
 	       // look in     TC_IR_RPR2_0018   brf 07.07.2023
 			    
                 try {
-                    // so do for each  Entity  of all kinds of  known Entities                     
-                    //  discover     is a method which  do useful  work  for the  job here  ????                        
-                    
-                    for (ObjectInstanceHandle _obIHandl   : announcedEntitys.keySet() ) {
-                    logger.debug("# reflectAttributeValues: show all  ObjectInstanceHandle in  announcedEntitys " +  _obIHandl );  // Debug
-                    }                    
-                 
-                    //get the entities ( classnames etc.    from announcedEntitys 
+                    // so do for each Entity of all kinds of known Entities
+                    // get the entities ( classnames etc. from announcedEntitys
                     for (ObjectInstanceHandle _obIHandl : announcedEntitys.keySet()) {
-                        // ObjectClassHandle tempobjectClassHandle =
-                        // announcedPhysicalEntitys.get(_obIHandl).getClassHandle();
-                        // String toTestObjectClassname =
-                        // announcedEntitys.get(_obIHandl).getHlaClassName();
-
-                        // decode is a method prepared in HLAobjectRoot // but what is it doing ? "  unknown attribute ... Decoding skipped"
-                        // logger.debug("# reflectAttributeValues: trying decode with : " +  announcedEntitys.get(_obIHandl) );
-                        // announcedEntitys.get(_obIHandl).decode(attributeHandleVM);
+                        logger.debug("# reflectAttributeValues: show all  ObjectInstanceHandle in  announcedEntitys " + _obIHandl); // Debug
 
                         if (theObjectInstanceH.equals(_obIHandl)) {
-
                             ObjectClassHandle toTestObjectClassHandle = announcedEntitys.get(_obIHandl).getClassHandle();
-
                             for (AttributeHandle a : attributeHandleVM.keySet()) {
                                 String tempAttributname = rtiAmbassador.getAttributeName(toTestObjectClassHandle, a);
                                 logger.debug(" # reflectAttributeValues: get Attributnames " + tempAttributname);
-                                
                                 // case tempAttributname ........................
-                                // Our interest here is to get  Attributes from HLAfederate
-                                
-                                // evtl.  die attributHandleValuemap  irgendwie an die Klasse in  announcedEntitys anbinden
-                                //announcedEntitys.get(_obIHandl).  addAttribute(tempAttributname, attributeHandleVM.get(a.)); 
-                                
-                                
-                                
                             }
                         }
                     }
                     
+                    // Our interest here is to get  Attributes from HLAfederate, but there is nothing 
+                 // decode is a method prepared in HLAobjectRoot // but what is it doing ? "  unknown attribute ... Decoding skipped"
+                    // logger.debug("# reflectAttributeValues: trying decode with : " +  announcedEntitys.get(_obIHandl) );
+                    // announcedEntitys.get(_obIHandl).decode(attributeHandleVM);
+                    
+                    // we try if we get something with the objectInstanceHandle out of HLAfederate
+                    HLAfederate fed = HLAfederate.get(theObjectInstanceH);    
+                    // fed should know about  .....
+                    if (fed!=null ) {
+                    logger.debug(" # reflectAttributeValues: get  HLAfederate fed.get found something   " + fed);
+                    // so there is an entry in  HLAfederate   knownObjects with this  ObjectinstanceHandle
+                    // ///////////    hier weiter   brf  17.07.2023    
+                    }
+                    
+                    
+                    
                 } catch (FederateNotExecutionMember | NameNotFound | NotConnected | RTIinternalError |
-                            AttributeNotDefined | InvalidAttributeHandle | InvalidObjectClassHandle e) {
+                            AttributeNotDefined | InvalidAttributeHandle | InvalidObjectClassHandle| RprBuilderException e) {
+                            //AttributeNotDefined | InvalidAttributeHandle | InvalidObjectClassHandle e) {
                             //AttributeNotDefined | InvalidAttributeHandle | InvalidObjectClassHandle| DecoderException e) {
                 }
                 
@@ -378,21 +388,21 @@ public class TC_IR_RPR_PHY_0001 extends AbstractTestCaseIf {
          tempHLAfederate.addSubscribe(Attributes.HLARTIversion);
          */
           // try to analyse other Test to use the HLAfederate specific  methods   brf  10.07.2023
-         
+         // with addSub we  create a static HLAfederate-Object anchor (?)  
+         // and  add  with addSub to this  the attribut....... (?)
+         // the anchor  can be used in  discoverObjectInstance  whith "discover "
          HLAfederate.addSub(HLAfederate.Attributes.HLAfederateHandle) ;
          HLAfederate.addSub(HLAfederate.Attributes.HLAfederateState) ;
          HLAfederate.addSub(HLAfederate.Attributes.HLAfederateName) ;
          HLAfederate.addSub(HLAfederate.Attributes.HLAfederateType) ;
          HLAfederate.addSub(HLAfederate.Attributes.HLAfederateHost) ;
          HLAfederate.addSub(HLAfederate.Attributes.HLARTIversion) ;
-         
          HLAfederate.sub();
          // Seems if we get now 2 HLAfederate Instances in discoverObjectInstance
-         
-         
-          // do we get now  something over discoverObjectInstance ?   yes, and now  what are the attributes we get ?
-           //toTestHLAmanagerClasses = new HLAmanager[] { new HLAfederate() }; 
-              
+         (new HLAreportObjectClassPublication()).subscribe();
+         (new HLAreportObjectClassSubscription()).subscribe();
+         // and now,  do we get  Attributes ?  not yet
+                  
          
          // how to get informations about the  federation an other federates
          String  hlaVersion = rtiAmbassador.getHLAversion();
