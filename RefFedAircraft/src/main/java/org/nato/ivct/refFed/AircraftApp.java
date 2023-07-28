@@ -18,6 +18,8 @@ import hla.rti1516e.AttributeHandleValueMap;
 import hla.rti1516e.CallbackModel;
 import hla.rti1516e.FederateAmbassador;
 import hla.rti1516e.FederateHandle;
+import hla.rti1516e.LogicalTime;
+import hla.rti1516e.MessageRetractionHandle;
 import hla.rti1516e.NullFederateAmbassador;
 import hla.rti1516e.ObjectClassHandle;
 import hla.rti1516e.ObjectInstanceHandle;
@@ -84,25 +86,7 @@ public class AircraftApp extends NullFederateAmbassador {
 	private RTIambassador rtiAmbassador;
 	private FederateHandle fedHandle;
 
-	
-	/*
-	//       ###################  brf   but we don't need that here 
-	  class sutAmbassador extends NullFederateAmbassador {
-	      @Override
-	        public void discoverObjectInstance(
-	                         ObjectInstanceHandle theObjectInstanceH,
-	                         ObjectClassHandle theObjectClassH,
-	                         String objectName) throws FederateInternalError {
-	            logger.trace("discoverObjectInstance {}",  theObjectInstanceH);	            
-	            logger.info("### discoverObjectInstance without FederateHandle ");   
-	            
-	         // Tests and Debug
-                logger.debug("# discoverObjectInstance: reveived ObjectInstanceHandle:  " + theObjectInstanceH ) ; // Debug
-	            
-	      }
-	  }           */
-
-	
+		
 	public static void main(final String[] args) {
 		AircraftApp aircraft = new AircraftApp(args);
 		logger.info("AircraftApp running");
@@ -175,14 +159,45 @@ public class AircraftApp extends NullFederateAmbassador {
 		}
     }
 	
-//  ###################    do we need this here ?  maybe for the logging-Information  brf 
+//  ###################    do we need this here ?  maybe for the logging-Information  brf 	
+    @Override
+    public void discoverObjectInstance(
+            ObjectInstanceHandle theObject,
+            ObjectClassHandle theObjectClass,
+            String objectName,
+            FederateHandle producingFederate) throws FederateInternalError {
+        logger.trace("discoverObjectInstance {} with producingFederate {}", theObject, producingFederate);
+         logger.info("# discoverObjectInstance with FederateHandle ");  
+        discoverObjectInstance(theObject, theObjectClass, objectName);
+    }
+	
+	@Override
     public void discoverObjectInstance(ObjectInstanceHandle theObjectInstanceH,
                       ObjectClassHandle theObjectClassH,
                       String objectName)   throws FederateInternalError {
         logger.trace("discoverObjectInstance {}", theObjectInstanceH);
         logger.info("### discoverObjectInstance without FederateHandle ");
     }
- 
+    
+    @Override
+    public void reflectAttributeValues(ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes,
+            byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport,
+            LogicalTime theTime, OrderType receivedOrdering, MessageRetractionHandle retractionHandle,
+            SupplementalReflectInfo reflectInfo) throws FederateInternalError {
+        logger.trace("reflectAttributeValues with retractionHandle");
+        reflectAttributeValues(theObject, theAttributes, userSuppliedTag, sentOrdering, theTransport, reflectInfo);
+    }
+    
+    @Override
+    public void reflectAttributeValues(ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes,
+            byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport,
+            LogicalTime theTime, OrderType receivedOrdering, SupplementalReflectInfo reflectInfo)
+            throws FederateInternalError {
+        logger.trace("reflectAttributeValues with reflectInfo");
+        reflectAttributeValues(theObject, theAttributes, userSuppliedTag, sentOrdering, theTransport, reflectInfo);
+    }       
+    
+    @Override
     public void reflectAttributeValues(ObjectInstanceHandle theObjectInstanceH,  AttributeHandleValueMap attributeHandleVM,
                      byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport,
                       SupplementalReflectInfo reflectInfo) throws FederateInternalError {
@@ -196,7 +211,7 @@ public class AircraftApp extends NullFederateAmbassador {
 		try {
 			RtiFactory rtiFactory = RtiFactoryFactory.getRtiFactory();
 			rtiAmbassador = rtiFactory.getRtiAmbassador();
-			FederateAmbassador nullAmbassador = new NullFederateAmbassador();
+			//FederateAmbassador nullAmbassador = new NullFederateAmbassador();
 			//FederateAmbassador sutAmbassador = new NullFederateAmbassador();
 			
 			// That should be the normal normal loading procedure
@@ -209,7 +224,7 @@ public class AircraftApp extends NullFederateAmbassador {
 				.addTmpRPR_Physical()
 				.get();
 
-			rtiAmbassador.connect(nullAmbassador, CallbackModel.HLA_IMMEDIATE);
+			rtiAmbassador.connect(this, CallbackModel.HLA_IMMEDIATE);
 			//  rtiAmbassador.connect(sutAmbassador, CallbackModel.HLA_IMMEDIATE);
 			try {
 				rtiAmbassador.createFederationExecution(this.federationName, fomList);
@@ -237,7 +252,7 @@ public class AircraftApp extends NullFederateAmbassador {
             
             //  the 'simple'  boolean Attributes,  for other Attributes e.g. CamouflageType we may need  a Struct            
             aircraft.setEngineSmokeOn(true);            
-            aircraft.setFirePowerDisabled(true);            
+            aircraft.setFirePowerDisabled(true);       
             aircraft.setFlamesPresent(true);           
             aircraft.setIsConcealed(true);          
             aircraft.setTentDeployed(true);
