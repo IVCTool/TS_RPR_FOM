@@ -172,10 +172,9 @@ public class TC_IR_RPR2_PHY_0001 extends AbstractTestCaseIf {
         }		
 		
 		@Override
-        public void reflectAttributeValues(ObjectInstanceHandle theObjectInstanceH, 
-                AttributeHandleValueMap attributeHandleVM,  byte[] userSuppliedTag,  OrderType sentOrdering, 
-                TransportationTypeHandle theTransport,  SupplementalReflectInfo reflectInfo)
-                 throws FederateInternalError {		
+        public void reflectAttributeValues(ObjectInstanceHandle theObjectInstanceH, AttributeHandleValueMap attributeHandleVM,
+                byte[] userSuppliedTag,  OrderType sentOrdering,  TransportationTypeHandle theTransport,
+                SupplementalReflectInfo reflectInfo)  throws FederateInternalError {		
             // logger.trace("reflectAttributeValues without LogicalTime,  MessageRetractionHandle ");
             logger.debug("### reflectAttributeValues without  LogicalTime,  MessageRetractionHandle  ");
             logger.debug("# reflectAttributeValues: got  ObjectInstanceHandle  \"theObjectInstanceH\" : " + theObjectInstanceH
@@ -271,7 +270,7 @@ public class TC_IR_RPR2_PHY_0001 extends AbstractTestCaseIf {
          aircraft.addPublish(PhysicalEntity.Attributes.VectoringNozzleSystemData);
          aircraft.register();    
  
-        for (int i = 0; i < 5; i++) {  // Testing for 10 Sec
+        for (int i = 0; i < 60; i++) {  // Testing for 10 Sec
             logger.debug("# performTest: cycle " +i );
                        
             // change the attribut values  ocasionally                             
@@ -279,6 +278,24 @@ public class TC_IR_RPR2_PHY_0001 extends AbstractTestCaseIf {
             // the other has to be  set too. 
             aircraft.clear();            
             double rangeForTesting = 0.4;
+            
+            
+            if ( Math.random()  <= rangeForTesting   ) {
+                aircraft.setAcousticSignatureIndex(  (short) 2    ) ; 
+                logger.debug("performTest: random set of attributes setEngineSmokeOn" );
+            }          
+          
+            // TODO  fill this with something usefull ?         //AlternateEntityType                BaseEntity.EntityType    EntityTypeStruct
+            if ( Math.random()  <= rangeForTesting   ) {
+                aircraft.setAlternateEntityType(null); 
+                logger.debug("performTest: random set of attributes setEngineSmokeOn" );
+            }   
+            
+          
+            //ArticulatedParametersArray         Empty                    ArticulatedParameterStructLengthlessArray
+            //CamouflageType                     Uniform Paint Scheme     CamouflageEnum32    
+            //DamageState                        No Damage
+       
             
             if ( Math.random()  <= rangeForTesting   ) {
                 aircraft.setEngineSmokeOn(false);
@@ -292,7 +309,7 @@ public class TC_IR_RPR2_PHY_0001 extends AbstractTestCaseIf {
                 aircraft.setFlamesPresent(false);
                 logger.debug("performTest: random set of attributes set FlamesPresent" );
             }
-            // HasAmmunitionSupplyCap
+            // HasAmmunitionSupplyCap      
             // HasRecoveryCap
             // HasRepairCap
             // Immobilized            

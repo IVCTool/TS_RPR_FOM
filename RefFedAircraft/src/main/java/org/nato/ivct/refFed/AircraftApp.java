@@ -165,21 +165,24 @@ public class AircraftApp extends NullFederateAmbassador {
             ObjectInstanceHandle theObject,
             ObjectClassHandle theObjectClass,
             String objectName,
-            FederateHandle producingFederate) throws FederateInternalError {
+            FederateHandle producingFederate)
+            throws FederateInternalError {
         logger.trace("discoverObjectInstance {} with producingFederate {}", theObject, producingFederate);
          logger.info("# discoverObjectInstance with FederateHandle ");  
         discoverObjectInstance(theObject, theObjectClass, objectName);
     }
 	
 	@Override
-    public void discoverObjectInstance(ObjectInstanceHandle theObjectInstanceH,
-                      ObjectClassHandle theObjectClassH,
-                      String objectName)   throws FederateInternalError {
+    public void discoverObjectInstance(
+            ObjectInstanceHandle theObjectInstanceH,
+            ObjectClassHandle theObjectClassH,
+            String objectName)
+            throws FederateInternalError {
         logger.trace("discoverObjectInstance {}", theObjectInstanceH);
         logger.info("### discoverObjectInstance without FederateHandle ");
     }
     
-    @Override
+     @Override
     public void reflectAttributeValues(ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes,
             byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport,
             LogicalTime theTime, OrderType receivedOrdering, MessageRetractionHandle retractionHandle,
@@ -187,24 +190,22 @@ public class AircraftApp extends NullFederateAmbassador {
         logger.trace("reflectAttributeValues with retractionHandle");
         reflectAttributeValues(theObject, theAttributes, userSuppliedTag, sentOrdering, theTransport, reflectInfo);
     }
-    
     @Override
     public void reflectAttributeValues(ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes,
             byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport,
             LogicalTime theTime, OrderType receivedOrdering, SupplementalReflectInfo reflectInfo)
             throws FederateInternalError {
-        logger.trace("reflectAttributeValues with reflectInfo");
+        logger.trace("reflectAttributeValues without  MessageRetractionHandle");
         reflectAttributeValues(theObject, theAttributes, userSuppliedTag, sentOrdering, theTransport, reflectInfo);
-    }       
-    
+    }
     @Override
-    public void reflectAttributeValues(ObjectInstanceHandle theObjectInstanceH,  AttributeHandleValueMap attributeHandleVM,
-                     byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport,
-                      SupplementalReflectInfo reflectInfo) throws FederateInternalError {
-        
-        // logger.trace("reflectAttributeValues without LogicalTime, MessageRetractionHandle ");
+    public void reflectAttributeValues(ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes,
+            byte[] userSuppliedTag,  OrderType sentOrdering, TransportationTypeHandle theTransport,
+            SupplementalReflectInfo reflectInfo)  throws FederateInternalError {
+        // logger.trace("reflectAttributeValues without LogicalTime, receivedOrdering,  MessageRetractionHandle ");
         logger.debug("### reflectAttributeValues without  LogicalTime,  MessageRetractionHandle  ");
     }
+
     //   end brf
 
 	private void run() {
