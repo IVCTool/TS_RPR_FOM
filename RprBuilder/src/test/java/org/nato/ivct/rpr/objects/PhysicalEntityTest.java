@@ -6,6 +6,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.nato.ivct.rpr.FomFiles;
+import org.nato.ivct.rpr.datatypes.CamouflageEnum32;
 import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
 
 import static org.junit.jupiter.api.Assertions.fail;
@@ -65,6 +66,7 @@ public class PhysicalEntityTest {
             EntityTypeStruct tempStruct= phy1.getAlternateEntityType();
             tempStruct.setCountryCode((short)3);
             phy1.setAlternateEntityType(tempStruct);
+            phy1.setCamouflageType(CamouflageEnum32.DesertCamouflage);
             
             AttributeHandleValueMap pdu = phy1.getAttributeValues();
 
@@ -77,6 +79,7 @@ public class PhysicalEntityTest {
             assertTrue(phy2.getTentDeployed() == true);
             assertTrue(phy2.getAcousticSignatureIndex() == (short) 3);             
             assertTrue(phy2.getAlternateEntityType().getCountryCode() == (short) 3);
+            assertTrue(phy2.getCamouflageType() == CamouflageEnum32.DesertCamouflage);
                      
             log.info("End of TestEncodingDecode after assertTrue Statements");                        
         } catch (Exception e) {

@@ -17,8 +17,11 @@
  package org.nato.ivct.rpr.objects;
 
 import org.nato.ivct.rpr.RprBuilderException;
+import org.nato.ivct.rpr.datatypes.CamouflageEnum32;
 import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
 
+import hla.rti1516e.encoding.DataElement;
+import hla.rti1516e.encoding.DecoderException;
 import hla.rti1516e.encoding.EncoderException;
 import hla.rti1516e.encoding.HLAboolean;
 import hla.rti1516e.encoding.HLAinteger16BE;
@@ -76,6 +79,7 @@ public class PhysicalEntity extends BaseEntity {
         addAttribute(Attributes.FlamesPresent.name(), encoderFactory.createHLAboolean());
         addAttribute(Attributes.IsConcealed.name(), encoderFactory.createHLAboolean());
         addAttribute(Attributes.TentDeployed.name(), encoderFactory.createHLAboolean());
+        addAttribute("CamouflageType", CamouflageEnum32.GenericCamouflage.getDataElement());
     }
 
     public void addSubscribe(Attributes attribute) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError {
@@ -87,6 +91,15 @@ public class PhysicalEntity extends BaseEntity {
    
     
     // attribute setter and getter
+
+    public void setCamouflageType (CamouflageEnum32 value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        setAttributeValue("CamouflageType", value.getDataElement());
+    }
+    public CamouflageEnum32 getCamouflageType() throws EncoderException, DecoderException {
+    	DataElement de = getAttribute("CamouflageType");
+        return CamouflageEnum32.decode(de.toByteArray());
+
+    }
     
     public void setAcousticSignatureIndex(short value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
     	HLAinteger16BE holder = (HLAinteger16BE) getAttribute(Attributes.AcousticSignatureIndex.name());
