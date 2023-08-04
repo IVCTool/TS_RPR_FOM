@@ -61,6 +61,7 @@ public class PhysicalEntityTest {
             EntityTypeStruct tempStruct= phy1.getAlternateEntityType();
             tempStruct.setCountryCode((short)3);
             phy1.setAlternateEntityType(tempStruct);
+            phy1.setCamouflageType(CamouflageEnum32.DesertCamouflage);
             
             //ArticulatedParametersArray,         // ArticulatedParameterStructLengthlessArray
             //CamouflageType,                         // CamouflageEnum32            
@@ -94,6 +95,7 @@ public class PhysicalEntityTest {
             phy2.decode(pdu);
             assertTrue(phy2.getAcousticSignatureIndex() == (short) 3);             
             assertTrue(phy2.getAlternateEntityType().getCountryCode() == (short) 3);
+<<<<<<< HEAD
             //ArticulatedParametersArray,         // ArticulatedParameterStructLengthlessArray
             //CamouflageType,                         // CamouflageEnum32             
             //DamageState,                              // <dataType>DamageStatusEnum32</dataType>            
@@ -118,6 +120,10 @@ public class PhysicalEntityTest {
             //TrailingEffectsCode,                      //<dataType>TrailingEffectsCodeEnum32</dataType>
             //VectoringNozzleSystemData         //<dataType>VectoringNozzleSystemDataStructLengthlessArray</dataType>
             
+=======
+            assertTrue(phy2.getCamouflageType() == CamouflageEnum32.DesertCamouflage);
+                     
+>>>>>>> main
             log.info("End of TestEncodingDecode after assertTrue Statements");                        
         } catch (Exception e) {
             fail(e.getMessage());
