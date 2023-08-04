@@ -6,6 +6,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.nato.ivct.rpr.FomFiles;
+import org.nato.ivct.rpr.datatypes.CamouflageEnum32;
 import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
 
 import static org.junit.jupiter.api.Assertions.fail;
@@ -55,29 +56,68 @@ public class PhysicalEntityTest {
         HLAobjectRoot.initialize(rtiAmbassador);
         try {
             PhysicalEntity phy1 = new PhysicalEntity();
-            phy1.setEngineSmokeOn(true);
-            phy1.setFirePowerDisabled(true);
-            phy1.setFlamesPresent(true);
-            phy1.setIsConcealed(true);
-            phy1.setTentDeployed(true);
             phy1.setAcousticSignatureIndex((short) 3);
             // Struct types can not be set in that simple way because the struct doesn't know about the attribute changing
             EntityTypeStruct tempStruct= phy1.getAlternateEntityType();
             tempStruct.setCountryCode((short)3);
             phy1.setAlternateEntityType(tempStruct);
             
+            //ArticulatedParametersArray,         // ArticulatedParameterStructLengthlessArray
+            //CamouflageType,                         // CamouflageEnum32            
+            //DamageState,                              // <dataType>DamageStatusEnum32</dataType>        
+            
+            phy1.setEngineSmokeOn(true);
+            phy1.setFirePowerDisabled(true);
+            phy1.setFlamesPresent(true);            
+            //ForceIdentifier,                             //<dataType>ForceIdentifierEnum8</dataType>         
+            phy1.setHasAmmunitionSupplyCap(true);
+            phy1.setHasFuelSupplyCap(true);
+            phy1.setHasRecoveryCap(true);
+            phy1.setHasRepairCap(true); 
+            phy1.setImmobilized(true);            
+            phy1.setInfraredSignatureIndex((short)2);      
+            phy1.setIsConcealed(true);            
+            //LiveEntityMeasuredSpeed,           //<dataType>VelocityDecimeterPerSecondInteger16</dataType>
+            //Marking,                                    //  <dataType>MarkingStruct</dataType>       
+            phy1.setPowerPlantOn(true);            
+            //PropulsionSystemsData,                // <dataType>PropulsionSystemDataStructLengthlessArray</dataType>  
+            phy1.setRadarCrossSectionSignatureIndex((short) 0);  
+            phy1.setSmokePlumePresent(true);            
+            phy1.setTentDeployed(true);            
+            //TrailingEffectsCode,                      //<dataType>TrailingEffectsCodeEnum32</dataType>
+            //VectoringNozzleSystemData         //<dataType>VectoringNozzleSystemDataStructLengthlessArray</dataType>
+            
             AttributeHandleValueMap pdu = phy1.getAttributeValues();
+            
 
             PhysicalEntity phy2 = new PhysicalEntity();
             phy2.decode(pdu);
-            assertTrue(phy2.getEngineSmokeOn() == true);
-            assertTrue(phy2.getFirePowerDisabled() == true);
-            assertTrue(phy2.getFlamesPresent() == true);
-            assertTrue(phy2.getIsConcealed() == true);
-            assertTrue(phy2.getTentDeployed() == true);
             assertTrue(phy2.getAcousticSignatureIndex() == (short) 3);             
             assertTrue(phy2.getAlternateEntityType().getCountryCode() == (short) 3);
-                     
+            //ArticulatedParametersArray,         // ArticulatedParameterStructLengthlessArray
+            //CamouflageType,                         // CamouflageEnum32             
+            //DamageState,                              // <dataType>DamageStatusEnum32</dataType>            
+            assertTrue(phy2.getEngineSmokeOn() == true);
+            assertTrue(phy2.getFirePowerDisabled() == true);
+            assertTrue(phy2.getFlamesPresent() == true);            
+            //ForceIdentifier,                             //<dataType>ForceIdentifierEnum8</dataType>          
+            assertTrue(phy2.getHasAmmunitionSupplyCap()==true);      
+            assertTrue(phy2.getHasFuelSupplyCap()==true);
+            assertTrue(phy2.getHasRecoveryCap()==true);
+            assertTrue(phy2.getHasRepairCap()==true);
+            assertTrue(phy2.getImmobilized()==true);
+            assertTrue(phy2.getInfraredSignatureIndex()==2) ;            
+            assertTrue(phy2.getIsConcealed() == true);            
+            //LiveEntityMeasuredSpeed,           //<dataType>VelocityDecimeterPerSecondInteger16</dataType>
+            //Marking,                                    //  <dataType>MarkingStruct</dataType>          
+            assertTrue(phy2.getPowerPlantOn() == true);            
+            //PropulsionSystemsData,                // <dataType>PropulsionSystemDataStructLengthlessArray</dataType>            
+            assertTrue(phy2.getRadarCrossSectionSignatureIndex()==0);   //   <dataType>Integer16</dataType>           
+            assertTrue(phy2.getSmokePlumePresent() == true);            
+            assertTrue(phy2.getTentDeployed() == true);            
+            //TrailingEffectsCode,                      //<dataType>TrailingEffectsCodeEnum32</dataType>
+            //VectoringNozzleSystemData         //<dataType>VectoringNozzleSystemDataStructLengthlessArray</dataType>
+            
             log.info("End of TestEncodingDecode after assertTrue Statements");                        
         } catch (Exception e) {
             fail(e.getMessage());

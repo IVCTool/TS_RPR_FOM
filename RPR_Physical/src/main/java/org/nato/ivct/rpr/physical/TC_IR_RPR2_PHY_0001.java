@@ -268,30 +268,29 @@ public class TC_IR_RPR2_PHY_0001 extends AbstractTestCaseIf {
          aircraft.addPublish(PhysicalEntity.Attributes.TentDeployed);
          aircraft.addPublish(PhysicalEntity.Attributes.TrailingEffectsCode);
          aircraft.addPublish(PhysicalEntity.Attributes.VectoringNozzleSystemData);
-         aircraft.register();    
+         aircraft.register();
  
+         double rangeForTesting = 0.4;
+
         for (int i = 0; i < 60; i++) {  // Testing for 10 Sec
             logger.debug("# performTest: cycle " +i );
                        
             // change the attribut values  ocasionally                             
             // TODO  in the moment we  update only the simple boolean attributes
             // the other has to be  set too. 
-            aircraft.clear();            
-            double rangeForTesting = 0.4;
-            
+            aircraft.clear();
             
             if ( Math.random()  <= rangeForTesting   ) {
                 aircraft.setAcousticSignatureIndex(  (short) 2    ) ; 
-                logger.debug("performTest: random set of attributes setEngineSmokeOn" );
+                logger.debug("performTest: random set of attributes setAcousticSignatureIndex" );
             }          
           
             // TODO  fill this with something usefull ?         //AlternateEntityType                BaseEntity.EntityType    EntityTypeStruct
             if ( Math.random()  <= rangeForTesting   ) {
                 aircraft.setAlternateEntityType(null); 
-                logger.debug("performTest: random set of attributes setEngineSmokeOn" );
+                logger.debug("performTest: random set of attributes setAlternateEntityType" );
             }   
             
-          
             //ArticulatedParametersArray         Empty                    ArticulatedParameterStructLengthlessArray
             //CamouflageType                     Uniform Paint Scheme     CamouflageEnum32    
             //DamageState                        No Damage
@@ -330,8 +329,11 @@ public class TC_IR_RPR2_PHY_0001 extends AbstractTestCaseIf {
             
           logger.debug("");
             
-            Thread.sleep(2000);
+            Thread.sleep(2000);         // maybe set to 10 ms
         }
+        
+        // log the  settings and  show the statistics of the updated values at least
+        
         
         //   TODO  change this to a specifig  Exception 
         } catch (Exception e) {

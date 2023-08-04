@@ -159,7 +159,6 @@ public class AircraftApp extends NullFederateAmbassador {
 		}
     }
 	
-//  ###################    do we need this here ?  maybe for the logging-Information  brf 	
     @Override
     public void discoverObjectInstance(
             ObjectInstanceHandle theObject,
@@ -198,6 +197,8 @@ public class AircraftApp extends NullFederateAmbassador {
         logger.trace("reflectAttributeValues without  MessageRetractionHandle");
         reflectAttributeValues(theObject, theAttributes, userSuppliedTag, sentOrdering, theTransport, reflectInfo);
     }
+    
+    // TODO  give the names of received Attributes
     @Override
     public void reflectAttributeValues(ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes,
             byte[] userSuppliedTag,  OrderType sentOrdering, TransportationTypeHandle theTransport,
@@ -206,7 +207,6 @@ public class AircraftApp extends NullFederateAmbassador {
         logger.debug("### reflectAttributeValues without  LogicalTime,  MessageRetractionHandle  ");
     }
 
-    //   end brf
 
 	private void run() {
 		try {
