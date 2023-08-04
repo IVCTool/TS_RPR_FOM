@@ -60,11 +60,12 @@ public class PhysicalEntityTest {
             // Struct types can not be set in that simple way because the struct doesn't know about the attribute changing
             EntityTypeStruct tempStruct= phy1.getAlternateEntityType();
             tempStruct.setCountryCode((short)3);
-            phy1.setAlternateEntityType(tempStruct);
-            phy1.setCamouflageType(CamouflageEnum32.DesertCamouflage);
-            
+            phy1.setAlternateEntityType(tempStruct);            
+           
             //ArticulatedParametersArray,         // ArticulatedParameterStructLengthlessArray
-            //CamouflageType,                         // CamouflageEnum32            
+            //CamouflageType,                         // CamouflageEnum32    
+            phy1.setCamouflageType(CamouflageEnum32.DesertCamouflage);       
+            
             //DamageState,                              // <dataType>DamageStatusEnum32</dataType>        
             
             phy1.setEngineSmokeOn(true);
@@ -95,9 +96,11 @@ public class PhysicalEntityTest {
             phy2.decode(pdu);
             assertTrue(phy2.getAcousticSignatureIndex() == (short) 3);             
             assertTrue(phy2.getAlternateEntityType().getCountryCode() == (short) 3);
-<<<<<<< HEAD
+
             //ArticulatedParametersArray,         // ArticulatedParameterStructLengthlessArray
-            //CamouflageType,                         // CamouflageEnum32             
+            //CamouflageType,                         // CamouflageEnum32
+            assertTrue(phy2.getCamouflageType() == CamouflageEnum32.DesertCamouflage);
+            
             //DamageState,                              // <dataType>DamageStatusEnum32</dataType>            
             assertTrue(phy2.getEngineSmokeOn() == true);
             assertTrue(phy2.getFirePowerDisabled() == true);
@@ -120,10 +123,6 @@ public class PhysicalEntityTest {
             //TrailingEffectsCode,                      //<dataType>TrailingEffectsCodeEnum32</dataType>
             //VectoringNozzleSystemData         //<dataType>VectoringNozzleSystemDataStructLengthlessArray</dataType>
             
-=======
-            assertTrue(phy2.getCamouflageType() == CamouflageEnum32.DesertCamouflage);
-                     
->>>>>>> main
             log.info("End of TestEncodingDecode after assertTrue Statements");                        
         } catch (Exception e) {
             fail(e.getMessage());
