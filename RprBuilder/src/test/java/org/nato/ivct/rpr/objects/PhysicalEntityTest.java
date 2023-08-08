@@ -7,7 +7,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.nato.ivct.rpr.FomFiles;
 import org.nato.ivct.rpr.datatypes.CamouflageEnum32;
+import org.nato.ivct.rpr.datatypes.DamageStatusEnum32;
 import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
+import org.nato.ivct.rpr.datatypes.TrailingEffectsCodeEnum32;
 
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -60,18 +62,14 @@ public class PhysicalEntityTest {
             // Struct types can not be set in that simple way because the struct doesn't know about the attribute changing
             EntityTypeStruct tempStruct= phy1.getAlternateEntityType();
             tempStruct.setCountryCode((short)3);
-            phy1.setAlternateEntityType(tempStruct);            
-           
+            phy1.setAlternateEntityType(tempStruct);      
             //ArticulatedParametersArray,         // ArticulatedParameterStructLengthlessArray
-            //CamouflageType,                         // CamouflageEnum32    
-            phy1.setCamouflageType(CamouflageEnum32.DesertCamouflage);       
-            
-            //DamageState,                              // <dataType>DamageStatusEnum32</dataType>        
-            
+            phy1.setCamouflageType(CamouflageEnum32.DesertCamouflage);    // CamouflageEnum32    
+            phy1.setDamageState(DamageStatusEnum32.ModerateDamage);     //DamageStatusEnum32            
             phy1.setEngineSmokeOn(true);
             phy1.setFirePowerDisabled(true);
             phy1.setFlamesPresent(true);            
-            //ForceIdentifier,                             //<dataType>ForceIdentifierEnum8</dataType>         
+            //ForceIdentifier,                             //<dataType>ForceIdentifierEnum8</dataType>  // maybe this next brf       
             phy1.setHasAmmunitionSupplyCap(true);
             phy1.setHasFuelSupplyCap(true);
             phy1.setHasRecoveryCap(true);
@@ -85,8 +83,10 @@ public class PhysicalEntityTest {
             //PropulsionSystemsData,                // <dataType>PropulsionSystemDataStructLengthlessArray</dataType>  
             phy1.setRadarCrossSectionSignatureIndex((short) 0);  
             phy1.setSmokePlumePresent(true);            
-            phy1.setTentDeployed(true);            
-            //TrailingEffectsCode,                      //<dataType>TrailingEffectsCodeEnum32</dataType>
+            phy1.setTentDeployed(true);        
+            phy1.setTrailingEffectsCode(TrailingEffectsCodeEnum32.SmallTrail);   // TrailingEffectsCodeEnum32
+            
+            
             //VectoringNozzleSystemData         //<dataType>VectoringNozzleSystemDataStructLengthlessArray</dataType>
             
             AttributeHandleValueMap pdu = phy1.getAttributeValues();
@@ -98,10 +98,8 @@ public class PhysicalEntityTest {
             assertTrue(phy2.getAlternateEntityType().getCountryCode() == (short) 3);
 
             //ArticulatedParametersArray,         // ArticulatedParameterStructLengthlessArray
-            //CamouflageType,                         // CamouflageEnum32
             assertTrue(phy2.getCamouflageType() == CamouflageEnum32.DesertCamouflage);
-            
-            //DamageState,                              // <dataType>DamageStatusEnum32</dataType>            
+            assertTrue(phy2.getDamageState() == DamageStatusEnum32.ModerateDamage);                   
             assertTrue(phy2.getEngineSmokeOn() == true);
             assertTrue(phy2.getFirePowerDisabled() == true);
             assertTrue(phy2.getFlamesPresent() == true);            
@@ -119,8 +117,9 @@ public class PhysicalEntityTest {
             //PropulsionSystemsData,                // <dataType>PropulsionSystemDataStructLengthlessArray</dataType>            
             assertTrue(phy2.getRadarCrossSectionSignatureIndex()==0);   //   <dataType>Integer16</dataType>           
             assertTrue(phy2.getSmokePlumePresent() == true);            
-            assertTrue(phy2.getTentDeployed() == true);            
-            //TrailingEffectsCode,                      //<dataType>TrailingEffectsCodeEnum32</dataType>
+            assertTrue(phy2.getTentDeployed() == true);                   
+            assertTrue(phy2.getTrailingEffectsCode() == TrailingEffectsCodeEnum32.SmallTrail ) ;   //<dataType>TrailingEffectsCodeEnum32</dataType> 
+            
             //VectoringNozzleSystemData         //<dataType>VectoringNozzleSystemDataStructLengthlessArray</dataType>
             
             log.info("End of TestEncodingDecode after assertTrue Statements");                        

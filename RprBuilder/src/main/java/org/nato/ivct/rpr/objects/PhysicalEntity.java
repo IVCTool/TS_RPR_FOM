@@ -21,6 +21,7 @@ import org.nato.ivct.rpr.RprBuilderException;
 import org.nato.ivct.rpr.datatypes.CamouflageEnum32;
 import org.nato.ivct.rpr.datatypes.DamageStatusEnum32;
 import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
+import org.nato.ivct.rpr.datatypes.TrailingEffectsCodeEnum32;
 import org.nato.ivct.rpr.objects.BaseEntity.Attributes;
 import hla.rti1516e.encoding.DataElement;
 import hla.rti1516e.encoding.DecoderException;
@@ -77,7 +78,10 @@ public class PhysicalEntity extends BaseEntity {
 
         //ArticulatedParametersArray,         // ArticulatedParameterStructLengthlessArray        
         addAttribute(Attributes.CamouflageType.name(), CamouflageEnum32.GenericCamouflage.getDataElement());
-        addAttribute(Attributes.DamageState.name(), encoderFactory.createHLAboolean());
+        
+        //addAttribute(Attributes.DamageState.name(), encoderFactory.createHLAboolean());        // TODO  adapt from CamouflageEnum
+        addAttribute(Attributes.DamageState.name(), DamageStatusEnum32.NoDamage.getDataElement() );  // New 
+        
         addAttribute(Attributes.EngineSmokeOn.name(), encoderFactory.createHLAboolean());
         addAttribute(Attributes.FirePowerDisabled.name(), encoderFactory.createHLAboolean());
 
@@ -96,8 +100,11 @@ public class PhysicalEntity extends BaseEntity {
         //PropulsionSystemsData,                // <dataType>PropulsionSystemDataStructLengthlessArray</dataType>               
         addAttribute(Attributes.RadarCrossSectionSignatureIndex.name(), encoderFactory.createHLAinteger16BE() );  // ??      
         addAttribute(Attributes.SmokePlumePresent.name(), encoderFactory.createHLAboolean() );        
-        addAttribute(Attributes.TentDeployed.name(), encoderFactory.createHLAboolean());        
-        //TrailingEffectsCode,                      //<dataType>TrailingEffectsCodeEnum32</dataType>
+        addAttribute(Attributes.TentDeployed.name(), encoderFactory.createHLAboolean()); 
+        
+        //TrailingEffectsCode,                      //<dataType>TrailingEffectsCodeEnum32</dataType>  // TODO build a TrailingEffectsCodeEnum32.java and....
+        addAttribute(Attributes.TrailingEffectsCode.name(), TrailingEffectsCodeEnum32.NoTrail.getDataElement()  );
+        
         //VectoringNozzleSystemData         //<dataType>VectoringNozzleSystemDataStructLengthlessArray</dataType>
 
         addAttribute(Attributes.FlamesPresent.name(), encoderFactory.createHLAboolean());
@@ -144,9 +151,16 @@ public class PhysicalEntity extends BaseEntity {
         DataElement de = getAttribute("CamouflageType");
         return CamouflageEnum32.decode(de.toByteArray());
     }
-       
-    //DamageState,                              // <dataType>DamageStatusEnum32</dataType>  
-  
+
+    //DamageState,                              // DamageStatusEnum32 
+    public void setDamageState (DamageStatusEnum32 element  )  throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException   {
+        setAttributeValue("DamageState",  element.getDataElement()  );   
+    }
+    public DamageStatusEnum32 getDamageState() throws EncoderException, DecoderException  {
+        DataElement de = getAttribute("DamageState");
+        return DamageStatusEnum32.decode(de.toByteArray());
+    }
+    
     public void setEngineSmokeOn(boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean holder = (HLAboolean) getAttribute(Attributes.EngineSmokeOn.name());
         holder.setValue(value);
@@ -297,6 +311,16 @@ public class PhysicalEntity extends BaseEntity {
     }  
     
     //TrailingEffectsCode,                      //<dataType>TrailingEffectsCodeEnum32</dataType>
+    public void setTrailingEffectsCode (TrailingEffectsCodeEnum32 element)  throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException   {
+        setAttributeValue("TrailingEffectsCode",  element.getDataElement()  );   
+    }
+    public TrailingEffectsCodeEnum32 getTrailingEffectsCode() throws EncoderException, DecoderException  {
+        DataElement de = getAttribute("TrailingEffectsCode");
+        return TrailingEffectsCodeEnum32.decode(de.toByteArray());
+    }
+    
+    
+    
     //VectoringNozzleSystemData         //<dataType>VectoringNozzleSystemDataStructLengthlessArray</dataType>
     
 }
