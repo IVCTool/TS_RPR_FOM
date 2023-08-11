@@ -22,6 +22,7 @@ import org.nato.ivct.rpr.datatypes.CamouflageEnum32;
 import org.nato.ivct.rpr.datatypes.DamageStatusEnum32;
 import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
 import org.nato.ivct.rpr.datatypes.TrailingEffectsCodeEnum32;
+import org.nato.ivct.rpr.datatypes.ForceIdentifierEnum8;
 import org.nato.ivct.rpr.objects.BaseEntity.Attributes;
 import hla.rti1516e.encoding.DataElement;
 import hla.rti1516e.encoding.DecoderException;
@@ -77,36 +78,28 @@ public class PhysicalEntity extends BaseEntity {
         }
 
         //ArticulatedParametersArray,         // ArticulatedParameterStructLengthlessArray        
-        addAttribute(Attributes.CamouflageType.name(), CamouflageEnum32.GenericCamouflage.getDataElement());
-        
-        //addAttribute(Attributes.DamageState.name(), encoderFactory.createHLAboolean());        // TODO  adapt from CamouflageEnum
-        addAttribute(Attributes.DamageState.name(), DamageStatusEnum32.NoDamage.getDataElement() );  // New 
-        
+        addAttribute(Attributes.CamouflageType.name(), CamouflageEnum32.GenericCamouflage.getDataElement());      
+        addAttribute(Attributes.DamageState.name(), DamageStatusEnum32.NoDamage.getDataElement() );  // New        
         addAttribute(Attributes.EngineSmokeOn.name(), encoderFactory.createHLAboolean());
         addAttribute(Attributes.FirePowerDisabled.name(), encoderFactory.createHLAboolean());
-
-        addAttribute(Attributes.FlamesPresent.name(), encoderFactory.createHLAboolean());        
-        //ForceIdentifier,                             //<dataType>ForceIdentifierEnum8</dataType>        
+        addAttribute(Attributes.FlamesPresent.name(), encoderFactory.createHLAboolean());
+        addAttribute(Attributes.ForceIdentifier.name(), ForceIdentifierEnum8.Friendly.getDataElement()   );   // New   ForceIdentifierEnum8        
         addAttribute(Attributes.HasAmmunitionSupplyCap.name(), encoderFactory.createHLAboolean() );        
         addAttribute(Attributes.HasFuelSupplyCap.name(), encoderFactory.createHLAboolean() );      
         addAttribute(Attributes.HasRecoveryCap.name(), encoderFactory.createHLAboolean() );    
         addAttribute(Attributes.HasRepairCap.name(), encoderFactory.createHLAboolean() );               
-        addAttribute(Attributes.Immobilized.name(), encoderFactory.createHLAboolean() );     
-        addAttribute(Attributes.InfraredSignatureIndex.name(), encoderFactory.createHLAinteger16BE() );  // ??         
+        addAttribute(Attributes.Immobilized.name(), encoderFactory.createHLAboolean() );         
+        addAttribute(Attributes.InfraredSignatureIndex.name(), encoderFactory.createHLAinteger16BE() );  // ??      
         addAttribute(Attributes.IsConcealed.name(), encoderFactory.createHLAboolean());        
         //LiveEntityMeasuredSpeed,           //<dataType>VelocityDecimeterPerSecondInteger16</dataType>    
          //Marking,                                    //  <dataType>MarkingStruct</dataType>        
         addAttribute(Attributes.PowerPlantOn.name(), encoderFactory.createHLAboolean() );        
-        //PropulsionSystemsData,                // <dataType>PropulsionSystemDataStructLengthlessArray</dataType>               
-        addAttribute(Attributes.RadarCrossSectionSignatureIndex.name(), encoderFactory.createHLAinteger16BE() );  // ??      
+        //PropulsionSystemsData,                // <dataType>PropulsionSystemDataStructLengthlessArray</dataType>        
+        addAttribute(Attributes.RadarCrossSectionSignatureIndex.name(), encoderFactory.createHLAinteger16BE() );  // ??  
         addAttribute(Attributes.SmokePlumePresent.name(), encoderFactory.createHLAboolean() );        
-        addAttribute(Attributes.TentDeployed.name(), encoderFactory.createHLAboolean()); 
-        
-        //TrailingEffectsCode,                      //<dataType>TrailingEffectsCodeEnum32</dataType>  // TODO build a TrailingEffectsCodeEnum32.java and....
-        addAttribute(Attributes.TrailingEffectsCode.name(), TrailingEffectsCodeEnum32.NoTrail.getDataElement()  );
-        
+        addAttribute(Attributes.TentDeployed.name(), encoderFactory.createHLAboolean());         
+        addAttribute(Attributes.TrailingEffectsCode.name(), TrailingEffectsCodeEnum32.NoTrail.getDataElement()  );   // 
         //VectoringNozzleSystemData         //<dataType>VectoringNozzleSystemDataStructLengthlessArray</dataType>
-
         addAttribute(Attributes.FlamesPresent.name(), encoderFactory.createHLAboolean());
         addAttribute(Attributes.IsConcealed.name(), encoderFactory.createHLAboolean());
         addAttribute(Attributes.TentDeployed.name(), encoderFactory.createHLAboolean());     
@@ -122,7 +115,6 @@ public class PhysicalEntity extends BaseEntity {
     
     // attribute setter and getter
 
-    //AcousticSignatureIndex,               // Integer16   HLAinteger16BE  ???
     public void setAcousticSignatureIndex(short value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
     	HLAinteger16BE holder = (HLAinteger16BE) getAttribute(Attributes.AcousticSignatureIndex.name());
         holder.setValue(value);
@@ -143,7 +135,6 @@ public class PhysicalEntity extends BaseEntity {
     
     //ArticulatedParametersArray,         // ArticulatedParameterStructLengthlessArray
     
-    //CamouflageType,                         // CamouflageEnum32
     public void setCamouflageType (CamouflageEnum32 value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         setAttributeValue("CamouflageType", value.getDataElement());
     }
@@ -152,7 +143,6 @@ public class PhysicalEntity extends BaseEntity {
         return CamouflageEnum32.decode(de.toByteArray());
     }
 
-    //DamageState,                              // DamageStatusEnum32 
     public void setDamageState (DamageStatusEnum32 element  )  throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException   {
         setAttributeValue("DamageState",  element.getDataElement()  );   
     }
@@ -165,7 +155,7 @@ public class PhysicalEntity extends BaseEntity {
         HLAboolean holder = (HLAboolean) getAttribute(Attributes.EngineSmokeOn.name());
         holder.setValue(value);
         setAttributeValue(Attributes.EngineSmokeOn.name(), holder);
-    }
+    }    
     public boolean  getEngineSmokeOn() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean attribute = (HLAboolean) getAttribute(Attributes.EngineSmokeOn.name());
         return attribute.getValue();
@@ -191,7 +181,13 @@ public class PhysicalEntity extends BaseEntity {
         return attribute.getValue();
     }
     
-    //ForceIdentifier,                             //<dataType>ForceIdentifierEnum8</dataType>
+    public void setForceIdentifier (ForceIdentifierEnum8  element  )  throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException   {
+        setAttributeValue("ForceIdentifier",  element.getDataElement()  );   
+    }    
+    public ForceIdentifierEnum8 getForceIdentifier() throws EncoderException, DecoderException  {
+        DataElement de = getAttribute("ForceIdentifier");
+        return ForceIdentifierEnum8.decode(de.toByteArray());
+    }
     
     public void setHasAmmunitionSupplyCap(boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAboolean holder = (HLAboolean) getAttribute(Attributes.HasAmmunitionSupplyCap.name());
@@ -242,8 +238,7 @@ public class PhysicalEntity extends BaseEntity {
         HLAboolean attribute = (HLAboolean) getAttribute(Attributes.Immobilized.name());
         return attribute.getValue();
     }
-    
-    //InfraredSignatureIndex,                //  <dataType>Integer16</dataType>     ???
+
     public void setInfraredSignatureIndex(short value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAinteger16BE holder = (HLAinteger16BE) getAttribute(Attributes.InfraredSignatureIndex.name());
         holder.setValue(value);
@@ -279,7 +274,6 @@ public class PhysicalEntity extends BaseEntity {
     
     //PropulsionSystemsData,                // <dataType>PropulsionSystemDataStructLengthlessArray</dataType>
     
-    //RadarCrossSectionSignatureIndex, //  <dataType>Integer16</dataType>   ????
     public void setRadarCrossSectionSignatureIndex(short value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAinteger16BE holder = (HLAinteger16BE) getAttribute(Attributes.RadarCrossSectionSignatureIndex.name());
         holder.setValue(value);
@@ -309,8 +303,7 @@ public class PhysicalEntity extends BaseEntity {
         HLAboolean attribute = (HLAboolean) getAttribute(Attributes.TentDeployed.name());
         return attribute.getValue();
     }  
-    
-    //TrailingEffectsCode,                      //<dataType>TrailingEffectsCodeEnum32</dataType>
+
     public void setTrailingEffectsCode (TrailingEffectsCodeEnum32 element)  throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException   {
         setAttributeValue("TrailingEffectsCode",  element.getDataElement()  );   
     }
@@ -318,9 +311,7 @@ public class PhysicalEntity extends BaseEntity {
         DataElement de = getAttribute("TrailingEffectsCode");
         return TrailingEffectsCodeEnum32.decode(de.toByteArray());
     }
-    
-    
-    
+     
     //VectoringNozzleSystemData         //<dataType>VectoringNozzleSystemDataStructLengthlessArray</dataType>
     
 }

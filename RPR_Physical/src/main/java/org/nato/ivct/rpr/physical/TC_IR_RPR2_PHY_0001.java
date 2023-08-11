@@ -18,6 +18,11 @@ package org.nato.ivct.rpr.physical;
 import java.net.URL;
 
 import org.nato.ivct.rpr.FomFiles;
+import org.nato.ivct.rpr.datatypes.CamouflageEnum32;
+import org.nato.ivct.rpr.datatypes.DamageStatusEnum32;
+import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
+import org.nato.ivct.rpr.datatypes.ForceIdentifierEnum8;
+import org.nato.ivct.rpr.datatypes.TrailingEffectsCodeEnum32;
 import org.nato.ivct.rpr.objects.Aircraft;
 import org.nato.ivct.rpr.objects.HLAobjectRoot;
 import org.nato.ivct.rpr.objects.PhysicalEntity;
@@ -230,10 +235,10 @@ public class TC_IR_RPR2_PHY_0001 extends AbstractTestCaseIf {
          // only to test if we get Informations obout Objects and Attributes
          phyEntity = new PhysicalEntity();
          phyEntity.addSubscribe(PhysicalEntity.Attributes.EngineSmokeOn);      
-         phyEntity.addSubscribe(PhysicalEntity.Attributes.FirePowerDisabled);         
-         phyEntity.addSubscribe(PhysicalEntity.Attributes.FlamesPresent);
-         phyEntity.addSubscribe(PhysicalEntity.Attributes.IsConcealed);
-         phyEntity.addSubscribe(PhysicalEntity.Attributes.TentDeployed);         
+         //phyEntity.addSubscribe(PhysicalEntity.Attributes.FirePowerDisabled);         
+         //phyEntity.addSubscribe(PhysicalEntity.Attributes.FlamesPresent);
+         //phyEntity.addSubscribe(PhysicalEntity.Attributes.IsConcealed);
+         //phyEntity.addSubscribe(PhysicalEntity.Attributes.TentDeployed);         
          phyEntity.subscribe();
          
          
@@ -272,12 +277,12 @@ public class TC_IR_RPR2_PHY_0001 extends AbstractTestCaseIf {
  
          double rangeForTesting = 0.4;
 
-        for (int i = 0; i < 60; i++) {  // Testing for 10 Sec
-            logger.debug("# performTest: cycle " +i );
+        for (int i = 0; i < 3; i++) {  // Testing for 10 Sec
+            logger.debug("# -------------------   performTest: cycle " +i +"---------------" );
                        
             // change the attribut values  ocasionally                             
-            // TODO  in the moment we  update only the simple boolean attributes
-            // the other has to be  set too. 
+            // TODO  in the moment we have all  but struct Elements  in this test
+            // the other has to be  set too.   
             aircraft.clear();
             
             if ( Math.random()  <= rangeForTesting   ) {
@@ -285,16 +290,27 @@ public class TC_IR_RPR2_PHY_0001 extends AbstractTestCaseIf {
                 logger.debug("performTest: random set of attributes setAcousticSignatureIndex" );
             }          
           
-            // TODO  fill this with something usefull ?         //AlternateEntityType                BaseEntity.EntityType    EntityTypeStruct
+          // setAlternateEntityType ?????????????????????????????????
             if ( Math.random()  <= rangeForTesting   ) {
-                aircraft.setAlternateEntityType(null); 
-                logger.debug("performTest: random set of attributes setAlternateEntityType" );
+                EntityTypeStruct tempStruct= phyEntity.getAlternateEntityType();
+                tempStruct.setCountryCode((short)3);
+                phyEntity.setAlternateEntityType(tempStruct);                
+                aircraft.setAlternateEntityType(phyEntity.getAlternateEntityType()      ); 
+                logger.debug("performTest: random set of attributes AlternateEntityType" );
             }   
+ 
             
             //ArticulatedParametersArray         Empty                    ArticulatedParameterStructLengthlessArray
-            //CamouflageType                     Uniform Paint Scheme     CamouflageEnum32    
-            //DamageState                        No Damage
-       
+            
+            if ( Math.random()  <= rangeForTesting   ) {
+                aircraft.setCamouflageType(CamouflageEnum32.WinterCamouflage); 
+                logger.debug("performTest: random set of attributes CamouflageType" );
+            }   
+            
+            if ( Math.random()  <= rangeForTesting   ) {
+                aircraft.setDamageState(DamageStatusEnum32.ModerateDamage); 
+                logger.debug("performTest: random set of attributes DamageState" );
+            }
             
             if ( Math.random()  <= rangeForTesting   ) {
                 aircraft.setEngineSmokeOn(false);
@@ -308,22 +324,80 @@ public class TC_IR_RPR2_PHY_0001 extends AbstractTestCaseIf {
                 aircraft.setFlamesPresent(false);
                 logger.debug("performTest: random set of attributes set FlamesPresent" );
             }
-            // HasAmmunitionSupplyCap      
-            // HasRecoveryCap
-            // HasRepairCap
-            // Immobilized            
+            
+            if (Math.random() <= rangeForTesting) {
+                aircraft.setForceIdentifier(ForceIdentifierEnum8.Opposing_10);
+                logger.debug("performTest: random set of attributes set ForceIdentifier" );
+            }
+            
+            if (Math.random() <= rangeForTesting) {
+                aircraft.setHasAmmunitionSupplyCap(false);
+                logger.debug("performTest: random set of attributes set HasAmmunitionSupplyCap"  );
+            }
+            
+            if (Math.random() <= rangeForTesting) {
+                aircraft.setHasFuelSupplyCap(true);
+                logger.debug("performTest: random set of attributes set HasFuelSupplyCap"  );
+            }
+            
+            if (Math.random() <= rangeForTesting) {
+                aircraft.setHasRecoveryCap(true);
+                logger.debug("performTest: random set of attributes set HasRecoveryCap"  );
+            }
+            
+            if (Math.random() <= rangeForTesting) {
+                aircraft.setHasRepairCap(true);
+                logger.debug("performTest: random set of attributes set HasRepairCap"  );
+            }
+            
+            if (Math.random() <= rangeForTesting) {
+                aircraft.setImmobilized(true);
+                logger.debug("performTest: random set of attributes set Immobilized"  );
+            }
+            
+            if (Math.random() <= rangeForTesting) {
+                aircraft.setInfraredSignatureIndex((short)3);
+                logger.debug("performTest: random set of attributes set InfraredSignatureIndex"  );
+            }    
+            
             if (Math.random() <= rangeForTesting) {
                 aircraft.setIsConcealed(false);
                 logger.debug("performTest: random set of attributes set IsConcealed" );                
             }
-            // PowerPlantOn
-            // PropulsionSystemsData
-            // SmokePlumePresent            
+            
+           
+            // LiveEntityMeasuredSpeed,           //<dataType>VelocityDecimeterPerSecondInteger16</dataType>
+            // Marking,                                    //  <dataType>MarkingStruct</dataType>      
+            
+
+            if (Math.random() <= rangeForTesting) {
+                aircraft.setPowerPlantOn(false);
+                logger.debug("performTest: random set of attributes set PowerPlantOn" );                
+            }
+            
+            // PropulsionSystemsData   // <dataType>PropulsionSystemDataStructLengthlessArray</dataType>
+            
+            if (Math.random() <= rangeForTesting) {
+                aircraft.setRadarCrossSectionSignatureIndex((short)2);
+                logger.debug("performTest: random set of attributes set RadarCrossSectionSignatureIndex" );                
+            }
+            
+            if (Math.random() <= rangeForTesting) {
+                aircraft.setSmokePlumePresent(false);
+                logger.debug("performTest: random set of attributes set SmokePlumePresent" );                
+            }
+         
             if (Math.random() <= rangeForTesting) {
                 aircraft.setTentDeployed(false);
                 logger.debug("performTest: random set of attributes set TentDeployed" );                                
             }
-            // TrailingEffectsCode
+            
+            if (Math.random() <= rangeForTesting) {
+                aircraft.setTrailingEffectsCode(TrailingEffectsCodeEnum32.LargeTrail);
+                logger.debug("performTest: random set of attributes set TrailingEffectsCode" );                
+            }
+              
+           //VectoringNozzleSystemData         //<dataType>VectoringNozzleSystemDataStructLengthlessArray</dataType>  
             
           aircraft.update();
             
@@ -333,6 +407,9 @@ public class TC_IR_RPR2_PHY_0001 extends AbstractTestCaseIf {
         }
         
         // log the  settings and  show the statistics of the updated values at least
+       // may be   write in every if-Clause obove  something in a  List  and   report this List here  
+       
+        
         
         
         //   TODO  change this to a specifig  Exception 

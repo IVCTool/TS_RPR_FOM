@@ -9,6 +9,7 @@ import org.nato.ivct.rpr.FomFiles;
 import org.nato.ivct.rpr.datatypes.CamouflageEnum32;
 import org.nato.ivct.rpr.datatypes.DamageStatusEnum32;
 import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
+import org.nato.ivct.rpr.datatypes.ForceIdentifierEnum8;
 import org.nato.ivct.rpr.datatypes.TrailingEffectsCodeEnum32;
 
 import static org.junit.jupiter.api.Assertions.fail;
@@ -62,14 +63,15 @@ public class PhysicalEntityTest {
             // Struct types can not be set in that simple way because the struct doesn't know about the attribute changing
             EntityTypeStruct tempStruct= phy1.getAlternateEntityType();
             tempStruct.setCountryCode((short)3);
-            phy1.setAlternateEntityType(tempStruct);      
+            phy1.setAlternateEntityType(tempStruct);
+            
             //ArticulatedParametersArray,         // ArticulatedParameterStructLengthlessArray
-            phy1.setCamouflageType(CamouflageEnum32.DesertCamouflage);    // CamouflageEnum32    
-            phy1.setDamageState(DamageStatusEnum32.ModerateDamage);     //DamageStatusEnum32            
+            phy1.setCamouflageType(CamouflageEnum32.DesertCamouflage);
+            phy1.setDamageState(DamageStatusEnum32.ModerateDamage);       
             phy1.setEngineSmokeOn(true);
             phy1.setFirePowerDisabled(true);
             phy1.setFlamesPresent(true);            
-            //ForceIdentifier,                             //<dataType>ForceIdentifierEnum8</dataType>  // maybe this next brf       
+            phy1.setForceIdentifier(ForceIdentifierEnum8.Neutral_10);
             phy1.setHasAmmunitionSupplyCap(true);
             phy1.setHasFuelSupplyCap(true);
             phy1.setHasRecoveryCap(true);
@@ -77,16 +79,14 @@ public class PhysicalEntityTest {
             phy1.setImmobilized(true);            
             phy1.setInfraredSignatureIndex((short)2);      
             phy1.setIsConcealed(true);            
-            //LiveEntityMeasuredSpeed,           //<dataType>VelocityDecimeterPerSecondInteger16</dataType>
+            //LiveEntityMeasuredSpeed,           //<dataType>VelocityDecimeterPerSecondInteger16</dataType> // maybe next brf
             //Marking,                                    //  <dataType>MarkingStruct</dataType>       
             phy1.setPowerPlantOn(true);            
             //PropulsionSystemsData,                // <dataType>PropulsionSystemDataStructLengthlessArray</dataType>  
             phy1.setRadarCrossSectionSignatureIndex((short) 0);  
             phy1.setSmokePlumePresent(true);            
             phy1.setTentDeployed(true);        
-            phy1.setTrailingEffectsCode(TrailingEffectsCodeEnum32.SmallTrail);   // TrailingEffectsCodeEnum32
-            
-            
+            phy1.setTrailingEffectsCode(TrailingEffectsCodeEnum32.SmallTrail);   // TrailingEffectsCodeEnum32   
             //VectoringNozzleSystemData         //<dataType>VectoringNozzleSystemDataStructLengthlessArray</dataType>
             
             AttributeHandleValueMap pdu = phy1.getAttributeValues();
@@ -103,7 +103,7 @@ public class PhysicalEntityTest {
             assertTrue(phy2.getEngineSmokeOn() == true);
             assertTrue(phy2.getFirePowerDisabled() == true);
             assertTrue(phy2.getFlamesPresent() == true);            
-            //ForceIdentifier,                             //<dataType>ForceIdentifierEnum8</dataType>          
+            assertTrue(phy2.getForceIdentifier()  == ForceIdentifierEnum8.Neutral_10 );
             assertTrue(phy2.getHasAmmunitionSupplyCap()==true);      
             assertTrue(phy2.getHasFuelSupplyCap()==true);
             assertTrue(phy2.getHasRecoveryCap()==true);
@@ -119,7 +119,6 @@ public class PhysicalEntityTest {
             assertTrue(phy2.getSmokePlumePresent() == true);            
             assertTrue(phy2.getTentDeployed() == true);                   
             assertTrue(phy2.getTrailingEffectsCode() == TrailingEffectsCodeEnum32.SmallTrail ) ;   //<dataType>TrailingEffectsCodeEnum32</dataType> 
-            
             //VectoringNozzleSystemData         //<dataType>VectoringNozzleSystemDataStructLengthlessArray</dataType>
             
             log.info("End of TestEncodingDecode after assertTrue Statements");                        

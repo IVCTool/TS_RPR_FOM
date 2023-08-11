@@ -20,7 +20,7 @@ import hla.rti1516e.encoding.DecoderException;
 import hla.rti1516e.encoding.HLAinteger32BE;
 
 /** 
- * Damaged appearance (see RPR-Enumerations_v2.0.xml)
+ *  (see RPR-Enumerations_v2.0.xml)
 */
 
 public enum TrailingEffectsCodeEnum32 {

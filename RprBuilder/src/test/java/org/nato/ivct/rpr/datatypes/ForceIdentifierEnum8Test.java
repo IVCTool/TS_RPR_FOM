@@ -12,57 +12,41 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
+
 package org.nato.ivct.rpr.datatypes;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
+
 import hla.rti1516e.encoding.DecoderException;
 
-public class TrailingEffectsCodeEnum32Test {
-    
+public class ForceIdentifierEnum8Test {
     @Test
     void testEncodeDecode() throws DecoderException {
-        TrailingEffectsCodeEnum32 element = TrailingEffectsCodeEnum32.NoTrail;
+        ForceIdentifierEnum8 element = ForceIdentifierEnum8.Friendly;
         byte[] bytes = element.getDataElement().toByteArray();
-        TrailingEffectsCodeEnum32 decodedValue = TrailingEffectsCodeEnum32.decode(bytes);
+        ForceIdentifierEnum8 decodedValue = ForceIdentifierEnum8.decode(bytes);
         assertEquals(element, decodedValue);
     }
 
     @Test
     void testGetEncodedLength() {
-        TrailingEffectsCodeEnum32 element = TrailingEffectsCodeEnum32.SmallTrail;
-        assertTrue(4 == element.getDataElement().getEncodedLength());
+        ForceIdentifierEnum8 element = ForceIdentifierEnum8.Neutral;
+        assertTrue(1 == element.getDataElement().getEncodedLength());
     }
-    
+
     @Test
     void testGetOctetBoundary() {
-        TrailingEffectsCodeEnum32 element = TrailingEffectsCodeEnum32.MediumTrail;
-        assertTrue(4 == element.getDataElement().getEncodedLength());
+        ForceIdentifierEnum8 element = ForceIdentifierEnum8.Opposing;
+        assertTrue(1 == element.getDataElement().getOctetBoundary());
     }
-    
+
     @Test
     void testToByteArray() {
-        TrailingEffectsCodeEnum32 element = TrailingEffectsCodeEnum32.LargeTrail;
+        ForceIdentifierEnum8 element = ForceIdentifierEnum8.Other;
         byte[] bytes = element.getDataElement().toByteArray();
         assertTrue(0 == bytes[0]);
-        assertTrue(0 == bytes[1]);
-        assertTrue(0 == bytes[2]);
-        assertTrue(3 == bytes[3]);
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
 }
