@@ -82,7 +82,7 @@ public class AircraftApp extends NullFederateAmbassador {
 	private String federationName = "TestFederation";
 	private String federateName = "Aircraft";
 	private String federateType = "RefFed";
-	private int nrOfCycles = 4000;
+	private int nrOfCycles = 4000;   // 4000
 	private RTIambassador rtiAmbassador;
 	private FederateHandle fedHandle;
 
@@ -179,6 +179,16 @@ public class AircraftApp extends NullFederateAmbassador {
             throws FederateInternalError {
         logger.trace("discoverObjectInstance {}", theObjectInstanceH);
         logger.info("### discoverObjectInstance without FederateHandle ");
+        
+        
+        try {
+            // we want to know which Class is send
+            logger.debug("rti-ObjectClassName in discoverObjectInstance:  " + rtiAmbassador.getObjectClassName(theObjectClassH)); // Debug
+            // temp_objectClass = theObjectClassH;
+        } catch (Exception e) {
+            logger.error("discoverObjectInstance received Exception", e);
+        }
+        
     }
     
      @Override
@@ -205,6 +215,13 @@ public class AircraftApp extends NullFederateAmbassador {
             SupplementalReflectInfo reflectInfo)  throws FederateInternalError {
         // logger.trace("reflectAttributeValues without LogicalTime, receivedOrdering,  MessageRetractionHandle ");
         logger.debug("### reflectAttributeValues without  LogicalTime,  MessageRetractionHandle  ");
+        
+        // HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.Aircraft
+        String TestClass ="HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.Aircraft";
+        
+        //  Try to show here the  attributnames which are received #################        
+        
+        
     }
 
 

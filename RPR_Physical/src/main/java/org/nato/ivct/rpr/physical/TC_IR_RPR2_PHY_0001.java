@@ -16,6 +16,7 @@ limitations under the License. */
 package org.nato.ivct.rpr.physical;
 
 import java.net.URL;
+import java.util.HashMap;
 
 import org.nato.ivct.rpr.FomFiles;
 import org.nato.ivct.rpr.datatypes.CamouflageEnum32;
@@ -123,6 +124,8 @@ public class TC_IR_RPR2_PHY_0001 extends AbstractTestCaseIf {
     Logger logger = null;
     
     PhysicalEntity phyEntity;
+    
+    HashMap<String, Integer> setAttributeReport = new HashMap<>();
     
     class TestCaseAmbassador extends NullFederateAmbassador {
 
@@ -276,18 +279,19 @@ public class TC_IR_RPR2_PHY_0001 extends AbstractTestCaseIf {
          aircraft.register();
  
          double rangeForTesting = 0.4;
-
-        for (int i = 0; i < 3; i++) {  // Testing for 10 Sec
+         
+        for (int i = 0; i < 1000; i++) {  // Testing for n cycles,  the duration is specified  in "Thread.sleep(10);" 
             logger.debug("# -------------------   performTest: cycle " +i +"---------------" );
                        
             // change the attribut values  ocasionally                             
             // TODO  in the moment we have all  but struct Elements  in this test
-            // the other has to be  set too.   
             aircraft.clear();
             
             if ( Math.random()  <= rangeForTesting   ) {
                 aircraft.setAcousticSignatureIndex(  (short) 2    ) ; 
-                logger.debug("performTest: random set of attributes setAcousticSignatureIndex" );
+                String randomTestName= "AcousticSignatureIndex";
+                logger.debug("performTest: random set of attributes setAcousticSignatureIndex" );                
+                collectTestReport(randomTestName);
             }          
           
           // setAlternateEntityType ?????????????????????????????????
@@ -296,105 +300,140 @@ public class TC_IR_RPR2_PHY_0001 extends AbstractTestCaseIf {
                 tempStruct.setCountryCode((short)3);
                 phyEntity.setAlternateEntityType(tempStruct);                
                 aircraft.setAlternateEntityType(phyEntity.getAlternateEntityType()      ); 
-                logger.debug("performTest: random set of attributes AlternateEntityType" );
+                String randomTestName= "AlternateEntityType";
+                logger.debug("performTest: random set of attributes AlternateEntityType" );                
+                collectTestReport(randomTestName);                
             }   
- 
             
             //ArticulatedParametersArray         Empty                    ArticulatedParameterStructLengthlessArray
             
             if ( Math.random()  <= rangeForTesting   ) {
                 aircraft.setCamouflageType(CamouflageEnum32.WinterCamouflage); 
-                logger.debug("performTest: random set of attributes CamouflageType" );
+                String randomTestName= "CamouflageType";
+                logger.debug("performTest: random set of attributes CamouflageType" );                
+                collectTestReport(randomTestName);
             }   
             
             if ( Math.random()  <= rangeForTesting   ) {
                 aircraft.setDamageState(DamageStatusEnum32.ModerateDamage); 
+                String randomTestName= "DamageState";
                 logger.debug("performTest: random set of attributes DamageState" );
+                collectTestReport(randomTestName);
             }
             
             if ( Math.random()  <= rangeForTesting   ) {
                 aircraft.setEngineSmokeOn(false);
+                String randomTestName= "EngineSmokeOn";
                 logger.debug("performTest: random set of attributes setEngineSmokeOn" );
+                collectTestReport(randomTestName);
             }          
            if ( Math.random()  <= rangeForTesting   ) {
                aircraft.setFirePowerDisabled(false);
+               String randomTestName= "FirePowerDisabled";
                logger.debug("performTest: random set of attributes set FirePowerDisabled" );
+               collectTestReport(randomTestName);
             }            
             if (Math.random() <= rangeForTesting) {
                 aircraft.setFlamesPresent(false);
+                String randomTestName= "FlamesPresent";
                 logger.debug("performTest: random set of attributes set FlamesPresent" );
+                collectTestReport(randomTestName);
             }
             
             if (Math.random() <= rangeForTesting) {
                 aircraft.setForceIdentifier(ForceIdentifierEnum8.Opposing_10);
+                String randomTestName= "ForceIdentifier";
                 logger.debug("performTest: random set of attributes set ForceIdentifier" );
+                collectTestReport(randomTestName);
             }
             
             if (Math.random() <= rangeForTesting) {
                 aircraft.setHasAmmunitionSupplyCap(false);
+                String randomTestName= "HasAmmunitionSupplyCap";
                 logger.debug("performTest: random set of attributes set HasAmmunitionSupplyCap"  );
+                collectTestReport(randomTestName);
             }
             
             if (Math.random() <= rangeForTesting) {
                 aircraft.setHasFuelSupplyCap(true);
+                String randomTestName= "HasFuelSupplyCap";
                 logger.debug("performTest: random set of attributes set HasFuelSupplyCap"  );
+                collectTestReport(randomTestName);
             }
             
             if (Math.random() <= rangeForTesting) {
                 aircraft.setHasRecoveryCap(true);
+                String randomTestName= "HasRecoveryCap";
                 logger.debug("performTest: random set of attributes set HasRecoveryCap"  );
+                collectTestReport(randomTestName);
             }
             
             if (Math.random() <= rangeForTesting) {
                 aircraft.setHasRepairCap(true);
+                String randomTestName= "HasRepairCap";
                 logger.debug("performTest: random set of attributes set HasRepairCap"  );
+                collectTestReport(randomTestName);
             }
             
             if (Math.random() <= rangeForTesting) {
                 aircraft.setImmobilized(true);
+                String randomTestName= "Immobilized";
                 logger.debug("performTest: random set of attributes set Immobilized"  );
+                collectTestReport(randomTestName);
             }
             
             if (Math.random() <= rangeForTesting) {
                 aircraft.setInfraredSignatureIndex((short)3);
+                String randomTestName= "InfraredSignatureIndex";
                 logger.debug("performTest: random set of attributes set InfraredSignatureIndex"  );
+                collectTestReport(randomTestName);
             }    
             
             if (Math.random() <= rangeForTesting) {
                 aircraft.setIsConcealed(false);
-                logger.debug("performTest: random set of attributes set IsConcealed" );                
-            }
-            
+                String randomTestName= "IsConcealed";
+                logger.debug("performTest: random set of attributes set IsConcealed" ); 
+                collectTestReport(randomTestName);
+            }            
            
             // LiveEntityMeasuredSpeed,           //<dataType>VelocityDecimeterPerSecondInteger16</dataType>
-            // Marking,                                    //  <dataType>MarkingStruct</dataType>      
-            
+            // Marking,                                    //  <dataType>MarkingStruct</dataType>            
 
             if (Math.random() <= rangeForTesting) {
                 aircraft.setPowerPlantOn(false);
-                logger.debug("performTest: random set of attributes set PowerPlantOn" );                
+                String randomTestName= "PowerPlantOn";
+                logger.debug("performTest: random set of attributes set PowerPlantOn" );
+                collectTestReport(randomTestName);
             }
             
             // PropulsionSystemsData   // <dataType>PropulsionSystemDataStructLengthlessArray</dataType>
             
             if (Math.random() <= rangeForTesting) {
                 aircraft.setRadarCrossSectionSignatureIndex((short)2);
-                logger.debug("performTest: random set of attributes set RadarCrossSectionSignatureIndex" );                
+                String randomTestName= "RadarCrossSectionSignatureIndex";
+                logger.debug("performTest: random set of attributes set RadarCrossSectionSignatureIndex" );
+                collectTestReport(randomTestName);
             }
             
             if (Math.random() <= rangeForTesting) {
                 aircraft.setSmokePlumePresent(false);
-                logger.debug("performTest: random set of attributes set SmokePlumePresent" );                
+                String randomTestName= "SmokePlumePresent";
+                logger.debug("performTest: random set of attributes set SmokePlumePresent" );
+                collectTestReport(randomTestName);
             }
          
             if (Math.random() <= rangeForTesting) {
                 aircraft.setTentDeployed(false);
-                logger.debug("performTest: random set of attributes set TentDeployed" );                                
+                String randomTestName= "TentDeployed";
+                logger.debug("performTest: random set of attributes set TentDeployed" );   
+                collectTestReport(randomTestName);
             }
             
             if (Math.random() <= rangeForTesting) {
                 aircraft.setTrailingEffectsCode(TrailingEffectsCodeEnum32.LargeTrail);
-                logger.debug("performTest: random set of attributes set TrailingEffectsCode" );                
+                String randomTestName= "TrailingEffectsCode";
+                logger.debug("performTest: random set of attributes set TrailingEffectsCode" );
+                collectTestReport(randomTestName);
             }
               
            //VectoringNozzleSystemData         //<dataType>VectoringNozzleSystemDataStructLengthlessArray</dataType>  
@@ -403,22 +442,37 @@ public class TC_IR_RPR2_PHY_0001 extends AbstractTestCaseIf {
             
           logger.debug("");
             
-            Thread.sleep(2000);         // maybe set to 10 ms
+            Thread.sleep(10);         // maybe set to 10 ms
         }
         
         // log the  settings and  show the statistics of the updated values at least
-       // may be   write in every if-Clause obove  something in a  List  and   report this List here  
-       
-        
-        
-        
+         printTestReport();
+      
         //   TODO  change this to a specifig  Exception 
         } catch (Exception e) {
             throw new TcInconclusiveIf("performTest received Exception: ",  e);
         }
   	
         logger.info("test {} passed", this.getClass().getName());
+        
 	}
+	
+	public void collectTestReport(String toTestAttribut  ) {
+	    String randomTestName= toTestAttribut;
+	    if (setAttributeReport.get(randomTestName) == null   ) {
+	        setAttributeReport.put(randomTestName, 1);
+	    } else { 
+	        setAttributeReport.put(randomTestName ,  (setAttributeReport.get(randomTestName) +1 ) )  ;
+	    }	    
+	}
+	
+    public void printTestReport() {
+        for (String s : setAttributeReport.keySet()) {
+            String ausgabe =  "number of updats for  "+  s +":  "+ setAttributeReport.get(s);
+            logger.info(ausgabe);
+        }
+    }
+      
 
 	@Override
 	protected void postambleAction(Logger logger) throws TcInconclusiveIf {

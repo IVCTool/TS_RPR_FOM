@@ -91,7 +91,8 @@ public class PhysicalEntity extends BaseEntity {
         addAttribute(Attributes.Immobilized.name(), encoderFactory.createHLAboolean() );         
         addAttribute(Attributes.InfraredSignatureIndex.name(), encoderFactory.createHLAinteger16BE() );  // ??      
         addAttribute(Attributes.IsConcealed.name(), encoderFactory.createHLAboolean());        
-        //LiveEntityMeasuredSpeed,           //<dataType>VelocityDecimeterPerSecondInteger16</dataType>    
+        //LiveEntityMeasuredSpeed,           //<dataType>VelocityDecimeterPerSecondInteger16</dataType>  
+        
          //Marking,                                    //  <dataType>MarkingStruct</dataType>        
         addAttribute(Attributes.PowerPlantOn.name(), encoderFactory.createHLAboolean() );        
         //PropulsionSystemsData,                // <dataType>PropulsionSystemDataStructLengthlessArray</dataType>        
