@@ -14,6 +14,7 @@ limitations under the License. */
 
 package org.nato.ivct.refFed;
 
+import hla.rti1516e.AttributeHandle;
 import hla.rti1516e.AttributeHandleValueMap;
 import hla.rti1516e.CallbackModel;
 import hla.rti1516e.FederateAmbassador;
@@ -29,15 +30,18 @@ import hla.rti1516e.RtiFactory;
 import hla.rti1516e.RtiFactoryFactory;
 import hla.rti1516e.TransportationTypeHandle;
 import hla.rti1516e.FederateAmbassador.SupplementalReflectInfo;
+import hla.rti1516e.exceptions.AttributeNotDefined;
 import hla.rti1516e.exceptions.FederateInternalError;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
 import hla.rti1516e.exceptions.FederationExecutionAlreadyExists;
+import hla.rti1516e.exceptions.InvalidAttributeHandle;
 import hla.rti1516e.exceptions.InvalidObjectClassHandle;
 import hla.rti1516e.exceptions.NotConnected;
 import hla.rti1516e.exceptions.ObjectInstanceNotKnown;
 import hla.rti1516e.exceptions.RTIinternalError;
 
 import java.net.URL;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.slf4j.LoggerFactory;
@@ -59,7 +63,8 @@ public class AircraftApp extends NullFederateAmbassador {
     public enum CmdLineOptions {
         provokeFlyAircraft,
         provokeMissingMandatoryAttribute,
-        provokeDeadReckoningError
+        provokeDeadReckoningError,
+        provokeReflectedAttributesReport            // -pRAR ?
     }
 
 	public class Option {
@@ -85,6 +90,9 @@ public class AircraftApp extends NullFederateAmbassador {
 	private int nrOfCycles = 4000;   // 4000
 	private RTIambassador rtiAmbassador;
 	private FederateHandle fedHandle;
+	
+	HashMap<ObjectInstanceHandle, ObjectClassHandle> knownObjectInstanceObjectClassHandles = new HashMap<>();
+	final HashMap<String, Integer> reflectedAttributeReport = new HashMap<>();
 
 		
 	public static void main(final String[] args) {
@@ -178,17 +186,16 @@ public class AircraftApp extends NullFederateAmbassador {
             String objectName)
             throws FederateInternalError {
         logger.trace("discoverObjectInstance {}", theObjectInstanceH);
-        logger.info("### discoverObjectInstance without FederateHandle ");
+        logger.debug("### discoverObjectInstance without FederateHandle ");
         
+        // change  the  Map knownObjectInstanceObjectClassHandles , better use 
+           // create the helper object
+          //      PhysicalEntity obj = new PhysicalEntity();
+          //      obj.setObjectHandle(theObject);
+          //      knownPhysicalEntities.put(theObject, obj);       etc      
         
-        try {
-            // we want to know which Class is send
-            logger.debug("rti-ObjectClassName in discoverObjectInstance:  " + rtiAmbassador.getObjectClassName(theObjectClassH)); // Debug
-            // temp_objectClass = theObjectClassH;
-        } catch (Exception e) {
-            logger.error("discoverObjectInstance received Exception", e);
-        }
-        
+        // notice the  received ObjectInstanceHandle, ObjectClassHandle in  knownObjectInstanceObjectClassHandles;
+        knownObjectInstanceObjectClassHandles.put(theObjectInstanceH, theObjectClassH);   
     }
     
      @Override
@@ -210,22 +217,42 @@ public class AircraftApp extends NullFederateAmbassador {
     
     // TODO  give the names of received Attributes
     @Override
-    public void reflectAttributeValues(ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes,
+    public void reflectAttributeValues(ObjectInstanceHandle theObjectH, AttributeHandleValueMap theAttributes,
             byte[] userSuppliedTag,  OrderType sentOrdering, TransportationTypeHandle theTransport,
             SupplementalReflectInfo reflectInfo)  throws FederateInternalError {
         // logger.trace("reflectAttributeValues without LogicalTime, receivedOrdering,  MessageRetractionHandle ");
         logger.debug("### reflectAttributeValues without  LogicalTime,  MessageRetractionHandle  ");
         
-        // HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.Aircraft
-        String TestClass ="HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.Aircraft";
         
-        //  Try to show here the  attributnames which are received #################        
+        //  here  to  add    encode the  Attributes
+
         
+        try { 
         
+        // try for every ObjectInstance ObjectClassHandle reveiced with  discoverObjectInstance
+        for (ObjectInstanceHandle obIH : knownObjectInstanceObjectClassHandles.keySet()) {
+            
+            ObjectClassHandle tempObjectClassHandle =  null;
+            // if the ObjectInstanceHandle here received  is known   ( maybe the objectInstances  must be selected in discoverObjectInstance ?)
+            if (theObjectH == obIH ) {
+                tempObjectClassHandle = knownObjectInstanceObjectClassHandles.get(obIH);
+            }
+            // look at every Attribut in the attributehandle received here  to get the name 
+            for (AttributeHandle atH : theAttributes.keySet()) {
+                String tempAttributname=  rtiAmbassador.getAttributeName(tempObjectClassHandle, atH) ;            
+               //logger.debug ("\n# reflectAttributeValues:  Names of received Attribute: "+ tempAttributname );
+                collectTestReport(tempAttributname);                
+            }
+        }
+        
+       // } catch ( InvalidObjectClassHandle | AttributeNotDefined | InvalidAttributeHandle |ObjectInstanceNotKnown | FederateNotExecutionMember |   NotConnected | RTIinternalError e) {
+        } catch ( InvalidObjectClassHandle | AttributeNotDefined | InvalidAttributeHandle | FederateNotExecutionMember |   NotConnected | RTIinternalError e) {
+            logger.error("reflectAttributeValues received Exception" ,e );
+        }
     }
 
-
 	private void run() {
+       
 		try {
 			RtiFactory rtiFactory = RtiFactoryFactory.getRtiFactory();
 			rtiAmbassador = rtiFactory.getRtiAmbassador();
@@ -338,6 +365,31 @@ public class AircraftApp extends NullFederateAmbassador {
 			aircraft.setEntityType(entityType);
 			aircraft.update();
 			
+			
+            if (provoke(CmdLineOptions.provokeReflectedAttributesReport)) {
+                Thread printreflectedAttributReport = new Thread(() -> {
+                    // report all 10 sec as long the main thread is running
+                    int threadSleepTime = 10000;
+
+                    while (true) {
+                        logger.info(" ----------------  print reflected attributes --------------  ");
+
+                        for (String s : reflectedAttributeReport.keySet()) {
+                            String ausgabe = "number of updats for  " + s + ":  " + reflectedAttributeReport.get(s);
+                            logger.info(ausgabe);
+                        }
+                        try {
+                            Thread.sleep(threadSleepTime);
+                        } catch (InterruptedException e) {
+                            logger.error("run  printreflectedAttributReport has a Problem ");
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                printreflectedAttributReport.start();
+            }
+		        
+			
 			if (provoke(CmdLineOptions.provokeFlyAircraft)) {
 				for (int i=0; i<nrOfCycles; i++) {
 					double xPos = 1.0 + Math.sin(i);
@@ -356,14 +408,42 @@ public class AircraftApp extends NullFederateAmbassador {
 					spatialStatic.getOrientation().setPsi(psi);
 					spatialStatic.getOrientation().setTheta(theta);
 					aircraft.setSpatial(spatial);
-					aircraft.update();  
+					aircraft.update();
 					Thread.sleep(1000);
-					logger.info("provokeFlyAircraft: " +i);  // Debug
+					//logger.debug("provokeFlyAircraft: " +i);
 				}
 			}
-
+			
+			/*
+			if (provoke(CmdLineOptions.provokeReflectedAttributesReport)) {
+			    logger.info("--------- Names and number of reflected attributes : ----------------------- ");
+			    printReflectedAttributeReport();
+			}
+			*/
+			
+			
 		} catch (final Exception e) {
 			logErrorAndExit("Exception: {}", e.toString());
 		}
 	}
+
+    public void collectTestReport(String toTestAttribut) {
+        String randomTestName = toTestAttribut;
+        if (reflectedAttributeReport.get(randomTestName) == null) {
+            reflectedAttributeReport.put(randomTestName, 1);
+        } else {
+            reflectedAttributeReport.put(randomTestName, (reflectedAttributeReport.get(randomTestName) + 1));
+        }
+    }
+    
+    public void printReflectedAttributeReport() {
+        for (String s : reflectedAttributeReport.keySet()) {
+            String ausgabe =  "number of updats for  "+  s +":  "+ reflectedAttributeReport.get(s);
+            logger.info(ausgabe);
+        }
+    }
+
+   
+	
+	
 }

@@ -78,8 +78,9 @@ public class PhysicalEntityTest {
             phy1.setHasRepairCap(true); 
             phy1.setImmobilized(true);            
             phy1.setInfraredSignatureIndex((short)2);      
-            phy1.setIsConcealed(true);            
-            //LiveEntityMeasuredSpeed,           //<dataType>VelocityDecimeterPerSecondInteger16</dataType> // maybe next brf
+            phy1.setIsConcealed(true);           
+            phy1.setLiveEntityMeasuredSpeed((short)2);   //VelocityDecimeterPerSecondInteger16   corrrect Datatype ?  
+            
             //Marking,                                    //  <dataType>MarkingStruct</dataType>       
             phy1.setPowerPlantOn(true);            
             //PropulsionSystemsData,                // <dataType>PropulsionSystemDataStructLengthlessArray</dataType>  
@@ -111,7 +112,8 @@ public class PhysicalEntityTest {
             assertTrue(phy2.getImmobilized()==true);
             assertTrue(phy2.getInfraredSignatureIndex()==2) ;            
             assertTrue(phy2.getIsConcealed() == true);            
-            //LiveEntityMeasuredSpeed,           //<dataType>VelocityDecimeterPerSecondInteger16</dataType>
+            assertTrue(phy2.getLiveEntityMeasuredSpeed() == 2);  
+            
             //Marking,                                    //  <dataType>MarkingStruct</dataType>          
             assertTrue(phy2.getPowerPlantOn() == true);            
             //PropulsionSystemsData,                // <dataType>PropulsionSystemDataStructLengthlessArray</dataType>            

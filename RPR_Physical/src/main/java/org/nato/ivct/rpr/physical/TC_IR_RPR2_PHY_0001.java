@@ -397,6 +397,13 @@ public class TC_IR_RPR2_PHY_0001 extends AbstractTestCaseIf {
             }            
            
             // LiveEntityMeasuredSpeed,           //<dataType>VelocityDecimeterPerSecondInteger16</dataType>
+            if (Math.random() <= rangeForTesting) {
+                aircraft.setLiveEntityMeasuredSpeed((short) 3);
+                String randomTestName= "LiveEntityMeasuredSpeed";
+                logger.debug("performTest: random set of attributes set IsConcealed" ); 
+                collectTestReport(randomTestName);
+            }
+            
             // Marking,                                    //  <dataType>MarkingStruct</dataType>            
 
             if (Math.random() <= rangeForTesting) {
@@ -438,11 +445,12 @@ public class TC_IR_RPR2_PHY_0001 extends AbstractTestCaseIf {
               
            //VectoringNozzleSystemData         //<dataType>VectoringNozzleSystemDataStructLengthlessArray</dataType>  
             
-          aircraft.update();
-            
-          logger.debug("");
-            
-            Thread.sleep(10);         // maybe set to 10 ms
+           aircraft.update();
+
+           logger.debug("");
+
+           Thread.sleep(10); // maybe set to 10 ms
+           //Thread.sleep(1000); // maybe set to 10 ms
         }
         
         // log the  settings and  show the statistics of the updated values at least

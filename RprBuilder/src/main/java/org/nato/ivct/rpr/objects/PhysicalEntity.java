@@ -90,8 +90,10 @@ public class PhysicalEntity extends BaseEntity {
         addAttribute(Attributes.HasRepairCap.name(), encoderFactory.createHLAboolean() );               
         addAttribute(Attributes.Immobilized.name(), encoderFactory.createHLAboolean() );         
         addAttribute(Attributes.InfraredSignatureIndex.name(), encoderFactory.createHLAinteger16BE() );  // ??      
-        addAttribute(Attributes.IsConcealed.name(), encoderFactory.createHLAboolean());        
+        addAttribute(Attributes.IsConcealed.name(), encoderFactory.createHLAboolean()); 
+
         //LiveEntityMeasuredSpeed,           //<dataType>VelocityDecimeterPerSecondInteger16</dataType>  
+        addAttribute(Attributes.LiveEntityMeasuredSpeed.name(), encoderFactory.createHLAinteger16BE()  ); 
         
          //Marking,                                    //  <dataType>MarkingStruct</dataType>        
         addAttribute(Attributes.PowerPlantOn.name(), encoderFactory.createHLAboolean() );        
@@ -260,7 +262,18 @@ public class PhysicalEntity extends BaseEntity {
         return attribute.getValue();
     }
     
-    //LiveEntityMeasuredSpeed,           //<dataType>VelocityDecimeterPerSecondInteger16</dataType>
+    //LiveEntityMeasuredSpeed,           //<dataType>VelocityDecimeterPerSecondInteger16</dataType>  ??????????????
+    public void setLiveEntityMeasuredSpeed(short value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        HLAinteger16BE   holder = (HLAinteger16BE) getAttribute(Attributes.LiveEntityMeasuredSpeed.name());
+        holder.setValue(value);
+        setAttributeValue(Attributes.LiveEntityMeasuredSpeed.name(), holder);
+    }
+    public short getLiveEntityMeasuredSpeed() throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
+        HLAinteger16BE attribute = (HLAinteger16BE) getAttribute(Attributes.LiveEntityMeasuredSpeed.name());
+        return (short) attribute.getValue();
+    }
+    
+    
     //Marking,                                    //  <dataType>MarkingStruct</dataType>      
     
     public void setPowerPlantOn(boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
