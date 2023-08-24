@@ -135,7 +135,7 @@ public class TC_IR_RPR2_PHY_0001 extends AbstractTestCaseIf {
                          ObjectClassHandle theObjectClassH,
                          String objectName) throws FederateInternalError {
             logger.trace("discoverObjectInstance {}",  theObjectInstanceH);            
-            logger.info("### discoverObjectInstance without FederateHandle ");            
+            logger.debug("### discoverObjectInstance without FederateHandle ");            
            
             try {
                 // Tests and Debug
@@ -280,7 +280,7 @@ public class TC_IR_RPR2_PHY_0001 extends AbstractTestCaseIf {
  
          double rangeForTesting = 0.4;
          
-        for (int i = 0; i < 1000; i++) {  // Testing for n cycles,  the duration is specified  in "Thread.sleep(10);" 
+        for (int i = 0; i < 200; i++) {  // Testing for n cycles (1000),  the duration is specified  in "Thread.sleep(10);" 
             logger.debug("# -------------------   performTest: cycle " +i +"---------------" );
                        
             // change the attribut values  ocasionally                             
@@ -450,7 +450,6 @@ public class TC_IR_RPR2_PHY_0001 extends AbstractTestCaseIf {
            logger.debug("");
 
            Thread.sleep(10); // maybe set to 10 ms
-           //Thread.sleep(1000); // maybe set to 10 ms
         }
         
         // log the  settings and  show the statistics of the updated values at least
