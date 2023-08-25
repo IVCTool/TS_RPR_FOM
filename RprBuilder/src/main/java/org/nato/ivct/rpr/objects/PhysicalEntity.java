@@ -262,7 +262,6 @@ public class PhysicalEntity extends BaseEntity {
         return attribute.getValue();
     }
     
-    //LiveEntityMeasuredSpeed,           //<dataType>VelocityDecimeterPerSecondInteger16</dataType>  ??????????????
     public void setLiveEntityMeasuredSpeed(short value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {
         HLAinteger16BE   holder = (HLAinteger16BE) getAttribute(Attributes.LiveEntityMeasuredSpeed.name());
         holder.setValue(value);
@@ -272,8 +271,7 @@ public class PhysicalEntity extends BaseEntity {
         HLAinteger16BE attribute = (HLAinteger16BE) getAttribute(Attributes.LiveEntityMeasuredSpeed.name());
         return (short) attribute.getValue();
     }
-    
-    
+        
     //Marking,                                    //  <dataType>MarkingStruct</dataType>      
     
     public void setPowerPlantOn(boolean value) throws NameNotFound, InvalidObjectClassHandle, FederateNotExecutionMember, NotConnected, RTIinternalError, EncoderException {

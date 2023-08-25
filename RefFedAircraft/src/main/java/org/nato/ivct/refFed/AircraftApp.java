@@ -29,6 +29,7 @@ import hla.rti1516e.RTIambassador;
 import hla.rti1516e.RtiFactory;
 import hla.rti1516e.RtiFactoryFactory;
 import hla.rti1516e.TransportationTypeHandle;
+import hla.rti1516e.encoding.DecoderException;
 import hla.rti1516e.FederateAmbassador.SupplementalReflectInfo;
 import hla.rti1516e.exceptions.AttributeNotDefined;
 import hla.rti1516e.exceptions.FederateInternalError;
@@ -234,7 +235,6 @@ public class AircraftApp extends NullFederateAmbassador {
         reflectAttributeValues(theObject, theAttributes, userSuppliedTag, sentOrdering, theTransport, reflectInfo);
     }
     
-    // TODO  give the names of received Attributes
     @Override
     public void reflectAttributeValues(ObjectInstanceHandle theObjectInstancH, AttributeHandleValueMap theAttributes,
             byte[] userSuppliedTag,  OrderType sentOrdering, TransportationTypeHandle theTransport,
@@ -255,12 +255,13 @@ public class AircraftApp extends NullFederateAmbassador {
             logger.error("reflectAttributeValues received Exception" ,e );
         }
         
+        // Decode the received Attributes
         Aircraft  tempKnownAircraftEntity = knownAircraftEntities.get(theObjectInstancH);        
         if (tempKnownAircraftEntity != null) {
             tempKnownAircraftEntity.clear();
             try {
                 tempKnownAircraftEntity.decode(theAttributes);
-                logger.debug("### reflectAttributeValues:  try to decode theAttributes ");
+                //logger.debug("### reflectAttributeValues:  try to decode theAttributes ");
             } catch (Exception e) {
                 logger.error("reflectAttributeValues received Exception", e);
             }
@@ -401,6 +402,13 @@ public class AircraftApp extends NullFederateAmbassador {
                             logger.error("run  printreflectedAttributReport has a Problem ");
                             e.printStackTrace();
                         }
+                       // Test if the Attributes are readable
+                        try {
+                         logger.info("Test to get tAttributeValue  aircraft.getDamageState() gives out:  " + aircraft.getDamageState() );
+                        } catch (DecoderException e) {
+                            logger.error("printreflectedAttributReport: reading  a decoded Attribute  has a Problem ");
+                            e.printStackTrace();
+                        }   
                     }
                 });
                 printreflectedAttributReport.start();
@@ -445,15 +453,5 @@ public class AircraftApp extends NullFederateAmbassador {
             reflectedAttributeReport.put(randomTestName, (reflectedAttributeReport.get(randomTestName) + 1));
         }
     }
-    
-    public void printReflectedAttributeReport() {
-        for (String s : reflectedAttributeReport.keySet()) {
-            String ausgabe =  "number of updats for  "+  s +":  "+ reflectedAttributeReport.get(s);
-            logger.info(ausgabe);
-        }
-    }
-
-   
-	
-	
+ 	
 }
