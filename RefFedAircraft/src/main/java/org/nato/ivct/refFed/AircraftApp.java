@@ -72,7 +72,7 @@ public class AircraftApp extends NullFederateAmbassador {
         provokeFlyAircraft,
         provokeMissingMandatoryAttribute,
         provokeDeadReckoningError,
-        provokeReflectedAttributesReport            // -pRAR ?
+        provokeReflectedAttributesReport            // -pRAR
     }
 
 	public class Option {
@@ -239,8 +239,8 @@ public class AircraftApp extends NullFederateAmbassador {
     public void reflectAttributeValues(ObjectInstanceHandle theObjectInstancH, AttributeHandleValueMap theAttributes,
             byte[] userSuppliedTag,  OrderType sentOrdering, TransportationTypeHandle theTransport,
             SupplementalReflectInfo reflectInfo)  throws FederateInternalError {
-        // logger.trace("reflectAttributeValues without LogicalTime, receivedOrdering,  MessageRetractionHandle ");
-        logger.debug("### reflectAttributeValues without  LogicalTime,  MessageRetractionHandle  ");
+            logger.trace("reflectAttributeValues without LogicalTime, receivedOrdering,  MessageRetractionHandle ");
+       
 
         // Only get the names of Attributes  1 
         try { 
@@ -322,7 +322,7 @@ public class AircraftApp extends NullFederateAmbassador {
             // update is below
             
             
-            // brf  for testing  we have to receive all attributes from physical entity
+            // for testing  we have to receive all attributes from physical entity  ( brf)
             aircraft.addSubscribe(PhysicalEntity.Attributes.AcousticSignatureIndex);
             aircraft.addSubscribe(PhysicalEntity.Attributes.AlternateEntityType);
             aircraft.addSubscribe(PhysicalEntity.Attributes.ArticulatedParametersArray);
@@ -404,6 +404,7 @@ public class AircraftApp extends NullFederateAmbassador {
                         }
                        // Test if the Attributes are readable
                         try {
+                         // without setting the DamageState,  the Status should be the default "No Damage" 
                          logger.info("Test to get tAttributeValue  aircraft.getDamageState() gives out:  " + aircraft.getDamageState() );
                         } catch (DecoderException e) {
                             logger.error("printreflectedAttributReport: reading  a decoded Attribute  has a Problem ");
