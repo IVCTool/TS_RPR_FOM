@@ -58,7 +58,7 @@ The prioritization of the test case implementation is given by the requirements 
 
 | TC | Status | Description |
 | -- |------- | ----------- |
-| TC_IR_PRP_PHY_0001 | implementation candidate | TC may create random PhysicalEntity instance and creates updates with all possible attribute combinations. Problem: With 25 attributes, that would be 2<sup>25</sup> permutations (33.554.432). With 10ms per update, that test would take 233 days. Even when respecting the _Table 7_ this will be to much. So maybe only some random permutations have to be enough. |
+| TC_IR_PRP_PHY_0001 | basic|  TC creates/change randomly (nearly) all of the PhysicalEntity attributes, in a short Time (10ms)  and e.g. 200 times. It may be the job of the operator to see if the federate get problems. |
 | TC_IR_PRP_PHY_0002 | - | - |
 | TC_IR_PRP_PHY_0003 | - | - |
 | TC_IR_PRP_PHY_0004 | - | - |
