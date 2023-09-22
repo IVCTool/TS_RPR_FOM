@@ -20,27 +20,26 @@ import hla.rti1516e.encoding.HLAinteger16BE;
 import hla.rti1516e.encoding.HLAoctet;
 import hla.rti1516e.exceptions.RTIinternalError;
 
-public class ArticulatedParameterStruct extends HLAfixedRecordStruct { 
+public class ArticulatedPartsStruct extends HLAfixedRecordStruct { 
     
     /** 
      *  (see RPR-Base_v2.0.xml)
     */
 
     enum AttributeName {
-        ArticulatedParameterChange,     // Octet
-        PartAttachedTo,                        // UnsignedInteger16
-        ParameterValue                      // ParameterValueVariantStruct        
+        Class,                   //  ArticulatedPartsTypeEnum32        -> RPR-Enumerations_v2.0.xml
+        TypeMetric           //  ArticulatedTypeMetricEnum32        -> RPR-Enumerations_v2.0.xml
     }
 
-    public ArticulatedParameterStruct () throws RTIinternalError {
+    public ArticulatedPartsStruct () throws RTIinternalError {
         super();
-        add(AttributeName.ArticulatedParameterChange.name(), encoderFactory.createHLAoctet() );
         
-        //TODo  what is a UnsignedInteger16  ? , is HLAinteger16 correct for UnsignedInteger16 ?
-        add(AttributeName.PartAttachedTo.name(), encoderFactory.createHLAinteger16BE() );
+        // TODO how to use Enums here  ArticulatedPartsTypeEnum32
+        add(AttributeName.Class.name(),  ArticulatedPartsTypeEnum32. );  
         
-        // TODO   create ParameterValueVariantStruct and its .....
-        add(AttributeName.ParameterValue.name(), new ParameterValueVariantStruct() );
+        // TODO how to use Enums here
+        add( (AttributeName.TypeMetric.name(), ArticulatedTypeMetricEnum32.values()    )  ; 
+       
        
     }
     

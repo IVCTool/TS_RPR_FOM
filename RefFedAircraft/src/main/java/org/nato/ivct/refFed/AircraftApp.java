@@ -405,6 +405,7 @@ public class AircraftApp extends NullFederateAmbassador {
                        // Test if the Attributes are readable
                         try {
                          // without setting the DamageState,  the Status should be the default "No Damage" 
+                         // Test if there are default Values for all  .....  ???
                          logger.info("Test to get tAttributeValue  aircraft.getDamageState() gives out:  " + aircraft.getDamageState() );
                         } catch (DecoderException e) {
                             logger.error("printreflectedAttributReport: reading  a decoded Attribute  has a Problem ");
