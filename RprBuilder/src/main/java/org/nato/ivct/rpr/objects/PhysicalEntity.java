@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import org.nato.ivct.rpr.HLAroot;
 import org.nato.ivct.rpr.RprBuilderException;
 import org.nato.ivct.rpr.datatypes.ArticulatedParameterStruct;
+import org.nato.ivct.rpr.datatypes.ArticulatedParameterStructLengthlessArray;
 import org.nato.ivct.rpr.datatypes.CamouflageEnum32;
 import org.nato.ivct.rpr.datatypes.DamageStatusEnum32;
 import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
@@ -32,7 +33,9 @@ import hla.rti1516e.encoding.DecoderException;
 import hla.rti1516e.encoding.EncoderException;
 import hla.rti1516e.encoding.HLAboolean;
 import hla.rti1516e.encoding.HLAinteger16BE;
+import hla.rti1516e.encoding.HLAoctet;
 import hla.rti1516e.exceptions.FederateNotExecutionMember;
+import hla.rti1516e.exceptions.FederationExecutionAlreadyExists;
 import hla.rti1516e.exceptions.InvalidObjectClassHandle;
 import hla.rti1516e.exceptions.NameNotFound;
 import hla.rti1516e.exceptions.NotConnected;
@@ -68,12 +71,7 @@ public class PhysicalEntity extends BaseEntity {
         VectoringNozzleSystemData         //<dataType>VectoringNozzleSystemDataStructLengthlessArray</dataType>
     }
     
-    // try to build a Array for  ArticulatedParametersArray
-    // how to create a dataElement    ArticulatedParameterStructLengthlessArray
-    ArrayList<ArticulatedParameterStructLengthlessArray> ArticulatedParametersArray = new ArrayList<ArticulatedParameterStructLengthlessArray>();
-    ArrayList<ArticulatedParameterStruct> ArticulatedParameterStructLengthlessArray = new ArrayList<ArticulatedParameterStruct>();
-    
-    
+      
     public PhysicalEntity() throws RprBuilderException {
         super();
         // TODO: create remaining fields     //  further attributes  have different Datatypes
@@ -86,28 +84,26 @@ public class PhysicalEntity extends BaseEntity {
             throw new RprBuilderException(e.getMessage());
         }
 
-        //ArticulatedParametersArray,
+        
+        // ArticulatedParametersArray,   TODO  it is more complicated to impement these datatypes see  SISO-STD-001-....pdf SS 31
         /*
           RPR-Physical_v2.0.xml:
           <name>ArticulatedParametersArray</name> 
-          <dataType>ArticulatedParameterStructLengthlessArray</dataType>
-          
-         */
-        /*
-        PRP-Base_v2.0.xml : 
+          <dataType>ArticulatedParameterStructLengthlessArray</dataType>          
+              
+         PRP-Base_v2.0.xml : 
            <name>ArticulatedParameterStructLengthlessArray</name>
            <dataType>ArticulatedParameterStruct</dataType>
         */
-        // How to add this Element ?
-        //addAttribute(Attributes.ArticulatedParametersArray.name(),     );    
+        // How to add this Element, what is the dataElement ? 
         
         
         addAttribute(Attributes.CamouflageType.name(), CamouflageEnum32.GenericCamouflage.getDataElement());      
-        addAttribute(Attributes.DamageState.name(), DamageStatusEnum32.NoDamage.getDataElement() );     // New,  incorrect !  
+        addAttribute(Attributes.DamageState.name(), DamageStatusEnum32.NoDamage.getDataElement() );      // New,  incorrect ?
         addAttribute(Attributes.EngineSmokeOn.name(), encoderFactory.createHLAboolean());
         addAttribute(Attributes.FirePowerDisabled.name(), encoderFactory.createHLAboolean());
         addAttribute(Attributes.FlamesPresent.name(), encoderFactory.createHLAboolean());
-        addAttribute(Attributes.ForceIdentifier.name(), ForceIdentifierEnum8.Friendly.getDataElement()   );   // New   ForceIdentifierEnum8        
+        addAttribute(Attributes.ForceIdentifier.name(), ForceIdentifierEnum8.Other.getDataElement()   );           // New   ForceIdentifierEnum8    incorrect ?     
         addAttribute(Attributes.HasAmmunitionSupplyCap.name(), encoderFactory.createHLAboolean() );        
         addAttribute(Attributes.HasFuelSupplyCap.name(), encoderFactory.createHLAboolean() );      
         addAttribute(Attributes.HasRecoveryCap.name(), encoderFactory.createHLAboolean() );    

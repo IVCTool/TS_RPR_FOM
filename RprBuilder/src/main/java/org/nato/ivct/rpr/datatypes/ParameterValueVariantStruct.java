@@ -18,10 +18,27 @@ import hla.rti1516e.encoding.HLAboolean;
 import hla.rti1516e.encoding.HLAfixedRecord;
 import hla.rti1516e.exceptions.RTIinternalError;
 
-public class ParameterValueVariantStruct extends HLAfixedRecordStruct {
+public class ParameterValueVariantStruct extends HLAfixedRecordStruct {  // ParameterTypeEnum32 ?
     
     /** 
      *  (see RPR-Base_v2.0.xml)
+    
+    <variantRecordData>
+                <name>ParameterValueVariantStruct</name>
+                <discriminant>ArticulatedParameterType</discriminant>
+                <dataType>ParameterTypeEnum32</dataType>
+                <alternative>
+                    <enumerator>ArticulatedPart</enumerator>
+                    <name>ArticulatedParts</name>
+                    <dataType>ArticulatedPartsStruct</dataType>
+                    <semantics>Alternative for an articulated part.</semantics>
+                </alternative>
+                <alternative>
+                    <enumerator>AttachedPart</enumerator>
+                    <name>AttachedParts</name>
+                    <dataType>AttachedPartsStruct</dataType>
+                    <semantics>Alternative for an attached part.</semantics>
+                </alternative>
     */
     
     public enum AttributeName {

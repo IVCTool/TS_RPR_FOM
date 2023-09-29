@@ -17,60 +17,89 @@ package org.nato.ivct.rpr.datatypes;
 import org.nato.ivct.rpr.datatypes.EntityIdentifierStruct.AttributeName;
 
 import hla.rti1516e.encoding.HLAinteger16BE;
+import hla.rti1516e.encoding.HLAinteger32BE;
 import hla.rti1516e.encoding.HLAoctet;
+import hla.rti1516e.encoding.HLAfloat32BE;
+
 import hla.rti1516e.exceptions.RTIinternalError;
 
 public class ArticulatedPartsStruct extends HLAfixedRecordStruct { 
     
     /** 
-     *  (see RPR-Base_v2.0.xml)
+     *  (see RPR-Base_v2.0.xml)    Definition see below
     */
 
     enum AttributeName {
         Class,                   //  ArticulatedPartsTypeEnum32        -> RPR-Enumerations_v2.0.xml
-        TypeMetric           //  ArticulatedTypeMetricEnum32        -> RPR-Enumerations_v2.0.xml
+        TypeMetric,           //  ArticulatedTypeMetricEnum32        -> RPR-Enumerations_v2.0.xml
+        Value                  //   Float32       #####################################              
     }
 
     public ArticulatedPartsStruct () throws RTIinternalError {
         super();
         
         // TODO how to use Enums here  ArticulatedPartsTypeEnum32
-        add(AttributeName.Class.name(),  ArticulatedPartsTypeEnum32. );  
+        add(AttributeName.Class.name(),  ArticulatedPartsTypeEnum32.Other.getDataElement() );  
         
         // TODO how to use Enums here
-        add( (AttributeName.TypeMetric.name(), ArticulatedTypeMetricEnum32.values()    )  ; 
-       
+        add( AttributeName.TypeMetric.name() ,  ArticulatedTypeMetricEnum32.Position.getDataElement()  )   ;      
+                
+        add(AttributeName.Value.name() , encoderFactory.createHLAfloat32BE() )  ;  
+     // add(AttributeName.ZAcceleration.name(), encoderFactory.createHLAfloat32BE()); 
        
     }
     
-    
-    
-    public byte getArticulatedParameterChange() {
-        return ((HLAoctet) get(AttributeName.ArticulatedParameterChange.name())).getValue();
+ 
+    public HLAinteger32BE getAttribut_Class() {                                              // TODO  in this Way  ?????  or incorrect
+         return (HLAinteger32BE) get(AttributeName.Class.name()  );
     }
 
-    public void setArticulatedParameterChange(byte parameterChange) {
-        ((HLAoctet) get(AttributeName.ArticulatedParameterChange.name())).setValue(parameterChange);
+    public void setAttribut_Class(int  para) {
+         (  (HLAinteger32BE) get(AttributeName.Class.name() ) ).setValue(para );   
     }
 
     
-    public short getPartAttachedTo() {
-        return ((HLAinteger16BE) get(AttributeName.PartAttachedTo.name())).getValue();
+    public HLAinteger32BE getTypeMetric() {                                           // TODO  in this Way  ?????  or incorrect
+        return  (HLAinteger32BE) get(AttributeName.TypeMetric.name()  );
     }
     
-    public void setPartAttachedTo(short partAttachedTo) {
-        ((HLAinteger16BE) get(AttributeName.PartAttachedTo.name())).setValue(partAttachedTo);
+    public void setTypeMetric(int typeMetric ) {
+        ( (HLAinteger32BE) get(AttributeName.TypeMetric.name() ) ).setValue(typeMetric);
     } 
     
-    
-    
-    public ParameterValueVariantStruct getParameterValue() {
-        return ((ParameterValueVariantStruct) get(AttributeName.ParameterValue.name()));
+       
+    public float  getValue() {
+        return ( (HLAfloat32BE) get(AttributeName.Value.name() ) ).getValue() ;
     }
     
-    public void setParameterValue (ParameterValueVariantStruct parameterValue) {
-        add(AttributeName.ParameterValue.name(), parameterValue);
+    public void setValue (float  alue) {      
+        ((HLAfloat32BE) get(AttributeName.Value.name())).setValue(alue);        
     }    
    
-        
 }
+
+/*    from  RPR-Base_v2.0.xml   
+       <fixedRecordData notes="RPRnoteBase7">
+            <name>ArticulatedPartsStruct</name>
+            <encoding>HLAfixedRecord</encoding>
+            <semantics>Structure to represent the state of a movable part of an entity.</semantics>
+            <field>
+                <name>Class</name>
+                <dataType>ArticulatedPartsTypeEnum32</dataType>
+                <semantics>The type class uniquely identifies a particular articulated part on a given entity type. Guidance for uniquely assigning type classes to an entity's articulated parts is given in section 4.8 of the enumeration document (SISO-REF-010).</semantics>
+            </field>
+            <field>
+                <name>TypeMetric</name>
+                <dataType>ArticulatedTypeMetricEnum32</dataType>
+                <semantics>The type metric uniquely identifies the transformation to be applied to the articulated part.</semantics>
+            </field>
+            <field>
+                <name>Value</name>
+                <dataType>Float32</dataType>
+                <semantics>Value of the transformation to be applied to the articulated part.</semantics>
+            </field>
+        </fixedRecordData>
+*/
+
+
+

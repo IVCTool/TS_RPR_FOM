@@ -21,10 +21,10 @@ import hla.rti1516e.encoding.HLAinteger32BE;
 
 
 /** 
- *  (see RPR-Enumerations_v2.0.xml)
+ *  (see RPR-Enumerations_v2.0.xml) ,  definition see below
 */
 
- // TODO  complete the list with all other   ca. 15 Elements  
+ 
 public enum ArticulatedTypeMetricEnum32 {    
     Position(1),
     PositionRate(2),
@@ -55,7 +55,6 @@ public enum ArticulatedTypeMetricEnum32 {
         HLAinteger32BE dataElement = HLAroot.getEncoderFactory().createHLAinteger32BE();
         dataElement.decode(bytes);
         
-     // TODO  complete the list with 150  more  Elements 
         switch (dataElement.getValue()) {         
             case  1 : return Position;             //(1),
             case  2 : return PositionRate;             //(2),

@@ -24,6 +24,32 @@ public class ArticulatedParameterStruct extends HLAfixedRecordStruct {
     
     /** 
      *  (see RPR-Base_v2.0.xml)
+     <fixedRecordData>
+                <name>ArticulatedParameterStruct</name>
+                <encoding>HLAfixedRecord</encoding>
+                <semantics>Structure to specify a movable or attached part of an entity. 
+                Based on the Articulation Parameter record as specified in IEEE 1278.1-1995 section 5.2.5.               
+                Note that usage of this datatype for the PhyscialEntity object class attribute ArticulatedParametersArray
+                and MunitionDetonation interaction class parameter ArticulatedPartData shall be in accordance
+                 with IEEE 1278.1-1995 Annex A.</semantics>
+                <field>
+                    <name>ArticulatedParameterChange</name>
+                    <dataType>Octet</dataType>
+                    <semantics>Indicator of a change to the part. This field shall be set to zero for each exercise and sequentially incremented by one for each change in articulation parameters. In the case where all possible values are exhausted, the numbers shall be reused beginning at zero.</semantics>
+                </field>
+                <field>
+                    <name>PartAttachedTo</name>
+                    <dataType>UnsignedInteger16</dataType>
+                    <semantics>Identification of the articulated part to which this articulation parameter is attached. This field shall contain the value zero if the articulated part is attached directly to the entity.</semantics>
+                </field>
+                <field>
+                    <name>ParameterValue</name>
+                    <dataType>ParameterValueVariantStruct</dataType>
+                    <semantics>Details of the parameter: whether it is an articulated or an attached part, and its type and value.</semantics>
+                </field>
+            </fixedRecordData>
+    
+     
     */
 
     enum AttributeName {
@@ -41,20 +67,17 @@ public class ArticulatedParameterStruct extends HLAfixedRecordStruct {
         
         // TODO   create ParameterValueVariantStruct and its .....
         add(AttributeName.ParameterValue.name(), new ParameterValueVariantStruct() );
-       
-    }
+    }    
     
-    
-    
+    // getter and setter
     public byte getArticulatedParameterChange() {
         return ((HLAoctet) get(AttributeName.ArticulatedParameterChange.name())).getValue();
     }
-
+    
     public void setArticulatedParameterChange(byte parameterChange) {
         ((HLAoctet) get(AttributeName.ArticulatedParameterChange.name())).setValue(parameterChange);
     }
 
-    
     public short getPartAttachedTo() {
         return ((HLAinteger16BE) get(AttributeName.PartAttachedTo.name())).getValue();
     }
@@ -63,8 +86,6 @@ public class ArticulatedParameterStruct extends HLAfixedRecordStruct {
         ((HLAinteger16BE) get(AttributeName.PartAttachedTo.name())).setValue(partAttachedTo);
     } 
     
-    
-    
     public ParameterValueVariantStruct getParameterValue() {
         return ((ParameterValueVariantStruct) get(AttributeName.ParameterValue.name()));
     }
@@ -72,6 +93,5 @@ public class ArticulatedParameterStruct extends HLAfixedRecordStruct {
     public void setParameterValue (ParameterValueVariantStruct parameterValue) {
         add(AttributeName.ParameterValue.name(), parameterValue);
     }    
-   
         
 }

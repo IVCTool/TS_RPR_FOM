@@ -25,7 +25,7 @@ import hla.rti1516e.encoding.HLAinteger32BE;
 */
 
 
- // TODO  complete the list of  enumerator Elements  
+ // TODO  complete the list of  enumerator Elements  ca  700 -900 ? 
 public enum StationEnum32 {    
     Nothing_Empty(0),              
     Fuselage_Station1(512),                  
@@ -38,11 +38,11 @@ public enum StationEnum32 {
     Fuselage_Station8(519),                  
     Fuselage_Station9(520),                  
     Fuselage_Station10(521),
-    
+    // ...
     LeftWingStation1(640),
-    
+    // ...
     RightWingStation1(768),
-    
+    // ...
     M16A42_rifle(896),
     M249_SAW(897),
     M60_Machine_gun(898),
