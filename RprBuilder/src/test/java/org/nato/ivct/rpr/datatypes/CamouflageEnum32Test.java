@@ -17,8 +17,9 @@ public class CamouflageEnum32Test {
         assertEquals(2, CamouflageEnum32.WinterCamouflage.getValue());
         assertEquals(3, CamouflageEnum32.ForestCamouflage.getValue());
         assertEquals(4, CamouflageEnum32.GenericCamouflage.getValue());
+        
         CamouflageEnum32 camouflageDesert = CamouflageEnum32.DesertCamouflage;
-        assertTrue(camouflageDesert == CamouflageEnum32.DesertCamouflage);
+        assertTrue(camouflageDesert ==  CamouflageEnum32.DesertCamouflage);
         assertFalse(camouflageDesert == CamouflageEnum32.ForestCamouflage);
         assertEquals(1, camouflageDesert.getValue());
         CamouflageEnum32 camouflageForest = CamouflageEnum32.ForestCamouflage;
