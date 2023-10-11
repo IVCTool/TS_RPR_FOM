@@ -25,7 +25,6 @@ import hla.rti1516e.encoding.HLAoctet;
  *  (see RPR-Enumerations_v2.0.xml)   definition see below
 */
 
- // TODO  complete the list of  enumerator Elements  ca  700 -900 ? 
 public enum MarkingEncodingEnum8 {    
     Other( (byte)  0),
     ASCII( (byte)1),

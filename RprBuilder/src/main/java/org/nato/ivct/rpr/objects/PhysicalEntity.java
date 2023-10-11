@@ -84,8 +84,8 @@ public class PhysicalEntity extends BaseEntity {
             throw new RprBuilderException(e.getMessage());
         }
 
-        
-        // ArticulatedParametersArray,   TODO  it is more complicated to impement these datatypes see  SISO-STD-001-....pdf SS 31
+       //  ArticulatedParametersArray,         // ArticulatedParameterStructLengthlessArray
+        //  TODO  it is more complicated to impement these datatypes see  SISO-STD-001-....pdf SS 31
         /*
           RPR-Physical_v2.0.xml:
           <name>ArticulatedParametersArray</name> 
@@ -94,9 +94,7 @@ public class PhysicalEntity extends BaseEntity {
          PRP-Base_v2.0.xml : 
            <name>ArticulatedParameterStructLengthlessArray</name>
            <dataType>ArticulatedParameterStruct</dataType>
-        */
-        // How to add this Element, what is the dataElement ? 
-        
+        */  
         
         addAttribute(Attributes.CamouflageType.name(), CamouflageEnum32.GenericCamouflage.getDataElement());      
         addAttribute(Attributes.DamageState.name(), DamageStatusEnum32.NoDamage.getDataElement() );      // New,  incorrect ?
@@ -113,7 +111,9 @@ public class PhysicalEntity extends BaseEntity {
         addAttribute(Attributes.IsConcealed.name(), encoderFactory.createHLAboolean()); 
         addAttribute(Attributes.LiveEntityMeasuredSpeed.name(), encoderFactory.createHLAinteger16BE()  ); 
         
-         //Marking,                                    //  <dataType>MarkingStruct</dataType>        
+         //Marking,  // <dataType>MarkingStruct</dataType>    !!!  MarkingStruct is not  complete an can not be correct
+        //addAttribute(Attributes.Marking.name(), encoderFactory.createHLAoctet()  ) ;        
+        
         addAttribute(Attributes.PowerPlantOn.name(), encoderFactory.createHLAboolean() );        
         //PropulsionSystemsData,                // <dataType>PropulsionSystemDataStructLengthlessArray</dataType>        
         addAttribute(Attributes.RadarCrossSectionSignatureIndex.name(), encoderFactory.createHLAinteger16BE() );  // ??  
