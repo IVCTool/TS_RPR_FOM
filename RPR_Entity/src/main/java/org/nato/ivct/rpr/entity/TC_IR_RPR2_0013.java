@@ -232,10 +232,17 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
      class TestCaseAmbassador extends NullFederateAmbassador {
 
          @Override
-         public void discoverObjectInstance(ObjectInstanceHandle theObject, ObjectClassHandle theObjectClass,
+         public void discoverObjectInstance(ObjectInstanceHandle theObjectInstanceH, ObjectClassHandle theObjectClassH,
              String objectName) throws FederateInternalError {
-             logger.trace("discoverObjectInstance {}", theObject);
-             // semaphore.release(1);
+             logger.trace("discoverObjectInstance {}", theObjectInstanceH);
+             
+             try {
+                 
+             logger.debug("# discoverObjectInstance: reveived ObjectClassHandle with rti-ObjectClassName:  "
+                           + rtiAmbassador.getObjectClassName(theObjectClassH)); // Debug
+             } catch (Exception e) {
+                 logger.error("discoverObjectInstance received Exception", e);
+             }
          }
 
          @Override
@@ -295,14 +302,12 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
       // we have to subscribe to all Attributes of al   Classes  BaseEntity.PhysicalEntity and subclasses
          
       try {
-
           PhysicalEntity.initialize(rtiAmbassador);
 
           // use a Array to collect all needed Entities
           ArrayList<BaseEntity> entityToTestList = new ArrayList<BaseEntity>();
 
           // TODO brf now subscribe to all Attributes
-
           phyEntity = new PhysicalEntity();
           entityToTestList.add(phyEntity);
 
@@ -417,17 +422,19 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
         Supplies suppliesEntity = new Supplies();
         entityToTestList.add(suppliesEntity);
         
-        // we need to subscribe to all Objects             
-             for (BaseEntity bE : entityToTestList  ) {
-                 logger.debug("# in performTest subscribing all Elements of PhysicalEntityToTestList now "  +bE.getHlaClassName() );  // Debug
-                 bE.subscribe();
+        // we need to subscribe to all Objects
+        for (BaseEntity bE : entityToTestList) {
+            logger.debug("# in performTest subscribing all Elements of PhysicalEntityToTestList now "
+                    + bE.getHlaClassName()); // Debug
+            bE.subscribe();
+        }
+             
+             for (int i = 0; i < 10; i++) {  // Testing for 10 Sec
+              //DOTO Testing something here
+              // ...
+             Thread.sleep(1000);
              }
              
-            
-             boolean gotEnoughAtttributes = true;
-             while (!gotEnoughAtttributes) {
-                 // the Test ......
-             }
 
          } catch (Exception e) {
              throw new TcInconclusiveIf(e.getMessage());

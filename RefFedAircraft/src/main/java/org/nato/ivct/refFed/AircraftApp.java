@@ -14,18 +14,42 @@ limitations under the License. */
 
 package org.nato.ivct.refFed;
 
+import hla.rti1516e.AttributeHandle;
+import hla.rti1516e.AttributeHandleValueMap;
 import hla.rti1516e.CallbackModel;
 import hla.rti1516e.FederateAmbassador;
 import hla.rti1516e.FederateHandle;
+import hla.rti1516e.LogicalTime;
+import hla.rti1516e.MessageRetractionHandle;
 import hla.rti1516e.NullFederateAmbassador;
+import hla.rti1516e.ObjectClassHandle;
+import hla.rti1516e.ObjectInstanceHandle;
+import hla.rti1516e.OrderType;
 import hla.rti1516e.RTIambassador;
 import hla.rti1516e.RtiFactory;
 import hla.rti1516e.RtiFactoryFactory;
+import hla.rti1516e.TransportationTypeHandle;
+import hla.rti1516e.encoding.DecoderException;
+import hla.rti1516e.FederateAmbassador.SupplementalReflectInfo;
+import hla.rti1516e.exceptions.AttributeNotDefined;
+import hla.rti1516e.exceptions.FederateInternalError;
+import hla.rti1516e.exceptions.FederateNotExecutionMember;
 import hla.rti1516e.exceptions.FederationExecutionAlreadyExists;
+import hla.rti1516e.exceptions.InvalidAttributeHandle;
+import hla.rti1516e.exceptions.InvalidObjectClassHandle;
+import hla.rti1516e.exceptions.NameNotFound;
+import hla.rti1516e.exceptions.NotConnected;
+import hla.rti1516e.exceptions.ObjectInstanceNotKnown;
+import hla.rti1516e.exceptions.RTIinternalError;
 
 import java.net.URL;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import javax.naming.NameNotFoundException;
+import javax.naming.NotContextException;
+
 import org.slf4j.LoggerFactory;
 
 import org.nato.ivct.rpr.*;
@@ -35,17 +59,20 @@ import org.nato.ivct.rpr.datatypes.SpatialStaticStruct;
 import org.nato.ivct.rpr.datatypes.SpatialVariantStruct;
 import org.nato.ivct.rpr.interactions.WeaponFire;
 import org.nato.ivct.rpr.objects.Aircraft;
+import org.nato.ivct.rpr.objects.AmphibiousVehicle;
 import org.nato.ivct.rpr.objects.HLAobjectRoot;
 import org.nato.ivct.rpr.objects.Munition;
 import org.nato.ivct.rpr.objects.BaseEntity;
 import org.nato.ivct.rpr.objects.PhysicalEntity;
+import org.nato.ivct.rpr.objects.Platform;
 
 public class AircraftApp extends NullFederateAmbassador {
     
     public enum CmdLineOptions {
         provokeFlyAircraft,
         provokeMissingMandatoryAttribute,
-        provokeDeadReckoningError
+        provokeDeadReckoningError,
+        provokeReflectedAttributesReport            // -pRAR
     }
 
 	public class Option {
@@ -68,10 +95,16 @@ public class AircraftApp extends NullFederateAmbassador {
 	private String federationName = "TestFederation";
 	private String federateName = "Aircraft";
 	private String federateType = "RefFed";
-	private int nrOfCycles = 4000;
+	private int nrOfCycles = 4000;   // 4000
 	private RTIambassador rtiAmbassador;
 	private FederateHandle fedHandle;
+	
+	
+	HashMap<ObjectInstanceHandle, Aircraft> knownAircraftEntities = new HashMap<>();		
+	HashMap<ObjectInstanceHandle, ObjectClassHandle> knownObjectInstanceObjectClassHandles = new HashMap<>();
+	final HashMap<String, Integer> reflectedAttributeReport = new HashMap<>();
 
+		
 	public static void main(final String[] args) {
 		AircraftApp aircraft = new AircraftApp(args);
 		logger.info("AircraftApp running");
@@ -143,12 +176,106 @@ public class AircraftApp extends NullFederateAmbassador {
 			}
 		}
     }
+	
+    @Override
+    public void discoverObjectInstance(
+            ObjectInstanceHandle theObjectInstanceH,
+            ObjectClassHandle theObjectClassH,
+            String objectName,
+            FederateHandle producingFederate)
+            throws FederateInternalError {
+        logger.trace("discoverObjectInstance {} with producingFederate {}", theObjectInstanceH, producingFederate);
+         logger.info("# discoverObjectInstance with FederateHandle ");  
+        discoverObjectInstance(theObjectInstanceH, theObjectClassH, objectName);
+    }
+	
+	@Override
+    public void discoverObjectInstance(
+            ObjectInstanceHandle theObjectInstanceH,
+            ObjectClassHandle theObjectClassH,
+            String objectName)
+            throws FederateInternalError {
+        logger.trace("discoverObjectInstance {}", theObjectInstanceH);
+        logger.debug("### discoverObjectInstance without FederateHandle ");
+        
+        // notice the  received ObjectInstanceHandle, ObjectClassHandle in  knownObjectInstanceObjectClassHandles;
+        knownObjectInstanceObjectClassHandles.put(theObjectInstanceH, theObjectClassH);   
+     
+        try {
+        // store the  aircraft ObjectInstanceHandle
+        if (rtiAmbassador.getObjectClassName(theObjectClassH).equals( "HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.Aircraft") ) {
+            String tempObjectClassName =   rtiAmbassador.getObjectClassName(theObjectClassH ) ;     // Debug
+            logger.debug("######### discoverObjectInstance: got this ObjectKlassName ##### :   " + tempObjectClassName  ) ;
+            
+            Aircraft aircr = new Aircraft();
+            aircr.setObjectHandle(theObjectInstanceH);
+            knownAircraftEntities.put(theObjectInstanceH, aircr);         
+        }
+        
+        } catch (RTIinternalError| NotConnected |  InvalidObjectClassHandle | FederateNotExecutionMember |  RprBuilderException e) {
+            logger.error("discoverObjectInstance  received Exception  ", e);
+        }
+        
+    }
+    
+     @Override
+    public void reflectAttributeValues(ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes,
+            byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport,
+            LogicalTime theTime, OrderType receivedOrdering, MessageRetractionHandle retractionHandle,
+            SupplementalReflectInfo reflectInfo) throws FederateInternalError {
+        logger.trace("reflectAttributeValues with retractionHandle");
+        reflectAttributeValues(theObject, theAttributes, userSuppliedTag, sentOrdering, theTransport, reflectInfo);
+    }
+    @Override
+    public void reflectAttributeValues(ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes,
+            byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport,
+            LogicalTime theTime, OrderType receivedOrdering, SupplementalReflectInfo reflectInfo)
+            throws FederateInternalError {
+        logger.trace("reflectAttributeValues without  MessageRetractionHandle");
+        reflectAttributeValues(theObject, theAttributes, userSuppliedTag, sentOrdering, theTransport, reflectInfo);
+    }
+    
+    @Override
+    public void reflectAttributeValues(ObjectInstanceHandle theObjectInstancH, AttributeHandleValueMap theAttributes,
+            byte[] userSuppliedTag,  OrderType sentOrdering, TransportationTypeHandle theTransport,
+            SupplementalReflectInfo reflectInfo)  throws FederateInternalError {
+            logger.trace("reflectAttributeValues without LogicalTime, receivedOrdering,  MessageRetractionHandle ");
+       
+
+        // Only get the names of Attributes  1 
+        try { 
+        ObjectClassHandle tempObjectClassHandle =  null;
+        tempObjectClassHandle = knownObjectInstanceObjectClassHandles.get(theObjectInstancH);
+        
+        for (AttributeHandle atH : theAttributes.keySet()) {
+            String tempAttributname=  rtiAmbassador.getAttributeName(tempObjectClassHandle, atH) ;            
+            collectTestReport(tempAttributname);                
+        }         
+        } catch ( InvalidObjectClassHandle | AttributeNotDefined | InvalidAttributeHandle | FederateNotExecutionMember |   NotConnected | RTIinternalError e) {
+            logger.error("reflectAttributeValues received Exception" ,e );
+        }
+        
+        // Decode the received Attributes
+        Aircraft  tempKnownAircraftEntity = knownAircraftEntities.get(theObjectInstancH);        
+        if (tempKnownAircraftEntity != null) {
+            tempKnownAircraftEntity.clear();
+            try {
+                tempKnownAircraftEntity.decode(theAttributes);
+                //logger.debug("### reflectAttributeValues:  try to decode theAttributes ");
+            } catch (Exception e) {
+                logger.error("reflectAttributeValues received Exception", e);
+            }
+        }
+        
+    }
 
 	private void run() {
+       
 		try {
 			RtiFactory rtiFactory = RtiFactoryFactory.getRtiFactory();
 			rtiAmbassador = rtiFactory.getRtiAmbassador();
-			FederateAmbassador nullAmbassador = new NullFederateAmbassador();
+			//FederateAmbassador nullAmbassador = new NullFederateAmbassador();
+			//FederateAmbassador sutAmbassador = new NullFederateAmbassador();
 			
 			// That should be the normal normal loading procedure
 			URL[] fomList = new FomFiles()
@@ -160,7 +287,8 @@ public class AircraftApp extends NullFederateAmbassador {
 				.addTmpRPR_Physical()
 				.get();
 
-			rtiAmbassador.connect(nullAmbassador, CallbackModel.HLA_IMMEDIATE);
+			rtiAmbassador.connect(this, CallbackModel.HLA_IMMEDIATE);
+			//  rtiAmbassador.connect(sutAmbassador, CallbackModel.HLA_IMMEDIATE);
 			try {
 				rtiAmbassador.createFederationExecution(this.federationName, fomList);
 			} catch (FederationExecutionAlreadyExists ignored) { }
@@ -183,20 +311,55 @@ public class AircraftApp extends NullFederateAmbassador {
             aircraft.addPublish(PhysicalEntity.Attributes.SmokePlumePresent);
             aircraft.addPublish(PhysicalEntity.Attributes.TentDeployed);
             aircraft.addPublish(PhysicalEntity.Attributes.TrailingEffectsCode);
-            
             aircraft.register();
-
-            //  the 'simple'  boolean Attributes
-            // for other Attributes e.g. CamouflageType we may need  a Struct            
+            
+            //  the 'simple'  boolean Attributes,  for other Attributes e.g. CamouflageType we may need  a Struct            
             aircraft.setEngineSmokeOn(true);            
-            aircraft.setFirePowerDisabled(true);            
+            aircraft.setFirePowerDisabled(true);       
             aircraft.setFlamesPresent(true);           
             aircraft.setIsConcealed(true);          
-            aircraft.setTentDeployed(true);                
-      
+            aircraft.setTentDeployed(true);
+            // update is below
+            
+            
+            // for testing  we have to receive all attributes from physical entity  ( brf)
+            aircraft.addSubscribe(PhysicalEntity.Attributes.AcousticSignatureIndex);
+            aircraft.addSubscribe(PhysicalEntity.Attributes.AlternateEntityType);
+            aircraft.addSubscribe(PhysicalEntity.Attributes.ArticulatedParametersArray);
+            aircraft.addSubscribe(PhysicalEntity.Attributes.CamouflageType);
+            aircraft.addSubscribe(PhysicalEntity.Attributes.DamageState);
+
+            aircraft.addSubscribe(PhysicalEntity.Attributes.EngineSmokeOn);
+            aircraft.addSubscribe(PhysicalEntity.Attributes.FirePowerDisabled);
+            aircraft.addSubscribe(PhysicalEntity.Attributes.FlamesPresent);
+            aircraft.addSubscribe(PhysicalEntity.Attributes.ForceIdentifier);
+            aircraft.addSubscribe(PhysicalEntity.Attributes.HasAmmunitionSupplyCap);
+
+            aircraft.addSubscribe(PhysicalEntity.Attributes.HasFuelSupplyCap);
+            aircraft.addSubscribe(PhysicalEntity.Attributes.HasRecoveryCap);
+            aircraft.addSubscribe(PhysicalEntity.Attributes.HasRepairCap);
+            aircraft.addSubscribe(PhysicalEntity.Attributes.Immobilized);
+            aircraft.addSubscribe(PhysicalEntity.Attributes.InfraredSignatureIndex);
+
+            aircraft.addSubscribe(PhysicalEntity.Attributes.IsConcealed);
+            aircraft.addSubscribe(PhysicalEntity.Attributes.LiveEntityMeasuredSpeed);
+            aircraft.addSubscribe(PhysicalEntity.Attributes.Marking);
+            aircraft.addSubscribe(PhysicalEntity.Attributes.PowerPlantOn);
+            aircraft.addSubscribe(PhysicalEntity.Attributes.PropulsionSystemsData);
+
+            aircraft.addSubscribe(PhysicalEntity.Attributes.RadarCrossSectionSignatureIndex);
+            aircraft.addSubscribe(PhysicalEntity.Attributes.SmokePlumePresent);
+            aircraft.addSubscribe(PhysicalEntity.Attributes.TentDeployed);
+            aircraft.addSubscribe(PhysicalEntity.Attributes.TrailingEffectsCode);
+            aircraft.addSubscribe(PhysicalEntity.Attributes.VectoringNozzleSystemData);
+            aircraft.subscribe();
+            
+   
 			Munition munitionProxy = new Munition();
             munitionProxy.addPublish(BaseEntity.Attributes.EntityIdentifier);
-			munitionProxy.publishLauncherFlashPresent();
+            // try if we get this in TC_IR_RPR_PHY_0001
+            //munitionProxy.addPublish(PhysicalEntity.Attributes.CamouflageType);  // DEBUG
+            munitionProxy.publishLauncherFlashPresent();
 			munitionProxy.publish();
 			munitionProxy.register();
 			
@@ -220,6 +383,40 @@ public class AircraftApp extends NullFederateAmbassador {
 			aircraft.setEntityType(entityType);
 			aircraft.update();
 			
+			
+            if (provoke(CmdLineOptions.provokeReflectedAttributesReport)) {
+                Thread printreflectedAttributReport = new Thread(() -> {
+                    // report all 10 sec as long the main thread is running
+                    int threadSleepTime = 10000;
+
+                    while (true) {
+                        logger.info(" ----------------  print reflected attributes --------------  ");
+
+                        for (String s : reflectedAttributeReport.keySet()) {
+                            String ausgabe = "number of updats for  " + s + ":  " + reflectedAttributeReport.get(s);
+                            logger.info(ausgabe);
+                        }
+                        try {
+                            Thread.sleep(threadSleepTime);
+                        } catch (InterruptedException e) {
+                            logger.error("run  printreflectedAttributReport has a Problem ");
+                            e.printStackTrace();
+                        }
+                       // Test if the Attributes are readable
+                        try {
+                         // without setting the DamageState,  the Status should be the default "No Damage" 
+                         // Test if there are default Values for all  .....  ???
+                         logger.info("Test to get tAttributeValue  aircraft.getDamageState() gives out:  " + aircraft.getDamageState() );
+                        } catch (DecoderException e) {
+                            logger.error("printreflectedAttributReport: reading  a decoded Attribute  has a Problem ");
+                            e.printStackTrace();
+                        }   
+                    }
+                });
+                printreflectedAttributReport.start();
+            }
+		        
+			
 			if (provoke(CmdLineOptions.provokeFlyAircraft)) {
 				for (int i=0; i<nrOfCycles; i++) {
 					double xPos = 1.0 + Math.sin(i);
@@ -238,14 +435,25 @@ public class AircraftApp extends NullFederateAmbassador {
 					spatialStatic.getOrientation().setPsi(psi);
 					spatialStatic.getOrientation().setTheta(theta);
 					aircraft.setSpatial(spatial);
-					aircraft.update();  
+					aircraft.update();
 					Thread.sleep(1000);
-					logger.info("provokeFlyAircraft: " +i);  // Debug
+					//logger.debug("provokeFlyAircraft: " +i);
 				}
 			}
-
+		
+			
 		} catch (final Exception e) {
 			logErrorAndExit("Exception: {}", e.toString());
 		}
 	}
+
+    public void collectTestReport(String toTestAttribut) {
+        String randomTestName = toTestAttribut;
+        if (reflectedAttributeReport.get(randomTestName) == null) {
+            reflectedAttributeReport.put(randomTestName, 1);
+        } else {
+            reflectedAttributeReport.put(randomTestName, (reflectedAttributeReport.get(randomTestName) + 1));
+        }
+    }
+ 	
 }
