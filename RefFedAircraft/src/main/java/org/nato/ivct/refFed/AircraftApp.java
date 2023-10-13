@@ -69,7 +69,7 @@ import org.nato.ivct.rpr.objects.Platform;
 public class AircraftApp extends NullFederateAmbassador {
     
     public enum CmdLineOptions {
-        provokeFlyAircraft,
+        provokeFlyAircraft,                           // -pFA
         provokeMissingMandatoryAttribute,
         provokeDeadReckoningError,
         provokeReflectedAttributesReport            // -pRAR
@@ -352,6 +352,13 @@ public class AircraftApp extends NullFederateAmbassador {
             aircraft.addSubscribe(PhysicalEntity.Attributes.TentDeployed);
             aircraft.addSubscribe(PhysicalEntity.Attributes.TrailingEffectsCode);
             aircraft.addSubscribe(PhysicalEntity.Attributes.VectoringNozzleSystemData);
+           
+            
+            
+            // for testing  we have to receive all attributes from Platform entity  ( brf)
+            
+            aircraft.addSubscribe(Platform.Attributes.AfterburnerOn);
+            
             aircraft.subscribe();
             
    
@@ -402,6 +409,7 @@ public class AircraftApp extends NullFederateAmbassador {
                             logger.error("run  printreflectedAttributReport has a Problem ");
                             e.printStackTrace();
                         }
+                        
                        // Test if the Attributes are readable
                         try {
                          // without setting the DamageState,  the Status should be the default "No Damage" 
@@ -437,7 +445,7 @@ public class AircraftApp extends NullFederateAmbassador {
 					aircraft.setSpatial(spatial);
 					aircraft.update();
 					Thread.sleep(1000);
-					//logger.debug("provokeFlyAircraft: " +i);
+					logger.debug("provokeFlyAircraft: " +i);
 				}
 			}
 		
