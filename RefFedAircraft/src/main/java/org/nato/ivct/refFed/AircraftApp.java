@@ -260,9 +260,8 @@ public class AircraftApp extends NullFederateAmbassador {
         if (tempKnownAircraftEntity != null) {
             tempKnownAircraftEntity.clear();
             try {
-                tempKnownAircraftEntity.decode(theAttributes);
-                //logger.debug("### reflectAttributeValues:  try to decode theAttributes ");                                
-                logger.debug("get we sended Values for e.g. AfterburnerOn now ?" + tempKnownAircraftEntity.getAfterburnerOn() );
+                tempKnownAircraftEntity.decode(theAttributes);      
+                logger.debug("### reflectAttributeValues: get we sended Values for e.g. AfterburnerOn now ?" + tempKnownAircraftEntity.getAfterburnerOn() );
                 
             } catch (Exception e) {
                 logger.error("reflectAttributeValues received Exception", e);
