@@ -67,8 +67,6 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
  * shall  be treated as optional fields for federates updating instance attributes
  *  of this object class or its subclasses.
  * 
- *  
- *  
  *   
  *  Platform   Attributes:  SISO-STD-001  P. 46   Table 8  25 attributes   all Optional
  *  Attribute Name                  Default Value                DataType
@@ -91,7 +89,6 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
  *   RunningLightsOn,
  *   SpotLightsOn,
  *   TailLightsOn
- *
  */
 
 public class TC_IR_RPR2_PHY_0003 extends AbstractTestCaseIf {
@@ -103,17 +100,17 @@ public class TC_IR_RPR2_PHY_0003 extends AbstractTestCaseIf {
     
     HashMap<String, Integer> setAttributeReport = new HashMap<>();
     
-    class TestCaseAmbassador extends NullFederateAmbassador {
-    	
-    	//public void discoverObjectInstance() {
-          // complete if needed
-    	//}
-    	
-    	//public void reflectAttributeValues() {
-    		// complete if needed
-    	//}
+	class TestCaseAmbassador extends NullFederateAmbassador {
 
-    }
+		// public void discoverObjectInstance() {
+		// complete if needed
+		// }
+
+		// public void reflectAttributeValues() {
+		// complete if needed
+		// }
+
+	}
     
 	@Override
 	protected void logTestPurpose(Logger logger) {
@@ -168,7 +165,7 @@ public class TC_IR_RPR2_PHY_0003 extends AbstractTestCaseIf {
          //phyEntity.subscribe();
        
          Aircraft aircraft = new Aircraft();
-         // for testing  we have to send all attributes from physical entity   
+         // for testing  we have to send all attributes from Platform entity   
          aircraft.addPublish(Platform.Attributes.AfterburnerOn);
          aircraft.addPublish(Platform.Attributes.AntiCollisionLightsOn);
          aircraft.addPublish(Platform.Attributes.BlackOutBrakeLightsOn);
@@ -191,8 +188,9 @@ public class TC_IR_RPR2_PHY_0003 extends AbstractTestCaseIf {
          aircraft.register();
  
          double rangeForTesting = 0.4;
-         
-        for (int i = 0; i < 200; i++) {  // Testing for n cycles (1000),  the duration is specified  in "Thread.sleep(10);" 
+        
+        // Testing for n cycles (1000),  the duration is specified  in "Thread.sleep(10);" 
+        for (int i = 0; i < 200; i++) { 
             logger.debug("# -------------------   performTest: cycle " +i +"---------------" );
                        
 			// change the attribut values ocasionally
@@ -330,13 +328,11 @@ public class TC_IR_RPR2_PHY_0003 extends AbstractTestCaseIf {
 			}
             
            aircraft.update();
-
            logger.debug("");
-
            Thread.sleep(10); // maybe set to 10 ms
         }
         
-        // log the  settings and  show the statistics of the updated values at least
+        // log the settings and show the statistics of the updated values at least
          printTestReport();
       
         //   TODO  change this to a specifig  Exception 
@@ -353,7 +349,7 @@ public class TC_IR_RPR2_PHY_0003 extends AbstractTestCaseIf {
 	    if (setAttributeReport.get(randomTestName) == null   ) {
 	        setAttributeReport.put(randomTestName, 1);
 	    } else { 
-	        setAttributeReport.put(randomTestName ,  (setAttributeReport.get(randomTestName) +1 ) )  ;
+	        setAttributeReport.put(randomTestName, (setAttributeReport.get(randomTestName) +1 ) )  ;
 	    }	    
 	}
 	
