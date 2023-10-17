@@ -294,7 +294,7 @@ public class TC_IR_RPR2_PHY_0001 extends AbstractTestCaseIf {
                 collectTestReport(randomTestName);
             }          
           
-          // setAlternateEntityType ?????????????????????????????????
+          // TODO  setAlternateEntityType correct like this ??
             if ( Math.random()  <= rangeForTesting   ) {
                 EntityTypeStruct tempStruct= phyEntity.getAlternateEntityType();
                 tempStruct.setCountryCode((short)3);

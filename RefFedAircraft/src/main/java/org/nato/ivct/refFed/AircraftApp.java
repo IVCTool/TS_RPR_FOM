@@ -69,7 +69,7 @@ import org.nato.ivct.rpr.objects.Platform;
 public class AircraftApp extends NullFederateAmbassador {
     
     public enum CmdLineOptions {
-        provokeFlyAircraft,
+        provokeFlyAircraft,                           // -pFA
         provokeMissingMandatoryAttribute,
         provokeDeadReckoningError,
         provokeReflectedAttributesReport            // -pRAR
@@ -260,8 +260,9 @@ public class AircraftApp extends NullFederateAmbassador {
         if (tempKnownAircraftEntity != null) {
             tempKnownAircraftEntity.clear();
             try {
-                tempKnownAircraftEntity.decode(theAttributes);
-                //logger.debug("### reflectAttributeValues:  try to decode theAttributes ");
+                tempKnownAircraftEntity.decode(theAttributes);      
+                logger.debug("### reflectAttributeValues: get we sended Values for e.g. AfterburnerOn now ?" + tempKnownAircraftEntity.getAfterburnerOn() );
+                
             } catch (Exception e) {
                 logger.error("reflectAttributeValues received Exception", e);
             }
@@ -352,8 +353,27 @@ public class AircraftApp extends NullFederateAmbassador {
             aircraft.addSubscribe(PhysicalEntity.Attributes.TentDeployed);
             aircraft.addSubscribe(PhysicalEntity.Attributes.TrailingEffectsCode);
             aircraft.addSubscribe(PhysicalEntity.Attributes.VectoringNozzleSystemData);
-            aircraft.subscribe();
             
+            
+            // for testing  we have to receive all attributes from Platform entity  ( brf)            
+            aircraft.addSubscribe(Platform.Attributes.AfterburnerOn);            
+            aircraft.addSubscribe(Platform.Attributes.AntiCollisionLightsOn);
+            aircraft.addSubscribe(Platform.Attributes.BlackOutBrakeLightsOn);
+            aircraft.addSubscribe(Platform.Attributes.BlackOutLightsOn);
+            aircraft.addSubscribe(Platform.Attributes.BrakeLightsOn);
+            aircraft.addSubscribe(Platform.Attributes.FormationLightsOn);
+            aircraft.addSubscribe(Platform.Attributes.HatchState);
+            aircraft.addSubscribe(Platform.Attributes.HeadLightsOn);
+            aircraft.addSubscribe(Platform.Attributes.InteriorLightsOn);
+            aircraft.addSubscribe(Platform.Attributes.LandingLightsOn);
+            aircraft.addSubscribe(Platform.Attributes.LauncherRaised);
+            aircraft.addSubscribe(Platform.Attributes.NavigationLightsOn);
+            aircraft.addSubscribe(Platform.Attributes.RampDeployed);
+            aircraft.addSubscribe(Platform.Attributes.RunningLightsOn);
+            aircraft.addSubscribe(Platform.Attributes.SpotLightsOn);
+            aircraft.addSubscribe(Platform.Attributes.TailLightsOn);             
+            
+            aircraft.subscribe();
    
 			Munition munitionProxy = new Munition();
             munitionProxy.addPublish(BaseEntity.Attributes.EntityIdentifier);
@@ -402,12 +422,15 @@ public class AircraftApp extends NullFederateAmbassador {
                             logger.error("run  printreflectedAttributReport has a Problem ");
                             e.printStackTrace();
                         }
+                        
                        // Test if the Attributes are readable
                         try {
                          // without setting the DamageState,  the Status should be the default "No Damage" 
                          // Test if there are default Values for all  .....  ???
-                         logger.info("Test to get tAttributeValue  aircraft.getDamageState() gives out:  " + aircraft.getDamageState() );
-                        } catch (DecoderException e) {
+                         logger.info("Test to get AttributeValue  aircraft.getDamageState() gives out:  " + aircraft.getDamageState() );
+                         logger.info("Test to get AttributeValue  aircraft.AfterburnerOn() gives out:  " + aircraft.getAfterburnerOn() );
+                        //} catch (DecoderException e) {
+                        } catch (DecoderException | InvalidObjectClassHandle | NotConnected | FederateNotExecutionMember | NameNotFound | RTIinternalError  e) {
                             logger.error("printreflectedAttributReport: reading  a decoded Attribute  has a Problem ");
                             e.printStackTrace();
                         }   
@@ -437,7 +460,7 @@ public class AircraftApp extends NullFederateAmbassador {
 					aircraft.setSpatial(spatial);
 					aircraft.update();
 					Thread.sleep(1000);
-					//logger.debug("provokeFlyAircraft: " +i);
+					logger.debug("provokeFlyAircraft: " +i);
 				}
 			}
 		
