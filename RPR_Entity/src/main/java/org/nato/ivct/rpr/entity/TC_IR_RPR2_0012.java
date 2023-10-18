@@ -158,7 +158,7 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
     HashMap<String, String[]> classNamesAndNaAttributList = new HashMap<String, String[]>();
 
     public TC_IR_RPR2_0012() {
-        // TODO complete
+        // TODO complete   , missing:  Lifeform  cultural-Feature  Munition, Expendable, Radio, Sensor, Supplies
         // fill the Map of classnames and non-applicable PhysicalEntity Attributes for
         // this Physical Entity
         classNamesAndNaAttributList.put("HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.Aircraft", naListAircraft);
