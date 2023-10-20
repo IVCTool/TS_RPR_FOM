@@ -19,15 +19,15 @@ import java.net.URL;
 import java.util.HashMap;
 
 import org.nato.ivct.rpr.FomFiles;
-import org.nato.ivct.rpr.datatypes.CamouflageEnum32;
-import org.nato.ivct.rpr.datatypes.DamageStatusEnum32;
-import org.nato.ivct.rpr.datatypes.EntityTypeStruct;
-import org.nato.ivct.rpr.datatypes.ForceIdentifierEnum8;
-import org.nato.ivct.rpr.datatypes.TrailingEffectsCodeEnum32;
+
 import org.nato.ivct.rpr.objects.Aircraft;
-import org.nato.ivct.rpr.objects.HLAobjectRoot;
-import org.nato.ivct.rpr.objects.PhysicalEntity;
+import org.nato.ivct.rpr.objects.AmphibiousVehicle;
+import org.nato.ivct.rpr.objects.GroundVehicle;
+import org.nato.ivct.rpr.objects.MultiDomainPlatform;
 import org.nato.ivct.rpr.objects.Platform;
+import org.nato.ivct.rpr.objects.Spacecraft;
+import org.nato.ivct.rpr.objects.SubmersibleVessel;
+import org.nato.ivct.rpr.objects.SurfaceVessel;
 import org.slf4j.Logger;
 import de.fraunhofer.iosb.tc_lib_if.AbstractTestCaseIf;
 import de.fraunhofer.iosb.tc_lib_if.TcFailedIf;
@@ -60,14 +60,17 @@ import hla.rti1516e.exceptions.RestoreInProgress;
 import hla.rti1516e.exceptions.SaveInProgress;
 import hla.rti1516e.exceptions.UnsupportedCallbackModel;
 
+
+
 /**
- * IR-RPR-PHY-0004:
+ * Interoperability Requirement : IR-RPR-PHY-0004:
  * 
  * SuT federates updating instance attributes of one of these object classes shall limit
  * use to those object classes indicated by a «yes» in Table 9,
  * when indicated restricted to the enumerators listed.
- * 
- * This Test may be similar to IR-RPR2-0012
+ */
+
+ /* This Test may be similar to IR-RPR2-0012
  * 
  * so we have to  List all non-applicable  Attributes as listed in
  * "Table 9 Domain Appropriateness for Platform Attributes"
@@ -92,6 +95,12 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
  * are they applicable ? for
  *  Aircraft  AmphibiousVehicle  GroundVehicle Spacecraft  SurfaceVessel  SubmersibleVessel MultiDomainPlatform
  * 
+ * so we have to test if special Attributes will be updated for Aircraft eg.
+ *( we need not to decode, just see if they are updated )
+ *
+ * first step is to subscribe to these attributes
+ *  ########################
+ *   ....  see 0012
  *   
  */
 
@@ -100,7 +109,8 @@ public class TC_IR_RPR2_PHY_0004 extends AbstractTestCaseIf {
     FederateAmbassador tcAmbassador = null;
     Logger logger = null;
     
-    PhysicalEntity phyEntity;
+    Platform toTestPlatform;
+    Platform[] platformWorkList;
     
     
   //arrays with non-applicable Platform Attribute-names for earch Platform as shown in Table 9
@@ -140,6 +150,7 @@ public class TC_IR_RPR2_PHY_0004 extends AbstractTestCaseIf {
     
 	class TestCaseAmbassador extends NullFederateAmbassador {
 
+	    // The SUT set Attributes, so we "hear" here on the 
 		// public void discoverObjectInstance() {
 		// complete if needed
 		// }
@@ -193,29 +204,34 @@ public class TC_IR_RPR2_PHY_0004 extends AbstractTestCaseIf {
 	protected void performTest(Logger logger) throws TcInconclusiveIf, TcFailedIf {
         logger.info("perform test {}", this.getClass().getName());
         
-        HLAobjectRoot.initialize(rtiAmbassador);       
+        Platform.initialize(rtiAmbassador);       
       
         
      try {
-         // only if we want to test to get Informations obout Objects and Attributes
-         //phyEntity = new PhysicalEntity();
-         //phyEntity.addSubscribe(PhysicalEntity.Attributes.EngineSmokeOn);     
-         //phyEntity.subscribe();
-       
-         
- 
+         toTestPlatform = new Platform();
+         //platformWorkList = new Platform[] { new Aircraft(), new AmphibiousVehicle() };
+         platformWorkList = new Platform[] {new Aircraft() , new AmphibiousVehicle(), new GroundVehicle(), new  Spacecraft() ,
+                           new SurfaceVessel() , new SubmersibleVessel(), new MultiDomainPlatform() };
         
-        // Testing for n cycles (1000),  the duration is specified  in "Thread.sleep(10);" 
-        for (int i = 0; i < 200; i++) { 
-            logger.debug("# -------------------   performTest: cycle " +i +"---------------" );
-            
-            
-           //aircraft.update();
-           logger.debug("");
-           Thread.sleep(10); // maybe set to 10 ms
-        }
+         toTestPlatform.addSubscribe(Platform.Attributes.AfterburnerOn);
+         toTestPlatform.addSubscribe(Platform.Attributes.AntiCollisionLightsOn);
+         toTestPlatform.addSubscribe(Platform.Attributes.BlackOutBrakeLightsOn);         
+         toTestPlatform.addSubscribe(Platform.Attributes.BlackOutLightsOn);
+         toTestPlatform.addSubscribe(Platform.Attributes.BrakeLightsOn);
+         toTestPlatform.addSubscribe(Platform.Attributes.FormationLightsOn);
+         toTestPlatform.addSubscribe(Platform.Attributes.HatchState);
+         toTestPlatform.addSubscribe(Platform.Attributes.HeadLightsOn);
+         toTestPlatform.addSubscribe(Platform.Attributes.InteriorLightsOn);
+         toTestPlatform.addSubscribe(Platform.Attributes.LandingLightsOn);
+         toTestPlatform.addSubscribe(Platform.Attributes.LauncherRaised);
+         toTestPlatform.addSubscribe(Platform.Attributes.NavigationLightsOn);
+         toTestPlatform.addSubscribe(Platform.Attributes.RampDeployed);
+         toTestPlatform.addSubscribe(Platform.Attributes.RunningLightsOn);
+         toTestPlatform.addSubscribe(Platform.Attributes.SpotLightsOn);
+         toTestPlatform.addSubscribe(Platform.Attributes.TailLightsOn);                 
         
-       
+         // ################################
+        
         //   TODO  change this to a specifig  Exception 
         } catch (Exception e) {
             throw new TcInconclusiveIf("performTest received Exception: ",  e);
