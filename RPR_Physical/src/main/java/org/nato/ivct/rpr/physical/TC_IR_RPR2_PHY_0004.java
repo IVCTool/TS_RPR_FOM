@@ -67,6 +67,30 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
  * use to those object classes indicated by a «yes» in Table 9,
  * when indicated restricted to the enumerators listed.
  * 
+ * This Test may be similar to IR-RPR2-0012
+ * 
+ * so we have to  List all non-applicable  Attributes as listed in
+ * "Table 9 Domain Appropriateness for Platform Attributes"
+ * 
+ *   AfterburnerOn, 
+ *   AntiCollisionLightsOn,
+ *   BlackOutBrakeLightsOn,
+ *   BlackOutLightsOn,
+ *   BrakeLightsOn,
+ *   FormationLightsOn,
+ *   HatchState,
+ *   HeadLightsOn,
+ *   InteriorLightsOn,
+ *   LandingLightsOn,
+ *   LauncherRaised,
+ *   NavigationLightsOn,
+ *   RampDeployed,
+ *   RunningLightsOn,
+ *   SpotLightsOn,
+ *   TailLightsOn
+ * 
+ * are they applicable ? for
+ *  Aircraft  AmphibiousVehicle  GroundVehicle Spacecraft  SurfaceVessel  SubmersibleVessel MultiDomainPlatform
  * 
  *   
  */
@@ -78,7 +102,41 @@ public class TC_IR_RPR2_PHY_0004 extends AbstractTestCaseIf {
     
     PhysicalEntity phyEntity;
     
-    HashMap<String, Integer> setAttributeReport = new HashMap<>();
+    
+  //arrays with non-applicable Platform Attribute-names for earch Platform as shown in Table 9
+    String[] naListAircraft = new String[] { "BlackOutBrakeLightsOn", "BlackOutLightsOn", "BrakeLightsOn", "HatchState",
+                              "HeadLightsOn","LauncherRaised", "RampDeployed", "RunningLightsOn", "TailLightsOn"};
+  
+    String[] naListAmphibiousVehicle = new String[] {"AfterburnerOn", "AntiCollisionLightsOn", "FormationLightsOn",
+                              "LandingLightsOn", "NavigationLightsOn" };
+    
+    String[] naListGroundVehicle = new String[] {"AfterburnerOn", "AntiCollisionLightsOn", "FormationLightsOn" ,
+                              "LandingLightsOn", "NavigationLightsOn", "RunningLightsOn" };    
+
+    String[] naListSpacecraft = new String[] {"AfterburnerOn", "AntiCollisionLightsOn", "BlackOutBrakeLightsOn",
+                              "BlackOutLightsOn",  "BrakeLightsOn", "FormationLightsOn", "HatchState", "HeadLightsOn",
+                              "InteriorLightsOn", "LandingLightsOn", "LauncherRaised",  "NavigationLightsOn",
+                              "RampDeployed", "RunningLightsOn", "SpotLightsOn", "TailLightsOn" };
+  
+    String[] naListSurfaceVessel = new String[] {"AfterburnerOn", "AntiCollisionLightsOn", "BlackOutBrakeLightsOn",
+                              "BlackOutLightsOn",  "BrakeLightsOn", "FormationLightsOn", "HatchState", "HeadLightsOn",
+                              "LandingLightsOn", "LauncherRaised",  "NavigationLightsOn", "RampDeployed", "TailLightsOn" }; 
+    
+    String[] naListSubmersibleVessel = new String[] {"AfterburnerOn", "AntiCollisionLightsOn", "BlackOutBrakeLightsOn",
+                             "BlackOutLightsOn",  "BrakeLightsOn", "FormationLightsOn", "HeadLightsOn",
+                             "InteriorLightsOn", "LandingLightsOn", "LauncherRaised",  "NavigationLightsOn",
+                             "RampDeployed",  "SpotLightsOn", "TailLightsOn" };
+    
+    String[] naListMultiDomainPlatform = new String[] { "--------------" };
+    
+   
+    // HashMap with classnames as key and an array with non-applicable Platform Attributes for this class
+    // to allocate the objectclassnames with a List of  non-applicable Platform Attributes for this Physical Entity
+    HashMap<String, String[]> classNamesAndNaAttributList = new HashMap<String, String[]>();
+    
+    // ##################################################
+    
+    
     
 	class TestCaseAmbassador extends NullFederateAmbassador {
 
