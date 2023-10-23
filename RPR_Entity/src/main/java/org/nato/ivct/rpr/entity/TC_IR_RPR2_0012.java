@@ -105,14 +105,15 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
  * so we need a List with classnames and NaAttributes for this classname -->
  * classNamesAndNaAttributList
  * 
- * Aircraft FirePowerDisabled IsConcealed TentDeployed AmphibiousVehicle -----
- * GroundVehicle ----- Spacecraft EngineSmokeON FirePowerDisabled IsConcealed
- * TentDeployed TrailingEffectsCode SurfaceVessel FirePowerDisabled IsConcealed
- * TentDeployed SubmersibleVessel EngineSmokeON FirePowerDisabled IsConcealed
- * TentDeployed TrailingEffectsCode MultiDomainPlatform ----- Lifeform
- * EngineSmokeON FirePowerDisabled FlamesPresent Immobilized PowerPlantOn
- * SmokePlumePresent TentDeployed TrailingEffectsCode ...
- * 
+ * Aircraft FirePowerDisabled IsConcealed TentDeployed
+ * AmphibiousVehicle -----
+ * GroundVehicle -----
+ * Spacecraft EngineSmokeON FirePowerDisabled IsConcealed TentDeployed TrailingEffectsCode 
+ * SurfaceVessel FirePowerDisabled IsConcealed TentDeployed
+ * SubmersibleVessel EngineSmokeON FirePowerDisabled IsConcealed TentDeployed TrailingEffectsCode
+ * MultiDomainPlatform -----
+ * Lifeform EngineSmokeON FirePowerDisabled FlamesPresent Immobilized PowerPlantOn SmokePlumePresent TentDeployed TrailingEffectsCode ...
+ * ...
  * ---------------------------------------
  * 
  */

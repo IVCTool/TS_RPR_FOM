@@ -6,7 +6,7 @@
             </pattern>
         </encoder>
     </appender>
-
+    <!-- TRACE  DEBUG   INFO    WARN    ERROR   FATAL   OFF -->
     <root level="TRACE">
         <appender-ref ref="STDOUT" />
     </root>

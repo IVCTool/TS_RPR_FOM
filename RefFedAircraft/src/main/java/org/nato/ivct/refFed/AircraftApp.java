@@ -301,6 +301,7 @@ public class AircraftApp extends NullFederateAmbassador {
             aircraft.addPublish(BaseEntity.Attributes.EntityType);
             aircraft.addPublish(BaseEntity.Attributes.Spatial);
             
+            // for e.g. Test TC_IR_RPR2_0012  we need to Publish physical attributes
             aircraft.addPublish(PhysicalEntity.Attributes.CamouflageType);
             aircraft.addPublish(PhysicalEntity.Attributes.DamageState);
             aircraft.addPublish(PhysicalEntity.Attributes.EngineSmokeOn);
@@ -312,7 +313,7 @@ public class AircraftApp extends NullFederateAmbassador {
             aircraft.addPublish(PhysicalEntity.Attributes.SmokePlumePresent);
             aircraft.addPublish(PhysicalEntity.Attributes.TentDeployed);
             aircraft.addPublish(PhysicalEntity.Attributes.TrailingEffectsCode);
-            aircraft.register();
+            // aircraft.register();  // see below
             
             //  the 'simple'  boolean Attributes,  for other Attributes e.g. CamouflageType we may need  a Struct            
             aircraft.setEngineSmokeOn(true);            
@@ -374,6 +375,26 @@ public class AircraftApp extends NullFederateAmbassador {
             aircraft.addSubscribe(Platform.Attributes.TailLightsOn);             
             
             aircraft.subscribe();
+            
+            // for e.g. Test TC_IR_RPR2_PHY_0004  we have to publish some platform attributes (brf)
+            aircraft.addPublish(Platform.Attributes.AfterburnerOn);
+            aircraft.addPublish(Platform.Attributes.AntiCollisionLightsOn);
+            aircraft.addPublish(Platform.Attributes.BlackOutBrakeLightsOn);
+            aircraft.addPublish(Platform.Attributes.BlackOutLightsOn);
+            aircraft.addPublish(Platform.Attributes.BrakeLightsOn);
+            aircraft.addPublish(Platform.Attributes.FormationLightsOn);
+            aircraft.addPublish(Platform.Attributes.HatchState);
+            aircraft.addPublish(Platform.Attributes.HeadLightsOn);
+            aircraft.addPublish(Platform.Attributes.InteriorLightsOn);
+            aircraft.addPublish(Platform.Attributes.LandingLightsOn);
+            aircraft.addPublish(Platform.Attributes.LauncherRaised);
+            aircraft.addPublish(Platform.Attributes.NavigationLightsOn);
+            aircraft.addPublish(Platform.Attributes.RampDeployed);
+            aircraft.addPublish(Platform.Attributes.RunningLightsOn);
+            aircraft.addPublish(Platform.Attributes.SpotLightsOn);
+            aircraft.addPublish(Platform.Attributes.TailLightsOn);
+            aircraft.register(); 
+            
    
 			Munition munitionProxy = new Munition();
             munitionProxy.addPublish(BaseEntity.Attributes.EntityIdentifier);
@@ -427,8 +448,8 @@ public class AircraftApp extends NullFederateAmbassador {
                         try {
                          // without setting the DamageState,  the Status should be the default "No Damage" 
                          // Test if there are default Values for all  .....  ???
-                         logger.info("Test to get AttributeValue  aircraft.getDamageState() gives out:  " + aircraft.getDamageState() );
-                         logger.info("Test to get AttributeValue  aircraft.AfterburnerOn() gives out:  " + aircraft.getAfterburnerOn() );
+                         logger.debug("Test to get defaultValue aircraft.getDamageState() gives out:  " + aircraft.getDamageState() );
+                         logger.debug("Test to get defaultValue aircraft.AfterburnerOn() gives out:  " + aircraft.getAfterburnerOn() );
                         //} catch (DecoderException e) {
                         } catch (DecoderException | InvalidObjectClassHandle | NotConnected | FederateNotExecutionMember | NameNotFound | RTIinternalError  e) {
                             logger.error("printreflectedAttributReport: reading  a decoded Attribute  has a Problem ");
