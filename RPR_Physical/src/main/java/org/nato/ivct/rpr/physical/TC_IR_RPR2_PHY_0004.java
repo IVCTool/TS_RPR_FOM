@@ -16,6 +16,7 @@ limitations under the License. */
 package org.nato.ivct.rpr.physical;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.nato.ivct.rpr.FomFiles;
@@ -32,17 +33,25 @@ import org.slf4j.Logger;
 import de.fraunhofer.iosb.tc_lib_if.AbstractTestCaseIf;
 import de.fraunhofer.iosb.tc_lib_if.TcFailedIf;
 import de.fraunhofer.iosb.tc_lib_if.TcInconclusiveIf;
+import hla.rti1516e.AttributeHandle;
+import hla.rti1516e.AttributeHandleValueMap;
 import hla.rti1516e.CallbackModel;
 import hla.rti1516e.FederateAmbassador;
 import hla.rti1516e.FederateHandle;
+import hla.rti1516e.LogicalTime;
+import hla.rti1516e.MessageRetractionHandle;
 import hla.rti1516e.NullFederateAmbassador;
 import hla.rti1516e.ObjectClassHandle;
 import hla.rti1516e.ObjectInstanceHandle;
+import hla.rti1516e.OrderType;
 import hla.rti1516e.RTIambassador;
 import hla.rti1516e.ResignAction;
 import hla.rti1516e.RtiFactory;
 import hla.rti1516e.RtiFactoryFactory;
+import hla.rti1516e.TransportationTypeHandle;
+import hla.rti1516e.FederateAmbassador.SupplementalReflectInfo;
 import hla.rti1516e.exceptions.AlreadyConnected;
+import hla.rti1516e.exceptions.AttributeNotDefined;
 import hla.rti1516e.exceptions.CallNotAllowedFromWithinCallback;
 import hla.rti1516e.exceptions.ConnectionFailed;
 import hla.rti1516e.exceptions.CouldNotCreateLogicalTimeFactory;
@@ -55,9 +64,12 @@ import hla.rti1516e.exceptions.FederateOwnsAttributes;
 import hla.rti1516e.exceptions.FederationExecutionAlreadyExists;
 import hla.rti1516e.exceptions.FederationExecutionDoesNotExist;
 import hla.rti1516e.exceptions.InconsistentFDD;
+import hla.rti1516e.exceptions.InvalidAttributeHandle;
 import hla.rti1516e.exceptions.InvalidLocalSettingsDesignator;
+import hla.rti1516e.exceptions.InvalidObjectClassHandle;
 import hla.rti1516e.exceptions.InvalidResignAction;
 import hla.rti1516e.exceptions.NotConnected;
+import hla.rti1516e.exceptions.ObjectInstanceNotKnown;
 import hla.rti1516e.exceptions.OwnershipAcquisitionPending;
 import hla.rti1516e.exceptions.RTIinternalError;
 import hla.rti1516e.exceptions.RestoreInProgress;
@@ -107,10 +119,18 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
  * (let the task PerformTest run for a while)
  * 
  * 2) then we have to organize to receive Information about the subscribed Classes over discoverObjectInstances 
- *  to debug, let's see there,  what are the Classnames of receiced Informations
+ *  (to debug, let's see there,  what are the Classnames of receiced Informations)
  *  
- * 3) store the received ObjectInstanceHandles with their ObjectclassHandles in a Map to use it
- *    later  in reflectAttributeValues
+ * 3) in discoverObjectInstance, store the received ObjectInstanceHandles with their ObjectclassHandles
+ *    in a Map to use it  later  in reflectAttributeValues (objectInstanceHandlesAndobjectClassHandle)
+ *    
+ * 4) prepare reflectAttributeValues to  receive the ObjectInstanceHandle and attached AttributeHandleValueMaps
+ * 
+ *    get the to the ObjectInstanceHandle corresponding ObjectClassNames with the  Map from discoverObjectInstance
+ *  
+ *  
+ *  
+ *    store the AttributeHandleValueMaps with the associated ObjectClassNames as key in a HashMap
  *  
  *   ....  see 0012
  *   
@@ -207,12 +227,57 @@ public class TC_IR_RPR2_PHY_0004 extends AbstractTestCaseIf {
             objectInstanceHandlesAndobjectClassHandle.put(theObjectInstanceH,theObjectClassH);
 	        
 	    }
+	   
+		
+	    @Override
+	    public void reflectAttributeValues(ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes,
+	            byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport,
+	            LogicalTime theTime, OrderType receivedOrdering, MessageRetractionHandle retractionHandle,
+	            SupplementalReflectInfo reflectInfo) throws FederateInternalError {
+	        logger.trace("reflectAttributeValues with retractionHandle");
+	        reflectAttributeValues(theObject, theAttributes, userSuppliedTag, sentOrdering, theTransport, reflectInfo);
+	    }
+	    @Override
+	    public void reflectAttributeValues(ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes,
+	            byte[] userSuppliedTag, OrderType sentOrdering, TransportationTypeHandle theTransport,
+	            LogicalTime theTime, OrderType receivedOrdering, SupplementalReflectInfo reflectInfo)
+	            throws FederateInternalError {
+	        logger.trace("reflectAttributeValues without  MessageRetractionHandle");
+	        reflectAttributeValues(theObject, theAttributes, userSuppliedTag, sentOrdering, theTransport, reflectInfo);
+	    }
 	    
 	    
-		// public void reflectAttributeValues() {
-		// complete if needed
-		// }
-
+	    @Override
+	    public void reflectAttributeValues(ObjectInstanceHandle theObjectInstancH, AttributeHandleValueMap theAttributes,
+	            byte[] userSuppliedTag,  OrderType sentOrdering, TransportationTypeHandle theTransport,
+	            SupplementalReflectInfo reflectInfo)  throws FederateInternalError {
+	            logger.trace("reflectAttributeValues without LogicalTime, receivedOrdering,  MessageRetractionHandle ");
+	            
+	        // we get the Names of the attributes only with the to the objectInstanceHandle correspondending ObjectClassHandle
+	        ObjectClassHandle tempLocalObjectClasshandle = objectInstanceHandlesAndobjectClassHandle.get(theObjectInstancH);
+	           
+	        // let's store all Attributnames for a specific  ObjectInstanceHandle / ObjectClasshandle in a array
+	        ArrayList<String> localListOfReceivedAttributNames = new ArrayList<String>();	        
+	        try {
+	        for (AttributeHandle a : theAttributes.keySet()) {
+	           String tempAttributname = rtiAmbassador.getAttributeName(tempLocalObjectClasshandle, a);
+	           if(!localListOfReceivedAttributNames.contains(tempAttributname)  ) {
+	               localListOfReceivedAttributNames.add(tempAttributname);
+	           }
+	        }
+	        
+	        } catch (FederateNotExecutionMember | NotConnected | RTIinternalError | AttributeNotDefined
+                    | InvalidAttributeHandle | InvalidObjectClassHandle e) {
+            } 
+	        
+	        // ################
+	        // use a Map to store the a array of the receivedAttributes with the  ObjectClassname
+	        
+	        
+	    }
+	    
+	    
+	    
 	}
     
 	@Override
@@ -258,8 +323,7 @@ public class TC_IR_RPR2_PHY_0004 extends AbstractTestCaseIf {
 	protected void performTest(Logger logger) throws TcInconclusiveIf, TcFailedIf {
         logger.info("perform test {}", this.getClass().getName());
         
-        Platform.initialize(rtiAmbassador);       
-      
+        Platform.initialize(rtiAmbassador);      
         
      try {
          toTestPlatform = new Platform();
@@ -303,7 +367,19 @@ public class TC_IR_RPR2_PHY_0004 extends AbstractTestCaseIf {
          // ################################
          
       // the Test ......
-         for (int i = 0; i < 10; i++) { // TODO change this to a better mechanism
+         for (int i = 0; i < 10; i++) { // TODO change this to a better mechanism  
+             
+             // Debug and preparations for Testing
+             for (ObjectInstanceHandle keyElement :  objectInstanceHandlesAndobjectClassHandle.keySet() ) {
+                 ObjectClassHandle tempLocalObjectClasshandle = objectInstanceHandlesAndobjectClassHandle.get(keyElement);
+                 String tempLocalObjectClassname = rtiAmbassador.getObjectClassName(tempLocalObjectClasshandle);                 
+                 logger.debug("performTest: till now we got Informations from Class: "+tempLocalObjectClassname);
+                 
+             }
+             
+             
+             
+             
              
              
              Thread.sleep(1000);
