@@ -395,6 +395,23 @@ public class AircraftApp extends NullFederateAmbassador {
             aircraft.addPublish(Platform.Attributes.TailLightsOn);
             aircraft.register(); 
             
+            aircraft.setAfterburnerOn(true);
+            aircraft.setAntiCollisionLightsOn(true);
+            aircraft.setBlackOutBrakeLightsOn(true);
+            aircraft.setBlackOutLightsOn(true);
+            aircraft.setBrakeLightsOn(true);
+            aircraft.setFormationLightsOn(true);
+            aircraft.setHatchState(true);
+            aircraft.setHeadLightsOn(true);
+            aircraft.setInteriorLightsOn(true);
+            aircraft.setLandingLightsOn(true);
+            aircraft.setLauncherRaised(true);
+            aircraft.setNavigationLightsOn(true);
+            aircraft.setRampDeployed(true);            
+            aircraft.setRunningLightsOn(true);
+            aircraft.setSpotLightsOn(true);
+            aircraft.setTailLightsOn(true);
+            
    
 			Munition munitionProxy = new Munition();
             munitionProxy.addPublish(BaseEntity.Attributes.EntityIdentifier);
