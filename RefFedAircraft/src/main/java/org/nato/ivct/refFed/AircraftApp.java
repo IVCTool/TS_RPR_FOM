@@ -399,6 +399,7 @@ public class AircraftApp extends NullFederateAmbassador {
             aircraft.setAntiCollisionLightsOn(true);
             aircraft.setBlackOutBrakeLightsOn(true);
             aircraft.setBlackOutLightsOn(true);
+            /*
             aircraft.setBrakeLightsOn(true);
             aircraft.setFormationLightsOn(true);
             aircraft.setHatchState(true);
@@ -411,6 +412,7 @@ public class AircraftApp extends NullFederateAmbassador {
             aircraft.setRunningLightsOn(true);
             aircraft.setSpotLightsOn(true);
             aircraft.setTailLightsOn(true);
+            */
             
    
 			Munition munitionProxy = new Munition();

@@ -30,6 +30,8 @@ import org.nato.ivct.rpr.objects.Spacecraft;
 import org.nato.ivct.rpr.objects.SubmersibleVessel;
 import org.nato.ivct.rpr.objects.SurfaceVessel;
 import org.slf4j.Logger;
+
+import de.fraunhofer.iosb.tc_lib.TcFailed;
 import de.fraunhofer.iosb.tc_lib_if.AbstractTestCaseIf;
 import de.fraunhofer.iosb.tc_lib_if.TcFailedIf;
 import de.fraunhofer.iosb.tc_lib_if.TcInconclusiveIf;
@@ -137,8 +139,8 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
  *    objectInstanceHandlesAndobjectClassHandle
  *    
  *    get with this ObjectClassHandle over the RTIAmbassador for every attributhandle in AttributHandleValueMap
- *    the Attributname
- *    and store it in a arrayList  localListOfReceivedAttributNames
+ *    the Attributname   and 
+ *    store it in a arrayList  localListOfReceivedAttributNames
  *    
  *    get the ObjectClassName for this ObjectClassHandle
  *    
@@ -149,7 +151,11 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
  *     both have ObjectClassNames as keys and  AttributNames  as value
  *     
  *  6) in the  test (perfomTest) we have now to match these two lists,
- *     is a Attribut send for a ObjectClass, which is in the List of non-applicable Attributes for this Object-Class
+ *     HashMap<String, ArrayList> objectClassNamesAndReceivedAttributeList = new HashMap<>();
+ *     HashMap<String, String[]> objectClassNamesAndNaAttributList = new HashMap<String, String[]>();
+ *      
+ *     is there a Attribut send for a ObjectClass, which is in the List of non-applicable Attributes for this Object-Class
+ *     
  *  
  */
 
@@ -162,11 +168,12 @@ public class TC_IR_RPR2_PHY_0004 extends AbstractTestCaseIf {
     Platform[] platformWorkList;   
     
     HashMap<ObjectInstanceHandle, ObjectClassHandle> objectInstanceHandlesAndobjectClassHandle = new HashMap<>();
+    
     HashMap<String, ArrayList> objectClassNamesAndReceivedAttributeList = new HashMap<>();
    
     // HashMap with classnames as key and an array with non-applicable Platform Attributes for this class
     // to allocate the objectclassnames with a List of  non-applicable Platform Attributes for this Physical Entity
-    HashMap<String, String[]> classNamesAndNaAttributList = new HashMap<String, String[]>();
+    HashMap<String, String[]> objectClassNamesAndNaAttributList = new HashMap<String, String[]>();
     
     
   //arrays with non-applicable Platform Attribute-names for earch Platform as shown in Table 9
@@ -199,13 +206,13 @@ public class TC_IR_RPR2_PHY_0004 extends AbstractTestCaseIf {
     public TC_IR_RPR2_PHY_0004() {
         // TODO  put the naList* to a Map organized by the Classnames 
         // fill the Map of classnames and non-applicable PhysicalEntity Attributes
-        classNamesAndNaAttributList.put("HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.Aircraft", naListAircraft);
-        classNamesAndNaAttributList.put("HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.AmphibiousVehicle", naListAmphibiousVehicle);
-        classNamesAndNaAttributList.put("HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.GroundVehicle", naListGroundVehicle);
-        classNamesAndNaAttributList.put("HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.Spacecraft", naListSpacecraft);
-        classNamesAndNaAttributList.put("HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.SurfaceVessel", naListSurfaceVessel);    
-        classNamesAndNaAttributList.put("HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.SubmersibleVessel", naListSubmersibleVessel);
-        classNamesAndNaAttributList.put("HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.MultiDomainPlatform", naListMultiDomainPlatform);
+        objectClassNamesAndNaAttributList.put("HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.Aircraft", naListAircraft);
+        objectClassNamesAndNaAttributList.put("HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.AmphibiousVehicle", naListAmphibiousVehicle);
+        objectClassNamesAndNaAttributList.put("HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.GroundVehicle", naListGroundVehicle);
+        objectClassNamesAndNaAttributList.put("HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.Spacecraft", naListSpacecraft);
+        objectClassNamesAndNaAttributList.put("HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.SurfaceVessel", naListSurfaceVessel);    
+        objectClassNamesAndNaAttributList.put("HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.SubmersibleVessel", naListSubmersibleVessel);
+        objectClassNamesAndNaAttributList.put("HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.MultiDomainPlatform", naListMultiDomainPlatform);
     }
     
     
@@ -280,6 +287,8 @@ public class TC_IR_RPR2_PHY_0004 extends AbstractTestCaseIf {
 	        ArrayList<String> localListOfReceivedAttributNames = new ArrayList<String>();	        
 	        try {         
 	            
+	       // get with this ObjectClassHandle over the RTIAmbassador for every attributhandle in AttributHandleValueMap
+	       // the Attributname  and store it in a arrayList  localListOfReceivedAttributNames    
 	        for (AttributeHandle a : theAttributes.keySet()) {
 	           String tempAttributname = rtiAmbassador.getAttributeName(tempLocalObjectClasshandle, a);
 	           if(!localListOfReceivedAttributNames.contains(tempAttributname)  ) {
@@ -287,9 +296,9 @@ public class TC_IR_RPR2_PHY_0004 extends AbstractTestCaseIf {
 	           }
 	        }
 	        
-	        // get the objectClassname
+	        // get the ObjectClassName for this ObjectClassHandle
             String tempLocalObjectClassname = rtiAmbassador.getObjectClassName(tempLocalObjectClasshandle);
-             logger.debug("## reflectAttributeValues: Name of ObjectClass from objectInstanceHandlesAndobjectClassHandle  " +tempLocalObjectClassname );
+            logger.debug("## reflectAttributeValues: Name of ObjectClass from objectInstanceHandlesAndobjectClassHandle  " +tempLocalObjectClassname );
 	        
             //Store the arrayList  localListOfReceivedAttributNames in a HashMap with the ObjectClassName as Key
             objectClassNamesAndReceivedAttributeList.put(tempLocalObjectClassname, localListOfReceivedAttributNames);
@@ -298,10 +307,19 @@ public class TC_IR_RPR2_PHY_0004 extends AbstractTestCaseIf {
                     | InvalidAttributeHandle | InvalidObjectClassHandle e) {
             } 
 	        
+	       //Debug  Test if there is any Attribut in the List objectClassNamesAndReceivedAttributeList
+	        /*
+            for ( String tempObjectClassname : objectClassNamesAndReceivedAttributeList.keySet() ) {
+                ArrayList<String> tempReceivedAttributList  = objectClassNamesAndReceivedAttributeList.get(tempObjectClassname);                
+                logger.debug("reflectAttributeValues: for the ObjectClass received Attributes:  " + tempObjectClassname);    // DEBUG         
+                for (String tmpAttributname : tempReceivedAttributList) {
+                    logger.debug(tmpAttributname);                                                                   // DEBUG    
+                }
+            }
+            */
+	        
 	    }
-	    
-	    
-	    
+	    	    
 	}
     
 	@Override
@@ -348,6 +366,10 @@ public class TC_IR_RPR2_PHY_0004 extends AbstractTestCaseIf {
         logger.info("perform test {}", this.getClass().getName());
         
         Platform.initialize(rtiAmbassador);      
+        boolean match = false;
+        ArrayList<String> resultListReceivedNaAttributes = new ArrayList<String>();
+        HashMap<String, ArrayList> resultMapClassNamesAndReceivedNaAttributes = new HashMap<String, ArrayList>();
+        
         
      try {
          toTestPlatform = new Platform();
@@ -386,42 +408,68 @@ public class TC_IR_RPR2_PHY_0004 extends AbstractTestCaseIf {
          logger.debug("----------------------");
          
          
-      // the Test ......
+      // the Test ......         
          for (int i = 0; i < 10; i++) { // TODO change this to a better mechanism  
              
              // Debug and preparations for Testing
+             /*
              for (ObjectInstanceHandle keyElement :  objectInstanceHandlesAndobjectClassHandle.keySet() ) {
                  ObjectClassHandle tempLocalObjectClasshandle = objectInstanceHandlesAndobjectClassHandle.get(keyElement);
                  String tempLocalObjectClassname = rtiAmbassador.getObjectClassName(tempLocalObjectClasshandle);                 
-                 logger.debug("performTest: till now we got Informations from Class: "+tempLocalObjectClassname);
-                 
+                 logger.debug("performTest: till now we got Informations from Class: "+tempLocalObjectClassname);                 
              }
+             */
              
-             //   TODO  Rebuild this for the proper Test
-             //Debug  Test is there any Attribut in the List   objectClassNamesAndReceivedAttributeList #####             
+             //  Compare the two Lists if non-applicable attributes are updated from a special Object Class 
+             //   objectClassNamesAndReceivedAttributeList
+             //   objectClassNamesAndNaAttributList
              for ( String tempObjectClassname : objectClassNamesAndReceivedAttributeList.keySet() ) {
-                 ArrayList<String> tempReceivedAttributList  = objectClassNamesAndReceivedAttributeList.get(tempObjectClassname);
-                 logger.debug("performTest: for the ObjectClass received Attributes:  " + tempObjectClassname);                 
-                 for (String tmpAttributname : tempReceivedAttributList) {
-                     logger.debug(tmpAttributname);                     
+                 
+                 logger.debug("performTest: for "+tempObjectClassname );
+                 ArrayList<String> objectClassReceivedAttributList  = objectClassNamesAndReceivedAttributeList.get(tempObjectClassname);                 
+                 String[] objectClassNonAppAttributList = objectClassNamesAndNaAttributList.get(tempObjectClassname);                 
+                
+                 for (String receivedAttribut : objectClassReceivedAttributList) {                     
+                     for (String nonAppAttribut :  objectClassNonAppAttributList) {
+                         
+                         if ( receivedAttribut.equals(nonAppAttribut)) {                             
+                             //logger.debug(" there is a match between receivedAttributList and nonApplicableAttributList: "+receivedAttribut+" : "+nonAppAttribut);
+                             match = true; 
+                             if (!resultListReceivedNaAttributes.contains(receivedAttribut)) {
+                                 resultListReceivedNaAttributes.add(receivedAttribut);
+                             }                                
+                         }                       
+                     } 
                  }                 
+                 // building a List with classnames and received nonapplicable Attributes             
+                 resultMapClassNamesAndReceivedNaAttributes.put(tempObjectClassname, resultListReceivedNaAttributes);                 
              }
-             
-             
+                        
              Thread.sleep(1000);
              logger.debug("TC_IR_RPR2_PHY_004 Perform Test cycle:  " +i);
          }
          
-        
+         
         //   TODO  change this to a specifig  Exception 
         } catch (Exception e) {
             throw new TcInconclusiveIf("performTest received Exception: ",  e);
         }
-  	
-        logger.info("test {} passed", this.getClass().getName());
+     
+        String failMessage = "";
+        for (String tempClassname : resultMapClassNamesAndReceivedNaAttributes.keySet()) {
+            failMessage = failMessage + " " + tempClassname + " updating  "
+                    + resultMapClassNamesAndReceivedNaAttributes.get(tempClassname);
+        }
+     
+        if (match) {
+            logger.info("test {} failed", this.getClass().getName());
+            throw new TcFailed("Failed because: ..." + failMessage);        
+            
+        } else {
+            logger.info("test {} passed", this.getClass().getName());
+        }
         
-	}
-	
+	}         // end of performTest
 	
 	
 
