@@ -96,6 +96,7 @@ public class AircraftApp extends NullFederateAmbassador {
 	private String federateName = "Aircraft";
 	private String federateType = "RefFed";
 	private int nrOfCycles = 4000;   // 4000
+    private int nrOfCyclesState;
 	private RTIambassador rtiAmbassador;
 	private FederateHandle fedHandle;
 	
@@ -394,25 +395,23 @@ public class AircraftApp extends NullFederateAmbassador {
             aircraft.addPublish(Platform.Attributes.SpotLightsOn);
             aircraft.addPublish(Platform.Attributes.TailLightsOn);
             aircraft.register(); 
-            
+        
             aircraft.setAfterburnerOn(true);
             aircraft.setAntiCollisionLightsOn(true);
-            aircraft.setBlackOutBrakeLightsOn(true);
-            aircraft.setBlackOutLightsOn(true);
-            /*
-            aircraft.setBrakeLightsOn(true);
+            aircraft.setBlackOutBrakeLightsOn(true);  // non applicable for Aircraft
+            aircraft.setBlackOutLightsOn(true);       // non applicable for Aircraft
+            aircraft.setBrakeLightsOn(true);          // non applicable for Aircraft
             aircraft.setFormationLightsOn(true);
-            aircraft.setHatchState(true);
-            aircraft.setHeadLightsOn(true);
+            aircraft.setHatchState(true);             // non applicable for Aircraft
+            aircraft.setHeadLightsOn(true);           // non applicable for Aircraft
             aircraft.setInteriorLightsOn(true);
             aircraft.setLandingLightsOn(true);
-            aircraft.setLauncherRaised(true);
+            aircraft.setLauncherRaised(true);         // non applicable for Aircraft
             aircraft.setNavigationLightsOn(true);
-            aircraft.setRampDeployed(true);            
-            aircraft.setRunningLightsOn(true);
+            aircraft.setRampDeployed(true);           // non applicable for Aircraft        
+            aircraft.setRunningLightsOn(true);        // non applicable for Aircraft
             aircraft.setSpotLightsOn(true);
-            aircraft.setTailLightsOn(true);
-            */
+            aircraft.setTailLightsOn(true);           // non applicable for Aircraft
             
    
 			Munition munitionProxy = new Munition();
@@ -443,13 +442,15 @@ public class AircraftApp extends NullFederateAmbassador {
 			aircraft.setEntityType(entityType);
 			aircraft.update();
 			
-			
-            if (provoke(CmdLineOptions.provokeReflectedAttributesReport)) {
-                Thread printreflectedAttributReport = new Thread(() -> {
-                    // report all 10 sec as long the main thread is running
-                    int threadSleepTime = 10000;
 
-                    while (true) {
+			// e.g. for Tests IR-RPR-PHY-0001  and IR-RPR-PHY-0003
+            if (provoke(CmdLineOptions.provokeReflectedAttributesReport)) {
+                Thread printreflectedAttributReport = new Thread(() -> {                    
+                    int threadSleepTime = 10000;        // report all 10 sec as long the main thread is running
+
+                    //while (true) {
+                    // Ending somehow this Tasks,  maybe  as long as the aircraft flies (provokeFlyAircraft)
+                    while (nrOfCyclesState < nrOfCycles -5  ) {
                         logger.info(" ----------------  print reflected attributes --------------  ");
 
                         for (String s : reflectedAttributeReport.keySet()) {
@@ -461,22 +462,20 @@ public class AircraftApp extends NullFederateAmbassador {
                         } catch (InterruptedException e) {
                             logger.error("run  printreflectedAttributReport has a Problem ");
                             e.printStackTrace();
-                        }
-                        
-                       // Test if the Attributes are readable
+                        }                        
+                        // Test if the Attributes are readable
                         try {
-                         // without setting the DamageState,  the Status should be the default "No Damage" 
-                         // Test if there are default Values for all  .....  ???
-                         logger.debug("Test to get defaultValue aircraft.getDamageState() gives out:  " + aircraft.getDamageState() );
-                         logger.debug("Test to get defaultValue aircraft.AfterburnerOn() gives out:  " + aircraft.getAfterburnerOn() );
-                        //} catch (DecoderException e) {
+                            // without setting the DamageState,  the Status should be the default "No Damage" 
+                            // Test if there are default Values for all  .....  ???
+                            logger.debug("Test to get defaultValue aircraft.getDamageState() gives out:  " + aircraft.getDamageState() );
+                            logger.debug("Test to get defaultValue aircraft.AfterburnerOn() gives out:  " + aircraft.getAfterburnerOn() );
                         } catch (DecoderException | InvalidObjectClassHandle | NotConnected | FederateNotExecutionMember | NameNotFound | RTIinternalError  e) {
                             logger.error("printreflectedAttributReport: reading  a decoded Attribute  has a Problem ");
                             e.printStackTrace();
-                        }   
+                        } 
                     }
                 });
-                printreflectedAttributReport.start();
+                printreflectedAttributReport.start();             
             }
 		        
 			
@@ -501,6 +500,7 @@ public class AircraftApp extends NullFederateAmbassador {
 					aircraft.update();
 					Thread.sleep(1000);
 					logger.debug("provokeFlyAircraft: " +i);
+					nrOfCyclesState = i;
 				}
 			}
 		

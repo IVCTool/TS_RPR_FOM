@@ -176,7 +176,7 @@ public class TC_IR_RPR2_PHY_0004 extends AbstractTestCaseIf {
     HashMap<String, String[]> objectClassNamesAndNaAttributList = new HashMap<String, String[]>();
     
     
-  //arrays with non-applicable Platform Attribute-names for earch Platform as shown in Table 9
+  //arrays with non-applicable Platform Attribute-names for each Platform as shown in Table 9
     String[] naListAircraft = new String[] { "BlackOutBrakeLightsOn", "BlackOutLightsOn", "BrakeLightsOn", "HatchState",
                               "HeadLightsOn","LauncherRaised", "RampDeployed", "RunningLightsOn", "TailLightsOn"};
   
@@ -253,8 +253,7 @@ public class TC_IR_RPR2_PHY_0004 extends AbstractTestCaseIf {
             // store the received ObjectInstanceHandles with their ObjectclassHandles in a Map to use it later in reflectAttributeValues
             objectInstanceHandlesAndobjectClassHandle.put(theObjectInstanceH,theObjectClassH);
 	        
-	    }
-	   
+	    }	   
 		
 	    @Override
 	    public void reflectAttributeValues(ObjectInstanceHandle theObject, AttributeHandleValueMap theAttributes,
@@ -283,41 +282,39 @@ public class TC_IR_RPR2_PHY_0004 extends AbstractTestCaseIf {
 	        // we get the Names of the attributes only with the to the objectInstanceHandle correspondending ObjectClassHandle
 	        ObjectClassHandle tempLocalObjectClasshandle = objectInstanceHandlesAndobjectClassHandle.get(theObjectInstancH);
 	           
-	        // let's store all Attributnames for a specific  ObjectInstanceHandle / ObjectClasshandle in a array
+	        // let's store all Attributnames for a specific ObjectInstanceHandle / ObjectClasshandle in a array
 	        ArrayList<String> localListOfReceivedAttributNames = new ArrayList<String>();	        
-	        try {         
-	            
-	       // get with this ObjectClassHandle over the RTIAmbassador for every attributhandle in AttributHandleValueMap
-	       // the Attributname  and store it in a arrayList  localListOfReceivedAttributNames    
-	        for (AttributeHandle a : theAttributes.keySet()) {
-	           String tempAttributname = rtiAmbassador.getAttributeName(tempLocalObjectClasshandle, a);
-	           if(!localListOfReceivedAttributNames.contains(tempAttributname)  ) {
-	               localListOfReceivedAttributNames.add(tempAttributname);
-	           }
-	        }
+	        try {
+                // get with this ObjectClassHandle over the RTIAmbassador for every attributhandle in AttributHandleValueMap
+                // the Attributname and store it in a arrayList localListOfReceivedAttributNames
+                for (AttributeHandle a : theAttributes.keySet()) {
+                    String tempAttributname = rtiAmbassador.getAttributeName(tempLocalObjectClasshandle, a);
+                    if (!localListOfReceivedAttributNames.contains(tempAttributname)) {
+                        localListOfReceivedAttributNames.add(tempAttributname);
+                    }
+                }
 	        
-	        // get the ObjectClassName for this ObjectClassHandle
-            String tempLocalObjectClassname = rtiAmbassador.getObjectClassName(tempLocalObjectClasshandle);
-            logger.debug("## reflectAttributeValues: Name of ObjectClass from objectInstanceHandlesAndobjectClassHandle  " +tempLocalObjectClassname );
+	            // get the ObjectClassName for this ObjectClassHandle
+                String tempLocalObjectClassname = rtiAmbassador.getObjectClassName(tempLocalObjectClasshandle);
+                //logger.debug("## reflectAttributeValues: Name of ObjectClass from objectInstanceHandlesAndobjectClassHandle  " +tempLocalObjectClassname );
 	        
-            //Store the arrayList  localListOfReceivedAttributNames in a HashMap with the ObjectClassName as Key
-            objectClassNamesAndReceivedAttributeList.put(tempLocalObjectClassname, localListOfReceivedAttributNames);
+                //Store the arrayList  localListOfReceivedAttributNames in a HashMap with the ObjectClassName as Key
+                objectClassNamesAndReceivedAttributeList.put(tempLocalObjectClassname, localListOfReceivedAttributNames);
 	        
 	        } catch (FederateNotExecutionMember | NotConnected | RTIinternalError | AttributeNotDefined
                     | InvalidAttributeHandle | InvalidObjectClassHandle e) {
             } 
 	        
-	       //Debug  Test if there is any Attribut in the List objectClassNamesAndReceivedAttributeList
-	        /*
+	       //Debug  Test if we got Attributes for this objectClass  in the List objectClassNamesAndReceivedAttributeList	       
             for ( String tempObjectClassname : objectClassNamesAndReceivedAttributeList.keySet() ) {
-                ArrayList<String> tempReceivedAttributList  = objectClassNamesAndReceivedAttributeList.get(tempObjectClassname);                
-                logger.debug("reflectAttributeValues: for the ObjectClass received Attributes:  " + tempObjectClassname);    // DEBUG         
+                ArrayList<String> tempReceivedAttributList  = objectClassNamesAndReceivedAttributeList.get(tempObjectClassname);
+                String tempReceivedAttributesString= "";
                 for (String tmpAttributname : tempReceivedAttributList) {
-                    logger.debug(tmpAttributname);                                                                   // DEBUG    
+                    tempReceivedAttributesString = tempReceivedAttributesString +" " +tmpAttributname ;
                 }
+                logger.debug("### reflectAttributeValues: for ObjectClass \"" +tempObjectClassname +"\" received Attributes: " +tempReceivedAttributesString  ) ;    // DEBUG
             }
-            */
-	        
+           
 	    }
 	    	    
 	}
@@ -368,61 +365,53 @@ public class TC_IR_RPR2_PHY_0004 extends AbstractTestCaseIf {
         Platform.initialize(rtiAmbassador);      
         boolean match = false;
         ArrayList<String> resultListReceivedNaAttributes = new ArrayList<String>();
-        HashMap<String, ArrayList> resultMapClassNamesAndReceivedNaAttributes = new HashMap<String, ArrayList>();
+        HashMap<String, ArrayList> resultMapClassNamesAndReceivedNaAttributes = new HashMap<String, ArrayList>();        
         
-        
-     try {
-         toTestPlatform = new Platform();
-         platformWorkList = new Platform[] { new Aircraft(), new AmphibiousVehicle() };
-         //platformWorkList = new Platform[] {new Aircraft() , new AmphibiousVehicle(), new GroundVehicle(), new  Spacecraft() ,
-         //                  new SurfaceVessel() , new SubmersibleVessel(), new MultiDomainPlatform() };
-        
-         // first step is to subscribe to these to verify attributes
-         toTestPlatform.addSubscribe(Platform.Attributes.AfterburnerOn);
-         toTestPlatform.addSubscribe(Platform.Attributes.AntiCollisionLightsOn);
-         toTestPlatform.addSubscribe(Platform.Attributes.BlackOutBrakeLightsOn);         
-         toTestPlatform.addSubscribe(Platform.Attributes.BlackOutLightsOn);
-         toTestPlatform.addSubscribe(Platform.Attributes.BrakeLightsOn);
-         toTestPlatform.addSubscribe(Platform.Attributes.FormationLightsOn);
-         toTestPlatform.addSubscribe(Platform.Attributes.HatchState);
-         toTestPlatform.addSubscribe(Platform.Attributes.HeadLightsOn);
-         toTestPlatform.addSubscribe(Platform.Attributes.InteriorLightsOn);
-         toTestPlatform.addSubscribe(Platform.Attributes.LandingLightsOn);
-         toTestPlatform.addSubscribe(Platform.Attributes.LauncherRaised);
-         toTestPlatform.addSubscribe(Platform.Attributes.NavigationLightsOn);
-         toTestPlatform.addSubscribe(Platform.Attributes.RampDeployed);
-         toTestPlatform.addSubscribe(Platform.Attributes.RunningLightsOn);
-         toTestPlatform.addSubscribe(Platform.Attributes.SpotLightsOn);
-         toTestPlatform.addSubscribe(Platform.Attributes.TailLightsOn);   
+         try {
+             toTestPlatform = new Platform();
+             platformWorkList = new Platform[] { new Aircraft(), new AmphibiousVehicle() };
+             // platformWorkList = new Platform[] {new Aircraft() , new AmphibiousVehicle(),
+             // new GroundVehicle(), new Spacecraft() ,
+             // new SurfaceVessel() , new SubmersibleVessel(), new MultiDomainPlatform() };
+
+             // first step is to subscribe to these to verify attributes
+             toTestPlatform.addSubscribe(Platform.Attributes.AfterburnerOn);
+             toTestPlatform.addSubscribe(Platform.Attributes.AntiCollisionLightsOn);
+             toTestPlatform.addSubscribe(Platform.Attributes.BlackOutBrakeLightsOn);
+             toTestPlatform.addSubscribe(Platform.Attributes.BlackOutLightsOn);
+             toTestPlatform.addSubscribe(Platform.Attributes.BrakeLightsOn);
+             toTestPlatform.addSubscribe(Platform.Attributes.FormationLightsOn);
+             toTestPlatform.addSubscribe(Platform.Attributes.HatchState);
+             toTestPlatform.addSubscribe(Platform.Attributes.HeadLightsOn);
+             toTestPlatform.addSubscribe(Platform.Attributes.InteriorLightsOn);
+             toTestPlatform.addSubscribe(Platform.Attributes.LandingLightsOn);
+             toTestPlatform.addSubscribe(Platform.Attributes.LauncherRaised);
+             toTestPlatform.addSubscribe(Platform.Attributes.NavigationLightsOn);
+             toTestPlatform.addSubscribe(Platform.Attributes.RampDeployed);
+             toTestPlatform.addSubscribe(Platform.Attributes.RunningLightsOn);
+             toTestPlatform.addSubscribe(Platform.Attributes.SpotLightsOn);
+             toTestPlatform.addSubscribe(Platform.Attributes.TailLightsOn);
          
-      // because toTestPlatform.subscribe(); doesnt match correct
-         for (Platform p : platformWorkList) {
-             p.subscribe();
-         }
-         
-         // test the classnames       Debug  remove later  (brf)
-         logger.debug("----------  let's have a look to the classnames in toTestPlatform: ");
-         for (Platform p : platformWorkList) {
-             logger.debug (p.getHlaClassName() ) ;
-         }
-         logger.debug("----------------------");
-         
-         
-      // the Test ......         
-         for (int i = 0; i < 10; i++) { // TODO change this to a better mechanism  
-             
-             // Debug and preparations for Testing
-             /*
-             for (ObjectInstanceHandle keyElement :  objectInstanceHandlesAndobjectClassHandle.keySet() ) {
-                 ObjectClassHandle tempLocalObjectClasshandle = objectInstanceHandlesAndobjectClassHandle.get(keyElement);
-                 String tempLocalObjectClassname = rtiAmbassador.getObjectClassName(tempLocalObjectClasshandle);                 
-                 logger.debug("performTest: till now we got Informations from Class: "+tempLocalObjectClassname);                 
+             // because toTestPlatform.subscribe(); doesnt match correct
+             for (Platform p : platformWorkList) {
+                 p.subscribe();
              }
+         
+             /* test the classnames Debug remove later (brf)
+             logger.debug("----------  let's have a look to the classnames in toTestPlatform: ");
+             for (Platform p : platformWorkList) {
+                 logger.debug(p.getHlaClassName());
+             }
+             logger.debug("----------------------");
              */
-             
-             //  Compare the two Lists if non-applicable attributes are updated from a special Object Class 
-             //   objectClassNamesAndReceivedAttributeList
-             //   objectClassNamesAndNaAttributList
+         
+         
+          // the Test ......         
+          for (int i = 0; i < 10; i++) { // TODO change this to a better mechanism
+
+              // Compare the two Lists if non-applicable attributes are updated from a special Object Class
+              // objectClassNamesAndReceivedAttributeList  with 
+              // objectClassNamesAndNaAttributList
              for ( String tempObjectClassname : objectClassNamesAndReceivedAttributeList.keySet() ) {
                  
                  logger.debug("performTest: for "+tempObjectClassname );
@@ -451,10 +440,10 @@ public class TC_IR_RPR2_PHY_0004 extends AbstractTestCaseIf {
          
          
         //   TODO  change this to a specifig  Exception 
-        } catch (Exception e) {
-            throw new TcInconclusiveIf("performTest received Exception: ",  e);
-        }
-     
+    } catch (Exception e) {
+        throw new TcInconclusiveIf("performTest received Exception: ", e);
+    }
+
         String failMessage = "";
         for (String tempClassname : resultMapClassNamesAndReceivedNaAttributes.keySet()) {
             failMessage = failMessage + " " + tempClassname + " updating  "
