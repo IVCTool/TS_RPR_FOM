@@ -72,7 +72,7 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
  */
 
 /* 
- * How to test what the Sut assumes ?
+ * How to test what the Sut assumes ?   ################ maybe  only in the SUT ?
  * 
  * "optional" seems to be a Attribut, if in SISO-STD-001-2015 not declared as
  * (not optional) ? ( like in Table 4 BaseEntity Attributes: EntityIdentifier,
