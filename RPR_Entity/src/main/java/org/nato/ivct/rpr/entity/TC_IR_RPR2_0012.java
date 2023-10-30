@@ -105,14 +105,15 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
  * so we need a List with classnames and NaAttributes for this classname -->
  * classNamesAndNaAttributList
  * 
- * Aircraft FirePowerDisabled IsConcealed TentDeployed AmphibiousVehicle -----
- * GroundVehicle ----- Spacecraft EngineSmokeON FirePowerDisabled IsConcealed
- * TentDeployed TrailingEffectsCode SurfaceVessel FirePowerDisabled IsConcealed
- * TentDeployed SubmersibleVessel EngineSmokeON FirePowerDisabled IsConcealed
- * TentDeployed TrailingEffectsCode MultiDomainPlatform ----- Lifeform
- * EngineSmokeON FirePowerDisabled FlamesPresent Immobilized PowerPlantOn
- * SmokePlumePresent TentDeployed TrailingEffectsCode ...
- * 
+ * Aircraft FirePowerDisabled IsConcealed TentDeployed
+ * AmphibiousVehicle -----
+ * GroundVehicle -----
+ * Spacecraft EngineSmokeON FirePowerDisabled IsConcealed TentDeployed TrailingEffectsCode 
+ * SurfaceVessel FirePowerDisabled IsConcealed TentDeployed
+ * SubmersibleVessel EngineSmokeON FirePowerDisabled IsConcealed TentDeployed TrailingEffectsCode
+ * MultiDomainPlatform -----
+ * Lifeform EngineSmokeON FirePowerDisabled FlamesPresent Immobilized PowerPlantOn SmokePlumePresent TentDeployed TrailingEffectsCode ...
+ * ...
  * ---------------------------------------
  * 
  */
@@ -158,7 +159,7 @@ public class TC_IR_RPR2_0012 extends AbstractTestCaseIf {
     HashMap<String, String[]> classNamesAndNaAttributList = new HashMap<String, String[]>();
 
     public TC_IR_RPR2_0012() {
-        // TODO complete
+        // TODO complete   , missing:  Lifeform  cultural-Feature  Munition, Expendable, Radio, Sensor, Supplies
         // fill the Map of classnames and non-applicable PhysicalEntity Attributes for
         // this Physical Entity
         classNamesAndNaAttributList.put("HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.Aircraft", naListAircraft);
