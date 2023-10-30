@@ -61,7 +61,7 @@ The prioritization of the test case implementation is given by the requirements 
 | TC_IR_PRP_PHY_0001 | basic|  TC creates/changes randomly (nearly) all of the PhysicalEntity attributes in a short Time (10ms) and e.g. 200 times. It may be the job of the operator to see if the federate get problems. |
 | TC_IR_PRP_PHY_0002 | - | - |
 | TC_IR_PRP_PHY_0003 | - | TC changes randomly all of the Platform attributes (16) in a short Time (10ms) and e.g. 200 times. It may be the job of the operator to see if the federate get problems. |
-| TC_IR_PRP_PHY_0004 | - | - |
+| TC_IR_PRP_PHY_0004 | [basic](/RPR_Physical/src/main/java/org/nato/ivct/rpr/physical/TC_IR_RPR2_PHY_0004.java) | prepared for Aircraft and other,  testet some Attributes with AircraftApp |
 | TC_IR_PRP_PHY_1001 | - | - |
 | TC_IR_PRP_PHY_1002 | - | - |
 | TC_IR_PRP_PHY_1003 | - | - |
