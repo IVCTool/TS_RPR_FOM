@@ -27,6 +27,10 @@ The prioritization of the test case implementation is given by the requirements 
 | TC_IR_RPR_0015 | template |   |
 | TC_IR_RPR_0016 | template |   |
 
+### Discussion
+
+- TC_IR_RPR_0015
+  - brfkar \"SuT shall assume default values for optional attributes\"  How can we know in a Test, what SUT assumes ? May be not testable in this way
 
 ## RPR FOM Warfare Module Badge
 
