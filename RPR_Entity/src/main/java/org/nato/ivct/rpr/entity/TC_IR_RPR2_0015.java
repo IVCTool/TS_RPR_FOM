@@ -21,10 +21,12 @@ import java.util.HashMap;
 import java.util.concurrent.Semaphore;
 
 import org.nato.ivct.rpr.objects.Aircraft;
+import org.nato.ivct.rpr.objects.AmphibiousVehicle;
 import org.nato.ivct.rpr.objects.BaseEntity;
 import org.nato.ivct.rpr.objects.PhysicalEntity;
-
+import org.nato.ivct.rpr.objects.Platform;
 import org.nato.ivct.rpr.FomFiles;
+import org.nato.ivct.rpr.RprBuilderException;
 import org.slf4j.Logger;
 
 import de.fraunhofer.iosb.tc_lib_if.AbstractTestCaseIf;
@@ -51,12 +53,12 @@ import hla.rti1516e.exceptions.CouldNotOpenFDD;
 import hla.rti1516e.exceptions.ErrorReadingFDD;
 import hla.rti1516e.exceptions.FederateAlreadyExecutionMember;
 import hla.rti1516e.exceptions.FederateInternalError;
-
+import hla.rti1516e.exceptions.FederateNotExecutionMember;
 import hla.rti1516e.exceptions.FederationExecutionAlreadyExists;
 import hla.rti1516e.exceptions.FederationExecutionDoesNotExist;
 import hla.rti1516e.exceptions.InconsistentFDD;
 import hla.rti1516e.exceptions.InvalidLocalSettingsDesignator;
-
+import hla.rti1516e.exceptions.InvalidObjectClassHandle;
 import hla.rti1516e.exceptions.NotConnected;
 
 import hla.rti1516e.exceptions.RTIinternalError;
@@ -73,6 +75,8 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
 
 /* 
  * How to test what the Sut assumes ?   ################ maybe  only in the SUT ?
+ * 
+ * We can try to get here default values  from the RTI ??? .... has no use for the Questioning
  * 
  * "optional" seems to be a Attribut, if in SISO-STD-001-2015 not declared as
  * (not optional) ? ( like in Table 4 BaseEntity Attributes: EntityIdentifier,
@@ -101,57 +105,57 @@ import hla.rti1516e.exceptions.UnsupportedCallbackModel;
  * so we have to test all Attributes for PhysicalEntity and subclasses if
  * Sut assume default values for optional Attributes
  * 
- * PhysicalEntity Attributes:  SISO-STD-001  P. 44  Table 6  25 attributes   all Optional
- *  Attribute Name                           Default Value
- *  AcousticSignatureIndex                    0
- *  AlternateEntityType                       BaseEntity.EntityType
- *  ArticulatedParametersArray                Empty
- *  CamouflageType                            Uniform Paint Scheme
- *  DamageState                               No Damage
- *  EngineSmokeOn                             False
- *  FirePowerDisabled                         False
- *  FlamesPresent                             False
- *  ForceIdentifier                           Other
- *  HasAmmunitionSupplyCap                    False
- *  HasFuelSupplyCap                          False
- *  HasRecoveryCap                            False
- *  HasRepairCap                              False
- *  Immobilized                               False
- *  InfraredSignatureIndex                     0
- *  IsConcealed                               False
- *  LiveEntityMeasuredSpeed                   0
- *  Marking                                   Empty
- *  PowerPlantOn                              False
- *  PropulsionSystemsData                     Empty
- *  RadarCrossSectionSignatureIndex           0
- *  SmokePlumePresent                         False                      
- *  TentDeployed                              False
- *  TrailingEffectsCode                      False
- *  VectoringNozzleSystemData                 Empty
+* PhysicalEntity Attributes:  SISO-STD-001  P. 44  Table 6  25 attributes   all Optional
+   Attribute Name                           Default Value
+   AcousticSignatureIndex                    0
+   AlternateEntityType                       BaseEntity.EntityType
+   ArticulatedParametersArray                Empty
+   CamouflageType                            Uniform Paint Scheme
+   DamageState                               No Damage
+   EngineSmokeOn                             False
+   FirePowerDisabled                         False
+   FlamesPresent                             False
+   ForceIdentifier                           Other
+   HasAmmunitionSupplyCap                    False
+   HasFuelSupplyCap                          False
+   HasRecoveryCap                            False
+   HasRepairCap                              False
+   Immobilized                               False
+   InfraredSignatureIndex                     0
+   IsConcealed                               False
+   LiveEntityMeasuredSpeed                   0
+   Marking                                   Empty
+   PowerPlantOn                              False
+   PropulsionSystemsData                     Empty
+   RadarCrossSectionSignatureIndex           0
+   SmokePlumePresent                         False                      
+   TentDeployed                              False
+   TrailingEffectsCode                      False
+   VectoringNozzleSystemData                 Empty
  
  * 
  * 
- * Plattform : Table 8 16 Attributes all Optional
-AfterburnerOn            False
-AntiCollisionLightsOn    False
-BlackOutBrakeLightsOn    False
-BlackOutLightsOn         False
-BrakeLightsOn            False
-FormationLightsOn        False
-HatchState               NotApplicable
-HeadLightsOn             False
-InteriorLightsOn         False
-LandingLightsOn          False
-LauncherRaised           False
-NavigationLightsOn       False
-RampDeployed             False
-RunningLightsOn          False
-SpotLightsOn             False
-TailLightsOn             False
- * 
+* Plattform : Table 8 16 Attributes all Optional
+  AfterburnerOn            False
+  AntiCollisionLightsOn    False
+  BlackOutBrakeLightsOn    False
+  BlackOutLightsOn         False
+  BrakeLightsOn            False
+  FormationLightsOn        False
+  HatchState               NotApplicable
+  HeadLightsOn             False
+  InteriorLightsOn         False
+  LandingLightsOn          False
+  LauncherRaised           False
+  NavigationLightsOn       False
+  RampDeployed             False
+  RunningLightsOn          False
+  SpotLightsOn             False
+  TailLightsOn             False
+ 
 
  * Subclasses of Plattform 
- * Aircraft                    attributless
+ * Aircraft                   attributless
  * AmphibiousVehicle           attributless
  * GroundVehicle               attributless
  * MultiDomainPlatform         attributless
@@ -174,35 +178,99 @@ TailLightsOn             False
  * Sensor Table 13 5 attributes all Optional
  * 
  * Sensor Supplies has no attributes
+ * 
+ * 
+ * 
+ *  1) we have to subscribe to all of the attributes ( to test we begin with quite a few of physical or Platform)
+ * 
+ *  2) make discoverObjectInstance ready to receive Informations about ObjectClasses and ObjectInstances
+ *     and store the Information  in a Hashmap with reference-Classes
+ * 
+ * 
+ * 
+ * 
+ * 
  */
 
 public class TC_IR_RPR2_0015 extends AbstractTestCaseIf {
 
     RTIambassador rtiAmbassador = null;
     FederateAmbassador tcAmbassador = null;
-    Logger logger = null;
+    Logger logger = null;    
+    
     Semaphore physicalEntityDiscovered = new Semaphore(0);
     HashMap<ObjectInstanceHandle, PhysicalEntity> knownPhysicalEntitys = new HashMap<>();
+    
+    PhysicalEntity toTestPhyEntity;
+    PhysicalEntity[] physEntityWorkList;
 
-    PhysicalEntity phyEntity;
-    private FederateHandle sutHandle;
+    public TC_IR_RPR2_0015() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
 
     class TestCaseAmbassador extends NullFederateAmbassador {
-
+        
         @Override
-        public void discoverObjectInstance(ObjectInstanceHandle theObject, ObjectClassHandle theObjectClass,
-                String objectName) throws FederateInternalError {
-            logger.trace("discoverObjectInstance {}", theObject);
-            // semaphore.release(1);
-        }
-
-        @Override
-        public void discoverObjectInstance(ObjectInstanceHandle theObject, ObjectClassHandle theObjectClass,
-                String objectName, FederateHandle producingFederate) throws FederateInternalError {
-            logger.trace("discoverObjectInstance {} with producingFederate {}", theObject, producingFederate);
-            discoverObjectInstance(theObject, theObjectClass, objectName);
+        public void discoverObjectInstance(
+                ObjectInstanceHandle theObjectInstanceH,
+                ObjectClassHandle theObjectClassH,
+                String objectName,
+                FederateHandle producingFederate)
+                throws FederateInternalError {
+            logger.trace("discoverObjectInstance {} with producingFederate {}", theObjectInstanceH, producingFederate);
+             logger.info("# discoverObjectInstance with FederateHandle ");  
+            discoverObjectInstance(theObjectInstanceH, theObjectClassH, objectName);
+        }        
+        
+        public void discoverObjectInstance(
+                ObjectInstanceHandle theObjectInstanceH,
+                ObjectClassHandle theObjectClassH,
+                String objectName)
+                throws FederateInternalError {
+            logger.trace("discoverObjectInstance {}", theObjectInstanceH);
+            logger.debug("### discoverObjectInstance without FederateHandle ");
+            
+            
+            
+            // let's see what are the Classnames in our workList     Debug
+            logger.debug("Classnames out of the to testList: ");
+            for (PhysicalEntity phyEnt : physEntityWorkList) {
+                String classnameFromWorklist = phyEnt.getHlaClassName();
+                logger .debug(classnameFromWorklist);                
+            }            
+            
+            try {
+             // Tests and Debug   let's see what we get
+                String receivedClassName = rtiAmbassador.getObjectClassName(theObjectClassH);
+                logger.debug("## discoverObjectInstance:reveived ObjectClassHandle with rti-ObjectClassName: "
+                              + receivedClassName + "\n");                
+                
+                // End of Tests and Debug
+            } catch (Exception e) {
+                logger.error("discoverObjectInstance received Exception", e);
+            }
+            
+            
+            // now we have to store the received Objects to work with it in perform Test
+            /*
+            try {
+                // store a new aircraft Object with the received ObjectInstanceHandle
+                if (rtiAmbassador.getObjectClassName(theObjectClassH).equals("HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.Aircraft")) {
+                    String tempObjectClassName = rtiAmbassador.getObjectClassName(theObjectClassH); // Debug
+                    logger.debug("### discoverObjectInstance: got this ObjectKlassName ##### :   " + tempObjectClassName);
+                    Aircraft aircr = new Aircraft();
+                    aircr.setObjectHandle(theObjectInstanceH);
+                    knownAircraftEntities.put(theObjectInstanceH, aircr);
+                }        
+            } catch (RTIinternalError| NotConnected |  InvalidObjectClassHandle | FederateNotExecutionMember |  RprBuilderException e) {
+                logger.error("discoverObjectInstance  received Exception  ", e);
+            }
+            */    
+            
         }
     }
+
 
     @Override
     protected void logTestPurpose(Logger logger) {
@@ -245,12 +313,56 @@ public class TC_IR_RPR2_0015 extends AbstractTestCaseIf {
     @Override
     protected void performTest(Logger logger) throws TcInconclusiveIf, TcFailedIf {
         logger.info("perform test {}", this.getClass().getName());
-        PhysicalEntity.initialize(rtiAmbassador); // to adjust
+        
+        BaseEntity.initialize(rtiAmbassador); // to adjust
 
         try {
-            phyEntity = new PhysicalEntity();
-            phyEntity.addSubscribe(BaseEntity.Attributes.EntityIdentifier); // to adjust
-            phyEntity.subscribe();
+          
+            //PhysicalEntity toTestPhyEntity;
+            //PhysicalEntity[] physEntityWorkList;
+            
+            toTestPhyEntity = new PhysicalEntity() ;  
+            physEntityWorkList = new Platform[] { new Aircraft(), new AmphibiousVehicle() };
+            // platformWorkList = new Platform[] {new Aircraft() , new AmphibiousVehicle(),
+            // new GroundVehicle(), new Spacecraft() ,
+            // new SurfaceVessel() , new SubmersibleVessel(), new MultiDomainPlatform() };
+                    
+            
+            // for testing  we have to receive all attributes from physical entity  ( brf)
+            toTestPhyEntity.addSubscribe(PhysicalEntity.Attributes.AcousticSignatureIndex);
+            toTestPhyEntity.addSubscribe(PhysicalEntity.Attributes.AlternateEntityType);
+            toTestPhyEntity.addSubscribe(PhysicalEntity.Attributes.ArticulatedParametersArray);
+            toTestPhyEntity.addSubscribe(PhysicalEntity.Attributes.CamouflageType);
+            toTestPhyEntity.addSubscribe(PhysicalEntity.Attributes.DamageState);
+
+            toTestPhyEntity.addSubscribe(PhysicalEntity.Attributes.EngineSmokeOn);
+            toTestPhyEntity.addSubscribe(PhysicalEntity.Attributes.FirePowerDisabled);
+            toTestPhyEntity.addSubscribe(PhysicalEntity.Attributes.FlamesPresent);
+            toTestPhyEntity.addSubscribe(PhysicalEntity.Attributes.ForceIdentifier);
+            toTestPhyEntity.addSubscribe(PhysicalEntity.Attributes.HasAmmunitionSupplyCap);
+
+            toTestPhyEntity.addSubscribe(PhysicalEntity.Attributes.HasFuelSupplyCap);
+            toTestPhyEntity.addSubscribe(PhysicalEntity.Attributes.HasRecoveryCap);
+            toTestPhyEntity.addSubscribe(PhysicalEntity.Attributes.HasRepairCap);
+            toTestPhyEntity.addSubscribe(PhysicalEntity.Attributes.Immobilized);
+            toTestPhyEntity.addSubscribe(PhysicalEntity.Attributes.InfraredSignatureIndex);
+
+            toTestPhyEntity.addSubscribe(PhysicalEntity.Attributes.IsConcealed);
+            toTestPhyEntity.addSubscribe(PhysicalEntity.Attributes.LiveEntityMeasuredSpeed);
+            toTestPhyEntity.addSubscribe(PhysicalEntity.Attributes.Marking);
+            toTestPhyEntity.addSubscribe(PhysicalEntity.Attributes.PowerPlantOn);
+            toTestPhyEntity.addSubscribe(PhysicalEntity.Attributes.PropulsionSystemsData);
+
+            toTestPhyEntity.addSubscribe(PhysicalEntity.Attributes.RadarCrossSectionSignatureIndex);
+            toTestPhyEntity.addSubscribe(PhysicalEntity.Attributes.SmokePlumePresent);
+            toTestPhyEntity.addSubscribe(PhysicalEntity.Attributes.TentDeployed);
+            toTestPhyEntity.addSubscribe(PhysicalEntity.Attributes.TrailingEffectsCode);
+            toTestPhyEntity.addSubscribe(PhysicalEntity.Attributes.VectoringNozzleSystemData);
+            
+            for (PhysicalEntity phyEnt : physEntityWorkList) {
+                phyEnt.subscribe();
+            }
+              
 
             boolean gotEnoughAtttributes = true;
             while (!gotEnoughAtttributes) {
