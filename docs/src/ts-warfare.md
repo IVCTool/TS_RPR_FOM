@@ -11,3 +11,5 @@ It currently contains the following test cases:
 ![TC_IR_RPR_0017](images/tc-ir-rpr2-0017.drawio.png)
 
 - [TC_IR_RPR_0018](/RPR_Warfare/src/main/java/org/nato/ivct/rpr/warfare/TC_IR_RPR2_0018.java): Current implementation requests MOM reports for interaction subscriptions and publications. Decoding and verification of received reports is missing.
+
+![TC_IR_RPR_0018](images/tc-ir-rpr2-0018.drawio.png)
