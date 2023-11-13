@@ -27,6 +27,10 @@ The prioritization of the test case implementation is given by the requirements 
 | TC_IR_RPR_0015 | template |   |
 | TC_IR_RPR_0016 | template |   |
 
+### Discussion
+
+- TC_IR_RPR_0015
+  - brfkar \"SuT shall assume default values for optional attributes\"  How can we know in a Test, what SUT assumes ? May be not testable in this way
 
 ## RPR FOM Warfare Module Badge
 
@@ -56,11 +60,11 @@ The prioritization of the test case implementation is given by the requirements 
 ## RPR FOM Physical Module 
 
 
-| TC | Status | Description |
-| -- |------- | ----------- |
-| TC_IR_PRP_PHY_0001 |[basic](/RPR_Physical/src/main/java/org/nato/ivct/rpr/physical/TC_IR_RPR2_PHY_0001.java) | TC creates/changes randomly (nearly) all of the PhysicalEntity attributes in a short Time (10ms) and e.g. 200 times. It may be the job of the operator to see if the federate get problems. |
+| TC | Status | Description | Further Information|
+| -- |------- | ----------- |------- |
+| TC_IR_PRP_PHY_0001 |[basic](/RPR_Physical/src/main/java/org/nato/ivct/rpr/physical/TC_IR_RPR2_PHY_0001.java)| TC creates/changes randomly (nearly) all of the PhysicalEntity attributes in a short Time (10ms) and e.g. 200 times. It may be the job of the operator to see if the federate get problems. |[SeqDiag](/docs/src/sequensdiagramm/TC_IR_PRP_PHY_0001.jpg)|
 | TC_IR_PRP_PHY_0002 | - | - |
-| TC_IR_PRP_PHY_0003 |[basic](/RPR_Physical/src/main/java/org/nato/ivct/rpr/physical/TC_IR_RPR2_PHY_0003.java) | TC changes randomly all of the Platform attributes (16) in a short Time (10ms) and e.g. 200 times. It may be the job of the operator to see if the federate get problems. |
+| TC_IR_PRP_PHY_0003 |[basic](/RPR_Physical/src/main/java/org/nato/ivct/rpr/physical/TC_IR_RPR2_PHY_0003.java) | TC changes randomly all of the Platform attributes (16) in a short Time (10ms) and e.g. 200 times. It may be the job of the operator to see if the federate get problems. | [SeqDiag](/docs/src/sequensdiagramm/TC_IR_PRP_PHY_0003.jpg)|
 | TC_IR_PRP_PHY_0004 |[basic](/RPR_Physical/src/main/java/org/nato/ivct/rpr/physical/TC_IR_RPR2_PHY_0004.java) | prepared for Aircraft and other,  testet some Attributes with AircraftApp |
 | TC_IR_PRP_PHY_1001 | - | - |
 | TC_IR_PRP_PHY_1002 | - | - |

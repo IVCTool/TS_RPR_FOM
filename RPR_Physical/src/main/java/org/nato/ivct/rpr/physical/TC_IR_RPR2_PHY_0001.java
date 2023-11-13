@@ -283,7 +283,7 @@ public class TC_IR_RPR2_PHY_0001 extends AbstractTestCaseIf {
         for (int i = 0; i < 200; i++) {  // Testing for n cycles (1000),  the duration is specified  in "Thread.sleep(10);" 
             logger.debug("# -------------------   performTest: cycle " +i +"---------------" );
                        
-            // change the attribut values  ocasionally                             
+            // change the attribut values  occasionally                             
             // TODO  in the moment we have all  but struct Elements  in this test
             aircraft.clear();
             
