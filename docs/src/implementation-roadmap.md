@@ -10,9 +10,10 @@ Specification of Implementation Status
 
 The prioritization of the test case implementation is given by the requirements of the Bw-Lw badge. 
 
-![Bw.Lw](images/badge-lw.drawio.svg)
+![Bw.Lw](images/badge-rpr.drawio.svg)
 
-## RPR FOM Entity Module Badge
+
+## RPR FOM Entity Module
 
 
 | TC | Status | Comment |
@@ -32,12 +33,12 @@ The prioritization of the test case implementation is given by the requirements 
 - TC_IR_RPR_0015
   - brfkar \"SuT shall assume default values for optional attributes\"  How can we know in a Test, what SUT assumes ? May be not testable in this way
 
-## RPR FOM Warfare Module Badge
+## RPR FOM Warfare Module
 
-| TC | Status | Comment |
-| -- | ------ | ------- |
-| TC_IR_RPR_0017 | [basic](/RPR_Warfare/src/main/java/org/nato/ivct/rpr/warfare/TC_IR_RPR2_0017.java)  | Current implementation tests if _Munition_ objects are published. Subscription test and verification for tracked munition is missing. |
-| TC_IR_RPR_0018 | [basic](/RPR_Warfare/src/main/java/org/nato/ivct/rpr/warfare/TC_IR_RPR2_0018.java) |Current implementation requests MOM reports for interaction subscriptions and publications. Decoding and verification of received reports is missing. |
+| TC | Status | Comment | Further Information|
+| -- | ------ | ------- | ------------------ |
+| TC_IR_RPR_0017 | [basic](/RPR_Warfare/src/main/java/org/nato/ivct/rpr/warfare/TC_IR_RPR2_0017.java)  | Current implementation tests if _Munition_ objects are published. Subscription test and verification for tracked munition is missing. | [sequence diagram](images/tc-ir-rpr2-0017.drawio.png)
+| TC_IR_RPR_0018 | [basic](/RPR_Warfare/src/main/java/org/nato/ivct/rpr/warfare/TC_IR_RPR2_0018.java) |Current implementation requests MOM reports for interaction subscriptions and publications. Decoding and verification of received reports is missing. | [sequence diagram](images/tc-ir-rpr2-0018.drawio.png) |
 | TC_IR_RPR_0019 | -  | - |
 | TC_IR_RPR_0020 |  -  | - |
 | TC_IR_RPR_0021 |  -  | - |
@@ -62,9 +63,9 @@ The prioritization of the test case implementation is given by the requirements 
 
 | TC | Status | Description | Further Information|
 | -- |------- | ----------- |------- |
-| TC_IR_PRP_PHY_0001 |[basic](/RPR_Physical/src/main/java/org/nato/ivct/rpr/physical/TC_IR_RPR2_PHY_0001.java)| TC creates/changes randomly (nearly) all of the PhysicalEntity attributes in a short Time (10ms) and e.g. 200 times. It may be the job of the operator to see if the federate get problems. |[SeqDiag](/docs/src/sequensdiagramm/TC_IR_PRP_PHY_0001.jpg)|
+| TC_IR_PRP_PHY_0001 |[basic](/RPR_Physical/src/main/java/org/nato/ivct/rpr/physical/TC_IR_RPR2_PHY_0001.java)| TC creates/changes randomly (nearly) all of the PhysicalEntity attributes in a short Time (10ms) and e.g. 200 times. It may be the job of the operator to see if the federate get problems. |[sequence diagram](/docs/src/sequensdiagramm/TC_IR_PRP_PHY_0001.jpg)|
 | TC_IR_PRP_PHY_0002 | - | - |
-| TC_IR_PRP_PHY_0003 |[basic](/RPR_Physical/src/main/java/org/nato/ivct/rpr/physical/TC_IR_RPR2_PHY_0003.java) | TC changes randomly all of the Platform attributes (16) in a short Time (10ms) and e.g. 200 times. It may be the job of the operator to see if the federate get problems. | [SeqDiag](/docs/src/sequensdiagramm/TC_IR_PRP_PHY_0003.jpg)|
+| TC_IR_PRP_PHY_0003 |[basic](/RPR_Physical/src/main/java/org/nato/ivct/rpr/physical/TC_IR_RPR2_PHY_0003.java) | TC changes randomly all of the Platform attributes (16) in a short Time (10ms) and e.g. 200 times. It may be the job of the operator to see if the federate get problems. | [sequence diagram](/docs/src/sequensdiagramm/TC_IR_PRP_PHY_0003.jpg)|
 | TC_IR_PRP_PHY_0004 |[basic](/RPR_Physical/src/main/java/org/nato/ivct/rpr/physical/TC_IR_RPR2_PHY_0004.java) | prepared for Aircraft and other,  testet some Attributes with AircraftApp |
 | TC_IR_PRP_PHY_1001 | - | - |
 | TC_IR_PRP_PHY_1002 | - | - |
@@ -98,7 +99,7 @@ Requirement IR-RPR-PHY-0001 already states that all attributes of Physical class
 
 
 
-## RPR FOM Distributed Emission Regeneration Module Badge
+## RPR FOM Distributed Emission Regeneration Module 
 
 
 | TC | Status | Description |
@@ -121,7 +122,7 @@ Requirement IR-RPR-PHY-0001 already states that all attributes of Physical class
 | TC_IR_RPR_DER_0016| - | - |
 
 
-## RPR FOM Communication Module Badge
+## RPR FOM Communication Module 
 
 
 | TC | Status | Description |
@@ -144,4 +145,14 @@ Requirement IR-RPR-PHY-0001 already states that all attributes of Physical class
 | RC_IR_RPR_COM_1004 | - | - |
 
 
+## RPR FOM Aggregate Module 
 
+| TC | Status | Description |
+| ---| ------ | ----------- |
+| IR-RPR2-0001 | -  | SuT shall comply with SISO-STD-001-2015, Standard for Guidance, Rationale, and Interoperability Modalities for the Real-time Platform Reference Federation Object Model, Version 2.0, 10 August 2015 |
+| IR-RPR2-0002 | -  | SuT shall define BaseEntity.AggregateEntity as published or define a subclass of BaseEntity.AggregateEntity as published and/or define BaseEntity.AggregateEntity as subscribed in CS/SOM. |
+| IR-RPR2-0003 | -  | SuT shall update the following required attributes for AggregateEntity object instances registered by SuT: AggregateState, Dimensions, EntityIdentifier, EntityType, Spatial. |
+| IR-RPR2-0004 | -  | SuT shall assume default values for optional attributes on instances of AggregateEntity object class. |
+| IR-RPR2-0005 | -  | SuT shall assume default values for optional attributes on instances of AggregateEntity object class. |
+| IR-RPR2-0006 | -  | SuT shall not rely on updates of optional attributes on instances of AggregateEntity object class. |
+| IR-RPR2-0007 | -  | SuT shall be configurable for the following parameters: SiteID, ApplicationID. |
