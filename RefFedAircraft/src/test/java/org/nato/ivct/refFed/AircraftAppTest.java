@@ -7,7 +7,7 @@ public class AircraftAppTest {
     
     @Test
     void testAircraftApp () {
-        String[] args = {"-rtiHost", "localhost", "-federationName", "TestFederation", "-federateName", "Flyer1", "-pFlyAircraft"};
+        String[] args = {"-rtiHost", "localhost", "-federationName", "TestFederation", "-federateName", "Flyer1"};
         AircraftApp.main(args);
     }
 }

@@ -13,7 +13,7 @@ java {
 
 dependencies {
     // IVCT AbstractTestCase interface
-    implementation 'io.github.msg134:TC.lib:4.1.0-SNAPSHOT'
+    implementation 'io.github.msg134:TC.lib:4.1.0'
 }
 
 // Write the  IVCT-Version as set to variable in libraries.gradle

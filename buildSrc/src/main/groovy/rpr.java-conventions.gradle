@@ -8,7 +8,7 @@ plugins {
 // Java Version Compatibility
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(9)
+        languageVersion = JavaLanguageVersion.of(8)
     }
 }
 
@@ -24,6 +24,8 @@ repositories {
 }
 
 dependencies {
+    // https://mvnrepository.com/artifact/commons-io/commons-io
+    implementation 'commons-io:commons-io:2.17.0'
     // Use Simple Logging Facade API for reporting
     implementation 'org.slf4j:slf4j-api:2.0.5'
     // For testing include the libraries which are added by TestEngine in operation

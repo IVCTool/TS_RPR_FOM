@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import org.apache.commons.io.IOUtils;
 
 public class FomFiles {
     private static final Logger log = LoggerFactory.getLogger(FomFiles.class);
@@ -45,7 +46,8 @@ public class FomFiles {
             File temp = new File(resource + suffix);
             if (!temp.exists()) {
                 temp.createNewFile();
-                byte[] resourceFileBytes = fom.openStream().readAllBytes();
+                // byte[] resourceFileBytes = fom.openStream().readAllBytes();
+                byte[] resourceFileBytes = IOUtils.toByteArray(fom.openStream());
                 Files.write(temp.toPath(), resourceFileBytes);
             }
             return temp.toURI().toURL();
@@ -63,7 +65,8 @@ public class FomFiles {
             log.trace("using {}{}", resource, suffix);
             URL fom = FomFiles.class.getResource("/" + resource + suffix);
             File temp = File.createTempFile(prefix + resource, suffix);
-            byte[] resourceFileBytes = fom.openStream().readAllBytes();
+            // byte[] resourceFileBytes = fom.openStream().readAllBytes();
+            byte[] resourceFileBytes = IOUtils.toByteArray(fom.openStream());
             Files.write(temp.toPath(), resourceFileBytes);
             temp.deleteOnExit();
             return temp.toURI().toURL();
