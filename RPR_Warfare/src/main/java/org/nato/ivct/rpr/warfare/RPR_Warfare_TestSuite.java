@@ -29,7 +29,7 @@ public class RPR_Warfare_TestSuite extends HlaTestSuite {
         super();
     }
 
-    public static final String TEST_SUITE_ID = "RPR-ENTITY-2_0";
+    public static final String TEST_SUITE_ID = "RPR-WAR-2_0";
     JSONObject description;
 
     public static final org.slf4j.Logger log = LoggerFactory.getLogger(RPR_Warfare_TestSuite.class);
